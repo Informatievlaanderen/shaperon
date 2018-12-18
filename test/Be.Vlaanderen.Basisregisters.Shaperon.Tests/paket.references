@@ -1,0 +1,12 @@
+Microsoft.NETCore.App
+
+xunit
+dotnet-xunit
+xunit.runner.visualstudio
+Microsoft.NET.Test.Sdk
+Albedo
+AutoFixture
+AutoFixture.Idioms
+System.Text.Encoding.CodePages
+PublicApiGenerator
+dotnet-sourcelink

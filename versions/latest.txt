@@ -1,0 +1,600 @@
+[assembly: System.Runtime.InteropServices.ComVisibleAttribute(false)]
+[assembly: System.Runtime.InteropServices.GuidAttribute("c4987454-eb59-4138-94ff-a675af703da8")]
+[assembly: System.Runtime.Versioning.TargetFrameworkAttribute(".NETStandard,Version=v2.0", FrameworkDisplayName="")]
+namespace Be.Vlaanderen.Basisregisters.Shaperon
+{
+    public class AnonymousDbaseRecord : Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecord
+    {
+        public AnonymousDbaseRecord(Be.Vlaanderen.Basisregisters.Shaperon.DbaseField[] fields) { }
+        public AnonymousDbaseRecord(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldValue[] values) { }
+        protected override void ReadValues(System.IO.BinaryReader reader) { }
+    }
+    public class AnonymousDbaseSchema : Be.Vlaanderen.Basisregisters.Shaperon.DbaseSchema
+    {
+        public AnonymousDbaseSchema(Be.Vlaanderen.Basisregisters.Shaperon.DbaseField[] fields) { }
+    }
+    public class BoundingBox3D
+    {
+        public BoundingBox3D(double xMin, double yMin, double xMax, double yMax, double zMin, double zMax, double mMin, double mMax) { }
+        public double MMax { get; }
+        public double MMin { get; }
+        public double XMax { get; }
+        public double XMin { get; }
+        public double YMax { get; }
+        public double YMin { get; }
+        public double ZMax { get; }
+        public double ZMin { get; }
+        public override bool Equals(object obj) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.BoundingBox3D ExpandWith(Be.Vlaanderen.Basisregisters.Shaperon.BoundingBox3D other) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.BoundingBox3D FromGeometry(GeoAPI.Geometries.IGeometry geometry) { }
+        public override int GetHashCode() { }
+    }
+    public struct ByteLength : System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.ByteLength>
+    {
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ByteLength Double;
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ByteLength Int32;
+        public ByteLength(int value) { }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.ByteLength instance) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public static int op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.ByteLength instance) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ByteLength Plus(Be.Vlaanderen.Basisregisters.Shaperon.ByteLength other) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ByteLength Plus(Be.Vlaanderen.Basisregisters.Shaperon.WordLength other) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ByteLength Times(int times) { }
+        public int ToInt32() { }
+        public override string ToString() { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordLength ToWordLength() { }
+    }
+    public struct ByteOffset : System.IComparable<Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset>, System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset>
+    {
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset Initial;
+        public ByteOffset(int value) { }
+        public int CompareTo(Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset other) { }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset instance) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset +(Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset left, Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset right) { }
+        public static bool ==(Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset left, Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset right) { }
+        public static bool >(Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset left, Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset right) { }
+        public static bool >=(Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset left, Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset right) { }
+        public static int op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset instance) { }
+        public static bool !=(Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset left, Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset right) { }
+        public static bool <(Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset left, Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset right) { }
+        public static bool <=(Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset left, Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset right) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset Plus(Be.Vlaanderen.Basisregisters.Shaperon.ByteLength other) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset Plus(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength other) { }
+        public int ToInt32() { }
+        public override string ToString() { }
+    }
+    public class DbaseBoolean : Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldValue
+    {
+        public DbaseBoolean(Be.Vlaanderen.Basisregisters.Shaperon.DbaseField field, System.Nullable<bool> value = null) { }
+        public System.Nullable<bool> Value { get; set; }
+        public override void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.IDbaseFieldValueInspector writer) { }
+        public override void Read(System.IO.BinaryReader reader) { }
+        public override void Write(System.IO.BinaryWriter writer) { }
+    }
+    public class DbaseCodePage : System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage>
+    {
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage[] All;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Baltic_Windows;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage BritishEnglish_OEM_Alias1;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage BritishEnglish_OEM_Alias2;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage CanadianFrench_MSDOS;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage CanadianFrench_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Chinese_Big5;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Chinese_GBK_PRC;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Czech_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Danish_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Dutch_OEM_Alias1;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Dutch_OEM_Alias2;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Eastern_European_MSDOS;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Eastern_European_Windows;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Finnish_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage French_OEM_Alias1;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage French_OEM_Alias2;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage French_OEM_Alias3;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage German_OEM_Alias1;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage German_OEM_Alias2;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Greek_MSDOS;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Greek_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Greek_Windows;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Hangul_Wansung;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Hungarian_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Icelandic_MSDOS;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Italian_OEM_Alias1;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Italian_OEM_Alias2;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Japanese_Shift_JIS_Alias1;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Japanese_Shift_JIS_Alias2;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Korean_ANSI_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Multilingual_MSDOS;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage None;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Nordic_MSDOS;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Norwegian_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Polish_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Portuguese_OEM_Alias1;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Portuguese_OEM_Alias2;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage PRC_GBK;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Romanian_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Russian_MSDOS;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Russian_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Russian_Windows;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Slovenian_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Spanish_ANSI;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Spanish_OEM_Alias1;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Spanish_OEM_Alias2;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Standard_Macintosh;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Swedish_OEM_Alias1;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Swedish_OEM_Alias2;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage System_Windows_ANSI_Alias1;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage System_Windows_ANSI_Alias2;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Taiwan_Big5;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Thai_ANSI_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Thai_Windows_MSDOS;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Turkish_MSDOS;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Turkish_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Turkish_Windows;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage USA_MSDOS;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage USEnglish_OEM;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage USEnglish_OEM_Alias2;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Western_European_ANSI;
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage other) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public static byte op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage instance) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage Parse(byte value) { }
+        public byte ToByte() { }
+        public override string ToString() { }
+        public static bool TryParse(byte value, out Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage parsed) { }
+    }
+    public class DbaseDateTime : Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldValue
+    {
+        public DbaseDateTime(Be.Vlaanderen.Basisregisters.Shaperon.DbaseField field, System.Nullable<System.DateTime> value = null) { }
+        public System.Nullable<System.DateTime> Value { get; set; }
+        public override void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.IDbaseFieldValueInspector writer) { }
+        public override void Read(System.IO.BinaryReader reader) { }
+        public override void Write(System.IO.BinaryWriter writer) { }
+    }
+    public struct DbaseDecimalCount : System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.DbaseDecimalCount>
+    {
+        public DbaseDecimalCount(int value) { }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.DbaseDecimalCount other) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public static int op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.DbaseDecimalCount instance) { }
+        public static byte op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.DbaseDecimalCount instance) { }
+        public byte ToByte() { }
+        public int ToInt32() { }
+        public override string ToString() { }
+    }
+    public class DbaseDouble : Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldValue
+    {
+        public DbaseDouble(Be.Vlaanderen.Basisregisters.Shaperon.DbaseField field, System.Nullable<double> value = null) { }
+        public System.Nullable<double> Value { get; set; }
+        public override void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.IDbaseFieldValueInspector writer) { }
+        public override void Read(System.IO.BinaryReader reader) { }
+        public override void Write(System.IO.BinaryWriter writer) { }
+    }
+    public class DbaseField
+    {
+        public DbaseField(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldName name, Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldType fieldType, Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset offset, Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength length, Be.Vlaanderen.Basisregisters.Shaperon.DbaseDecimalCount decimalCount) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseDecimalCount DecimalCount { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldType FieldType { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength Length { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldName Name { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset Offset { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseField After(Be.Vlaanderen.Basisregisters.Shaperon.DbaseField field) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseField At(Be.Vlaanderen.Basisregisters.Shaperon.ByteOffset offset) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.DbaseField CreateDateTimeField(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldName name) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.DbaseField CreateDoubleField(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldName name, Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength length, Be.Vlaanderen.Basisregisters.Shaperon.DbaseDecimalCount decimalCount) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldValue CreateFieldValue() { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.DbaseField CreateInt32Field(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldName name, Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength length) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.DbaseField CreateLogicalField(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldName name) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.DbaseField CreateSingleField(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldName name, Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength length, Be.Vlaanderen.Basisregisters.Shaperon.DbaseDecimalCount decimalCount) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.DbaseField CreateStringField(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldName name, Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength length) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.DbaseField Read(System.IO.BinaryReader reader) { }
+        public void Write(System.IO.BinaryWriter writer) { }
+    }
+    public struct DbaseFieldLength : System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength>
+    {
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength MaxLength;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength MinLength;
+        public DbaseFieldLength(int value) { }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength other) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public static int op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength instance) { }
+        public static byte op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength instance) { }
+        public byte ToByte() { }
+        public int ToInt32() { }
+        public override string ToString() { }
+    }
+    public struct DbaseFieldName : System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldName>
+    {
+        public DbaseFieldName(string value) { }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldName other) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public static string op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldName instance) { }
+        public override string ToString() { }
+    }
+    public enum DbaseFieldType : byte
+    {
+        Number = 78,
+        DateTime = 84,
+        Character = 67,
+        Float = 70,
+        Logical = 76,
+    }
+    public abstract class DbaseFieldValue
+    {
+        protected DbaseFieldValue(Be.Vlaanderen.Basisregisters.Shaperon.DbaseField field) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseField Field { get; }
+        public abstract void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.IDbaseFieldValueInspector inspector);
+        public abstract void Read(System.IO.BinaryReader reader);
+        public abstract void Write(System.IO.BinaryWriter writer);
+    }
+    public class DbaseFileHeader
+    {
+        public const byte ExpectedDbaseFormat = 3;
+        public const int FieldMetaDataSize = 32;
+        public const int HeaderMetaDataSize = 33;
+        public const int MaximumFileSize = 1073741824;
+        public const byte Terminator = 13;
+        public DbaseFileHeader(System.DateTime lastUpdated, Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage codePage, Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordCount recordCount, Be.Vlaanderen.Basisregisters.Shaperon.DbaseSchema schema) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseCodePage CodePage { get; }
+        public System.DateTime LastUpdated { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordCount RecordCount { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseSchema Schema { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecord CreateDbaseRecord() { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.DbaseFileHeader Read(System.IO.BinaryReader reader) { }
+        public void Write(System.IO.BinaryWriter writer) { }
+    }
+    public class DbaseFileHeaderException : System.Exception
+    {
+        public DbaseFileHeaderException(string message) { }
+    }
+    public class DbaseInt32 : Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldValue
+    {
+        public DbaseInt32(Be.Vlaanderen.Basisregisters.Shaperon.DbaseField field, System.Nullable<int> value = null) { }
+        public System.Nullable<int> Value { get; set; }
+        public override void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.IDbaseFieldValueInspector writer) { }
+        public override void Read(System.IO.BinaryReader reader) { }
+        public override void Write(System.IO.BinaryWriter writer) { }
+    }
+    public abstract class DbaseRecord
+    {
+        public const byte EndOfFile = 26;
+        protected DbaseRecord() { }
+        public bool IsDeleted { get; set; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldValue[] Values { get; set; }
+        public void FromBytes(byte[] bytes, System.Text.Encoding encoding) { }
+        public void Read(System.IO.BinaryReader reader) { }
+        protected virtual void ReadValues(System.IO.BinaryReader reader) { }
+        public byte[] ToBytes(System.Text.Encoding encoding) { }
+        public void Write(System.IO.BinaryWriter writer) { }
+        protected virtual void WriteValues(System.IO.BinaryWriter writer) { }
+    }
+    public struct DbaseRecordCount : System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordCount>
+    {
+        public DbaseRecordCount(int value) { }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordCount other) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public static int op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordCount instance) { }
+        public int ToInt32() { }
+        public override string ToString() { }
+    }
+    public struct DbaseRecordLength : System.IComparable<Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength>, System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength>
+    {
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength Initial;
+        public DbaseRecordLength(int value) { }
+        public int CompareTo(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength other) { }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength instance) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength +(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength left, Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength right) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength +(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength left, Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength right) { }
+        public static bool ==(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength left, Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength right) { }
+        public static bool >(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength left, Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength right) { }
+        public static bool >=(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength left, Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength right) { }
+        public static int op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength instance) { }
+        public static bool !=(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength left, Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength right) { }
+        public static bool <(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength left, Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength right) { }
+        public static bool <=(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength left, Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength right) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength Plus(Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldLength other) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength Plus(Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength other) { }
+        public int ToInt32() { }
+        public override string ToString() { }
+    }
+    public abstract class DbaseSchema
+    {
+        public const int MaximumFieldCount = 128;
+        protected DbaseSchema() { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseField[] Fields { get; set; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.DbaseRecordLength Length { get; }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.DbaseSchema other) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+    }
+    public class DbaseSingle : Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldValue
+    {
+        public DbaseSingle(Be.Vlaanderen.Basisregisters.Shaperon.DbaseField field, System.Nullable<float> value = null) { }
+        public System.Nullable<float> Value { get; set; }
+        public override void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.IDbaseFieldValueInspector writer) { }
+        public override void Read(System.IO.BinaryReader reader) { }
+        public override void Write(System.IO.BinaryWriter writer) { }
+    }
+    public class DbaseString : Be.Vlaanderen.Basisregisters.Shaperon.DbaseFieldValue
+    {
+        public DbaseString(Be.Vlaanderen.Basisregisters.Shaperon.DbaseField field, string value = null) { }
+        public string Value { get; set; }
+        public override void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.IDbaseFieldValueInspector writer) { }
+        public override void Read(System.IO.BinaryReader reader) { }
+        public override void Write(System.IO.BinaryWriter writer) { }
+    }
+    public class static EndianBinaryReaderExtensions
+    {
+        public static double ReadDoubleBigEndian(this System.IO.BinaryReader reader) { }
+        public static double ReadDoubleLittleEndian(this System.IO.BinaryReader reader) { }
+        public static int ReadInt32BigEndian(this System.IO.BinaryReader reader) { }
+        public static int ReadInt32LittleEndian(this System.IO.BinaryReader reader) { }
+    }
+    public class static EndianBinaryWriterExtensions
+    {
+        public static void WriteDoubleBigEndian(this System.IO.BinaryWriter writer, double value) { }
+        public static void WriteDoubleLittleEndian(this System.IO.BinaryWriter writer, double value) { }
+        public static void WriteInt32BigEndian(this System.IO.BinaryWriter writer, int value) { }
+        public static void WriteInt32LittleEndian(this System.IO.BinaryWriter writer, int value) { }
+    }
+    public class static GeometryConfiguration
+    {
+        public static readonly GeoAPI.Geometries.IGeometryFactory GeometryFactory;
+    }
+    public interface IDbaseFieldValueInspector
+    {
+        void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.DbaseDateTime value);
+        void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.DbaseDouble value);
+        void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.DbaseSingle value);
+        void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.DbaseInt32 value);
+        void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.DbaseString value);
+        void Inspect(Be.Vlaanderen.Basisregisters.Shaperon.DbaseBoolean value);
+    }
+    public class NullShapeContent : Be.Vlaanderen.Basisregisters.Shaperon.ShapeContent
+    {
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.ShapeContent Instance;
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ShapeContent ReadNull(System.IO.BinaryReader reader) { }
+        public override void Write(System.IO.BinaryWriter writer) { }
+    }
+    public class PointM : NetTopologySuite.Geometries.Point
+    {
+        public PointM(GeoAPI.Geometries.Coordinate coordinate) { }
+        public PointM(double x, double y, double z, double m) { }
+        public PointM(double x, double y, double z) { }
+        public PointM(double x, double y) { }
+        public PointM(GeoAPI.Geometries.ICoordinateSequence coordinatesSequence) { }
+        public new double M { get; }
+        public new double X { get; }
+        public new double Y { get; }
+        public new double Z { get; }
+        public void ChangeMeasurement(double m) { }
+    }
+    public class PointSequence : GeoAPI.Geometries.ICoordinateSequence, System.ICloneable
+    {
+        public PointSequence(System.Collections.Generic.IEnumerable<Be.Vlaanderen.Basisregisters.Shaperon.PointM> points) { }
+        public int Count { get; }
+        public int Dimension { get; }
+        public GeoAPI.Geometries.Ordinates Ordinates { get; }
+        public object Clone() { }
+        public GeoAPI.Geometries.ICoordinateSequence Copy() { }
+        public GeoAPI.Geometries.Envelope ExpandEnvelope(GeoAPI.Geometries.Envelope env) { }
+        public GeoAPI.Geometries.Coordinate GetCoordinate(int index) { }
+        public void GetCoordinate(int index, GeoAPI.Geometries.Coordinate mutableCoordinate) { }
+        public GeoAPI.Geometries.Coordinate GetCoordinateCopy(int index) { }
+        public double GetOrdinate(int index, GeoAPI.Geometries.Ordinate ordinate) { }
+        public double GetX(int index) { }
+        public double GetY(int index) { }
+        public double GetZ(int index) { }
+        public GeoAPI.Geometries.ICoordinateSequence Reversed() { }
+        public void SetOrdinate(int index, GeoAPI.Geometries.Ordinate ordinate, double value) { }
+        public GeoAPI.Geometries.Coordinate[] ToCoordinateArray() { }
+    }
+    public class PointShapeContent : Be.Vlaanderen.Basisregisters.Shaperon.ShapeContent
+    {
+        public PointShapeContent(Be.Vlaanderen.Basisregisters.Shaperon.PointM shape) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.PointM Shape { get; }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ShapeContent ReadPoint(System.IO.BinaryReader reader) { }
+        public override void Write(System.IO.BinaryWriter writer) { }
+    }
+    public class PolyLineMShapeContent : Be.Vlaanderen.Basisregisters.Shaperon.ShapeContent
+    {
+        public PolyLineMShapeContent(NetTopologySuite.Geometries.MultiLineString shape) { }
+        public NetTopologySuite.Geometries.MultiLineString Shape { get; }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ShapeContent ReadPolyLineM(System.IO.BinaryReader reader) { }
+        public override void Write(System.IO.BinaryWriter writer) { }
+    }
+    public struct RecordNumber : System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.RecordNumber>
+    {
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.RecordNumber Initial;
+        public RecordNumber(int value) { }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.RecordNumber instance) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.RecordNumber Next() { }
+        public static int op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.RecordNumber instance) { }
+        public int ToInt32() { }
+        public override string ToString() { }
+    }
+    public abstract class ShapeContent
+    {
+        protected ShapeContent() { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordLength ContentLength { get; set; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ShapeType ShapeType { get; set; }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ShapeContent FromBytes(byte[] bytes) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ShapeContent FromBytes(byte[] bytes, System.Text.Encoding encoding) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ShapeContent Read(System.IO.BinaryReader reader) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ShapeRecord RecordAs(Be.Vlaanderen.Basisregisters.Shaperon.RecordNumber number) { }
+        public byte[] ToBytes() { }
+        public byte[] ToBytes(System.Text.Encoding encoding) { }
+        public abstract void Write(System.IO.BinaryWriter writer);
+    }
+    public class ShapeFileHeader
+    {
+        public const int ExpectedFileCode = 9994;
+        public const int ExpectedVersion = 1000;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.WordLength Length;
+        public ShapeFileHeader(Be.Vlaanderen.Basisregisters.Shaperon.WordLength fileWordLength, Be.Vlaanderen.Basisregisters.Shaperon.ShapeType shapeType, Be.Vlaanderen.Basisregisters.Shaperon.BoundingBox3D boundingBox) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.BoundingBox3D BoundingBox { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordLength FileLength { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ShapeType ShapeType { get; }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ShapeFileHeader Read(System.IO.BinaryReader reader) { }
+        public void Write(System.IO.BinaryWriter writer) { }
+    }
+    public class ShapeFileHeaderException : System.Exception
+    {
+        public ShapeFileHeaderException(string message) { }
+    }
+    public class ShapeIndexRecord
+    {
+        public ShapeIndexRecord(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset offset, Be.Vlaanderen.Basisregisters.Shaperon.WordLength contentLength) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordLength ContentLength { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordOffset Offset { get; }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.WordLength GetTotalLengthForRecordCount(Be.Vlaanderen.Basisregisters.Shaperon.ShapeRecordCount count) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ShapeIndexRecord Read(System.IO.BinaryReader reader) { }
+        public void Write(System.IO.BinaryWriter writer) { }
+    }
+    public class ShapeRecord
+    {
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.WordLength HeaderLength;
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.WordOffset InitialOffset;
+        public ShapeRecord(Be.Vlaanderen.Basisregisters.Shaperon.ShapeRecordHeader header, Be.Vlaanderen.Basisregisters.Shaperon.ShapeContent content) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ShapeContent Content { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ShapeRecordHeader Header { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordLength Length { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ShapeIndexRecord IndexAt(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset offset) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ShapeRecord Read(System.IO.BinaryReader reader) { }
+        public byte[] ToBytes() { }
+        public void Write(System.IO.BinaryWriter writer) { }
+    }
+    public class ShapeRecordContentException : System.Exception
+    {
+        public ShapeRecordContentException(string message) { }
+    }
+    public struct ShapeRecordCount : System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.ShapeRecordCount>
+    {
+        public ShapeRecordCount(int value) { }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.ShapeRecordCount other) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public static int op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.ShapeRecordCount instance) { }
+        public int ToInt32() { }
+        public override string ToString() { }
+    }
+    public class ShapeRecordHeader
+    {
+        public ShapeRecordHeader(Be.Vlaanderen.Basisregisters.Shaperon.RecordNumber recordNumber, Be.Vlaanderen.Basisregisters.Shaperon.WordLength contentLength) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordLength ContentLength { get; }
+        public Be.Vlaanderen.Basisregisters.Shaperon.RecordNumber RecordNumber { get; }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.ShapeRecordHeader Read(System.IO.BinaryReader reader) { }
+        public void Write(System.IO.BinaryWriter writer) { }
+    }
+    public enum ShapeType
+    {
+        NullShape = 0,
+        Point = 1,
+        PolyLine = 3,
+        Polygon = 5,
+        MultiPoint = 8,
+        PointZ = 11,
+        PolyLineZ = 13,
+        PolygonZ = 15,
+        MultiPointZ = 18,
+        PointM = 21,
+        PolyLineM = 23,
+        PolygonM = 25,
+        MultiPointM = 28,
+        MultiPatch = 31,
+    }
+    public struct SpatialReferenceSystemIdentifier : System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.SpatialReferenceSystemIdentifier>
+    {
+        public static readonly Be.Vlaanderen.Basisregisters.Shaperon.SpatialReferenceSystemIdentifier BelgeLambert1972;
+        public SpatialReferenceSystemIdentifier(int value) { }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.SpatialReferenceSystemIdentifier other) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public static int op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.SpatialReferenceSystemIdentifier instance) { }
+        public int ToInt32() { }
+        public override string ToString() { }
+    }
+    public class WellKnownBinaryReader
+    {
+        public WellKnownBinaryReader() { }
+        public bool CanBeReadAs<TGeometry>(byte[] value)
+            where TGeometry : GeoAPI.Geometries.IGeometry { }
+        public GeoAPI.Geometries.IGeometry Read(byte[] data) { }
+        public TGeometry ReadAs<TGeometry>(byte[] value)
+            where TGeometry : GeoAPI.Geometries.IGeometry { }
+        public bool TryReadAs<TGeometry>(byte[] value, out TGeometry geometry)
+            where TGeometry : GeoAPI.Geometries.IGeometry { }
+    }
+    public class WellKnownBinaryWriter
+    {
+        public WellKnownBinaryWriter() { }
+        public byte[] Write(GeoAPI.Geometries.IGeometry geometry) { }
+    }
+    public struct WordLength : System.IComparable<Be.Vlaanderen.Basisregisters.Shaperon.ByteLength>, System.IComparable<Be.Vlaanderen.Basisregisters.Shaperon.WordLength>, System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.WordLength>
+    {
+        public WordLength(int value) { }
+        public int CompareTo(Be.Vlaanderen.Basisregisters.Shaperon.WordLength other) { }
+        public int CompareTo(Be.Vlaanderen.Basisregisters.Shaperon.ByteLength other) { }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.WordLength instance) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordLength Minus(Be.Vlaanderen.Basisregisters.Shaperon.WordLength other) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordLength Minus(Be.Vlaanderen.Basisregisters.Shaperon.ByteLength other) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.WordLength +(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.WordLength right) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.WordLength +(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.ByteLength right) { }
+        public static bool ==(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.WordLength right) { }
+        public static bool ==(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.ByteLength right) { }
+        public static bool >(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.WordLength right) { }
+        public static bool >(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.ByteLength right) { }
+        public static bool >=(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.WordLength right) { }
+        public static bool >=(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.ByteLength right) { }
+        public static int op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.WordLength instance) { }
+        public static bool !=(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.WordLength right) { }
+        public static bool !=(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.ByteLength right) { }
+        public static bool <(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.WordLength right) { }
+        public static bool <(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.ByteLength right) { }
+        public static bool <=(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.WordLength right) { }
+        public static bool <=(Be.Vlaanderen.Basisregisters.Shaperon.WordLength left, Be.Vlaanderen.Basisregisters.Shaperon.ByteLength right) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordLength Plus(Be.Vlaanderen.Basisregisters.Shaperon.WordLength other) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordLength Plus(Be.Vlaanderen.Basisregisters.Shaperon.ByteLength other) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordLength Times(int times) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.ByteLength ToByteLength() { }
+        public int ToInt32() { }
+        public override string ToString() { }
+    }
+    public struct WordOffset : System.IComparable<Be.Vlaanderen.Basisregisters.Shaperon.WordOffset>, System.IEquatable<Be.Vlaanderen.Basisregisters.Shaperon.WordOffset>
+    {
+        public WordOffset(int value) { }
+        public int CompareTo(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset other) { }
+        public bool Equals(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset instance) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.WordOffset +(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset left, Be.Vlaanderen.Basisregisters.Shaperon.WordLength right) { }
+        public static Be.Vlaanderen.Basisregisters.Shaperon.WordOffset +(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset left, Be.Vlaanderen.Basisregisters.Shaperon.ByteLength right) { }
+        public static bool ==(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset left, Be.Vlaanderen.Basisregisters.Shaperon.WordOffset right) { }
+        public static bool >(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset left, Be.Vlaanderen.Basisregisters.Shaperon.WordOffset right) { }
+        public static bool >=(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset left, Be.Vlaanderen.Basisregisters.Shaperon.WordOffset right) { }
+        public static int op_Implicit(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset instance) { }
+        public static bool !=(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset left, Be.Vlaanderen.Basisregisters.Shaperon.WordOffset right) { }
+        public static bool <(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset left, Be.Vlaanderen.Basisregisters.Shaperon.WordOffset right) { }
+        public static bool <=(Be.Vlaanderen.Basisregisters.Shaperon.WordOffset left, Be.Vlaanderen.Basisregisters.Shaperon.WordOffset right) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordOffset Plus(Be.Vlaanderen.Basisregisters.Shaperon.ByteLength other) { }
+        public Be.Vlaanderen.Basisregisters.Shaperon.WordOffset Plus(Be.Vlaanderen.Basisregisters.Shaperon.WordLength other) { }
+        public int ToInt32() { }
+        public override string ToString() { }
+    }
+}
