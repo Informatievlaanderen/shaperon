@@ -9,6 +9,7 @@ NUGET
       Albedo (>= 2.0 < 3.0)
       AutoFixture (>= 4.6)
       System.Reflection.Emit (>= 4.3) - restriction: || (&& (== net472) (< net452)) (== netcoreapp2.2) (== netstandard2.0)
+    Be.Vlaanderen.Basisregisters.Build.Pipeline (1.1.2)
     dotnet-sourcelink (2.8.3) - clitool: true
       Microsoft.Extensions.CommandLineUtils (>= 1.1.1) - restriction: || (&& (== net472) (>= netcoreapp1.0)) (== netcoreapp2.2) (&& (== netstandard2.0) (>= netcoreapp1.0))
       Microsoft.NETCore.App (>= 2.0) - restriction: || (&& (== net472) (>= netcoreapp2.0)) (== netcoreapp2.2) (&& (== netstandard2.0) (>= netcoreapp2.0))
@@ -643,5 +644,3 @@ NUGET
       xunit.extensibility.core (2.4.1)
     xunit.runner.visualstudio (2.4.1)
       Microsoft.NET.Test.Sdk (>= 15.0) - restriction: || (&& (== net472) (>= netcoreapp1.0)) (== netcoreapp2.2) (&& (== netstandard2.0) (>= netcoreapp1.0))
-  remote: https://informatievlaanderen.myget.org/F/basisregisters/api/v3/index.json
-    Be.Vlaanderen.Basisregisters.Build.Pipeline (1.0.1)
