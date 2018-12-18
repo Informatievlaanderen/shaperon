@@ -12,11 +12,11 @@ projectUrl https://github.com/Informatievlaanderen/shaperon
 iconUrl https://raw.githubusercontent.com/Informatievlaanderen/build-pipeline/master/logo.png
 licenseUrl https://opensource.org/licenses/MIT
 
-description Lightweight event handling infrastructure.
+description Lightweight dbase and shape record handling.
 
 dependencies
   framework: netstandard20
-    NetTopologySuite == 1.15.1
+    NetTopologySuite == LOCKEDVERSION
 
 files
   bin\Release\netstandard2.0\Be.Vlaanderen.Basisregisters.Shaperon.dll => lib\netstandard2.0
