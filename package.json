@@ -1,6 +1,6 @@
 {
   "name": "shaperon",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Lightweight dbase and shape record handling.",
   "author": "Basisregisters Vlaanderen",
   "license": "MIT",
