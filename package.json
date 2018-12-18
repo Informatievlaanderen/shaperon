@@ -1,6 +1,6 @@
 {
   "name": "shaperon",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lightweight dbase and shape record handling.",
   "author": "Basisregisters Vlaanderen",
   "license": "MIT",
@@ -132,7 +132,11 @@
     "publish": [
       {
         "path": "@semantic-release/github",
-        "assets": [{ "path": "dist/**/*.nupkg" } ]
+        "assets": [
+          {
+            "path": "dist/**/*.nupkg"
+          }
+        ]
       },
       {
         "path": "@semantic-release/exec",
