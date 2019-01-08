@@ -143,6 +143,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         private readonly byte _value;
         private readonly int? _codePage;
 
+        public int CodePage => _codePage;
+
         private DbaseCodePage(byte value, int? codePage = default)
         {
             _value = value;
