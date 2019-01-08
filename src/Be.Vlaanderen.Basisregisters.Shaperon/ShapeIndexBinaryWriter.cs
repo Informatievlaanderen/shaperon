@@ -23,9 +23,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void Write(ShapeIndexRecord record)
         {
             if (record == null)
-            {
                 throw new ArgumentNullException(nameof(record));
-            }
 
             record.Write(Writer);
         }
@@ -33,25 +31,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void Write(IEnumerable<ShapeIndexRecord> records)
         {
             if (records == null)
-            {
                 throw new ArgumentNullException(nameof(records));
-            }
 
             foreach (var record in records)
-            {
                 record.Write(Writer);
-            }
         }
 
         public void Dispose()
         {
-            if (_disposed)
-            {
-                Writer.Flush();
-                Writer.Dispose();
+            if (!_disposed)
+                return;
 
-                _disposed = true;
-            }
+            Writer.Flush();
+            Writer.Dispose();
+
+            _disposed = true;
         }
     }
 }

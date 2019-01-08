@@ -1,5 +1,3 @@
-// ReSharper disable InconsistentNaming
-
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
@@ -154,9 +152,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public static DbaseCodePage Parse(byte value)
         {
             if (!Array.Exists(All, candidate => candidate._value == value))
-            {
                 throw new ArgumentException($"The dbase code page {value} is not supported.", nameof(value));
-            }
 
             return Array.Find(All, candidate => candidate._value == value);
         }

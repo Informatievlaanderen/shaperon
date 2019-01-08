@@ -15,24 +15,19 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             protected set
             {
                 if (value == null)
-                {
                     throw new ArgumentNullException(nameof(value));
-                }
 
                 if (value.Length > MaximumFieldCount)
-                {
                     throw new ArgumentException(
                         $"The value with ({value.Length}) fields exceeds the maximum number of fields ({MaximumFieldCount}).",
                         nameof(value));
-                }
 
                 var fields = new DbaseField[value.Length];
+
                 for (var index = 0; index < fields.Length; index++)
-                {
                     fields[index] = index == 0
                         ? value[index].At(ByteOffset.Initial)
                         : value[index].After(fields[index - 1]);
-                }
 
                 _fields = fields;
             }

@@ -1,7 +1,7 @@
-using System;
-
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
+    using System;
+
     public readonly struct DbaseFieldName : IEquatable<DbaseFieldName>
     {
         private readonly string _value;
@@ -10,8 +10,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (string.IsNullOrEmpty(value))
                 throw new ArgumentNullException(nameof(value));
+
             if (value.Length > 11)
                 throw new ArgumentException("The name can not be longer than 11 characters.", nameof(value));
+
             _value = value;
         }
 

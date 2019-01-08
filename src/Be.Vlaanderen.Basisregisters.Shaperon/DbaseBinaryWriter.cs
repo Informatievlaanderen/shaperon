@@ -1,4 +1,4 @@
-﻿namespace Be.Vlaanderen.Basisregisters.Shaperon
+namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.Collections.Generic;
@@ -23,9 +23,7 @@
         public void Write(DbaseRecord record)
         {
             if (record == null)
-            {
                 throw new ArgumentNullException(nameof(record));
-            }
 
             record.Write(Writer);
         }
@@ -33,26 +31,22 @@
         public void Write(IEnumerable<DbaseRecord> records)
         {
             if (records == null)
-            {
                 throw new ArgumentNullException(nameof(records));
-            }
 
             foreach (var record in records)
-            {
                 record.Write(Writer);
-            }
         }
 
         public void Dispose()
         {
-            if (!_disposed)
-            {
-                Writer.Write(DbaseRecord.EndOfFile);
-                Writer.Flush();
-                Writer.Dispose();
+            if (_disposed)
+                return;
 
-                _disposed = true;
-            }
+            Writer.Write(DbaseRecord.EndOfFile);
+            Writer.Flush();
+            Writer.Dispose();
+
+            _disposed = true;
         }
     }
 }

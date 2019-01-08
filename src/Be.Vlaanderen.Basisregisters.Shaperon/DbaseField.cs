@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+
     public class DbaseField
     {
         public static readonly DbaseFieldLength DecimalSeparatorLength = new DbaseFieldLength(1);
@@ -56,7 +56,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (!Enum.IsDefined(typeof(DbaseFieldType), fieldType))
             {
-                throw new ArgumentException($"The field type {fieldType} of field {name} is not supported.",
+                throw new ArgumentException(
+                    $"The field type {fieldType} of field {name} is not supported.",
                     nameof(fieldType));
             }
 
@@ -64,140 +65,84 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 case DbaseFieldType.Character:
                     if (decimalCount.ToInt32() != 0)
-                    {
                         throw new ArgumentException(
                             $"The character field {name} decimal count ({decimalCount}) must be set to 0.",
                             nameof(decimalCount));
-                    }
 
                     break;
                 case DbaseFieldType.DateTime:
                     if (length.ToInt32() != 15)
-                    {
                         throw new ArgumentException($"The datetime field {name} length ({length}) must be set to 15.",
                             nameof(length));
-                    }
 
                     if (decimalCount.ToInt32() != 0)
-                    {
                         throw new ArgumentException(
                             $"The datetime field {name} decimal count ({decimalCount}) must be set to 0.",
                             nameof(decimalCount));
-                    }
 
                     break;
                 case DbaseFieldType.Number:
                     if (length > DbaseDouble.MaximumLength)
-                    {
                         throw new ArgumentException(
                             $"The number field {name} length ({length}) must be less than or equal to {DbaseDouble.MaximumLength}.",
                             nameof(length));
-                    }
 
                     if (decimalCount.ToInt32() != 0)
                     {
                         if (length < DbaseDouble.MinimumLength)
-                        {
                             throw new ArgumentException(
                                 $"The number field {name} length ({length}) must be at least {DbaseDouble.MinimumLength}.",
                                 nameof(length));
-                        }
 
                         if (decimalCount > DbaseDouble.MaximumDecimalCount)
-                        {
                             throw new ArgumentException(
                                 $"The number field {name} decimal count ({decimalCount}) must be less than or equal to {DbaseDouble.MaximumDecimalCount}.",
                                 nameof(decimalCount));
-                        }
 
                         if (decimalCount.ToInt32() > length.ToInt32() - 2)
-                        {
                             throw new ArgumentException(
                                 $"The number field {name} decimal count ({decimalCount}) must be 2 less than its length ({length}).",
                                 nameof(decimalCount));
-                        }
                     }
 
                     break;
-                // case DbaseFieldType.Number:
-                //     if (length > DbaseDecimal.MaximumLength)
-                //     {
-                //         throw new ArgumentException(
-                //             $"The number field {name} length ({length}) must be less than or equal to {DbaseDecimal.MaximumLength}.",
-                //             nameof(length));
-                //     }
 
-                //     if (decimalCount.ToInt32() != 0)
-                //     {
-                //         if (length < DbaseDecimal.MinimumLength)
-                //         {
-                //             throw new ArgumentException(
-                //                 $"The number field {name} length ({length}) must be at least {DbaseDecimal.MinimumLength}.",
-                //                 nameof(length));
-                //         }
-
-                //         if (decimalCount > DbaseDecimal.MaximumDecimalCount)
-                //         {
-                //             throw new ArgumentException(
-                //                 $"The number field {name} decimal count ({decimalCount}) must be less than or equal to {DbaseDecimal.MaximumDecimalCount}.",
-                //                 nameof(decimalCount));
-                //         }
-
-                //         if (decimalCount.ToInt32() > length.ToInt32() - 2)
-                //         {
-                //             throw new ArgumentException(
-                //                 $"The number field {name} decimal count ({decimalCount}) must be 2 less than its length ({length}).",
-                //                 nameof(decimalCount));
-                //         }
-                //     }
-
-                //     break;
                 case DbaseFieldType.Float:
                     if (length > DbaseSingle.MaximumLength)
-                    {
                         throw new ArgumentException(
                             $"The float field {name} length ({length}) must be less than or equal to {DbaseSingle.MaximumLength}.",
                             nameof(length));
-                    }
 
                     if (decimalCount.ToInt32() != 0)
                     {
                         if (length < DbaseSingle.MinimumLength)
-                        {
                             throw new ArgumentException(
                                 $"The number field {name} length ({length}) must be at least {DbaseSingle.MinimumLength}.",
                                 nameof(length));
-                        }
 
                         if (decimalCount > DbaseSingle.MaximumDecimalCount)
-                        {
                             throw new ArgumentException(
                                 $"The float field {name} decimal count ({decimalCount}) must be less than or equal to {DbaseSingle.MaximumDecimalCount}.",
                                 nameof(decimalCount));
-                        }
 
                         if (decimalCount.ToInt32() > length.ToInt32() - 2)
-                        {
                             throw new ArgumentException(
                                 $"The float field {name} decimal count ({decimalCount}) must be 2 less than its length ({length}).",
                                 nameof(decimalCount));
-                        }
                     }
 
                     break;
+
                 case DbaseFieldType.Logical:
                     if (decimalCount.ToInt32() != 0)
-                    {
                         throw new ArgumentException(
                             $"The logical field {name} decimal count ({decimalCount}) must be set to 0.",
                             nameof(decimalCount));
-                    }
 
                     if (length.ToInt32() != 1)
-                    {
-                        throw new ArgumentException($"The logical field {name} length ({length}) must be set to 1.",
+                        throw new ArgumentException(
+                            $"The logical field {name} length ({length}) must be set to 1.",
                             nameof(length));
-                    }
 
                     break;
             }
@@ -207,6 +152,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Offset = offset;
             Length = length;
             DecimalCount = decimalCount;
+
             if (FieldType == DbaseFieldType.Number || FieldType == DbaseFieldType.Float)
             {
                 PositiveIntegerDigits =
@@ -218,6 +164,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                 .ToInt32()
                         )
                         : new DbaseIntegerDigits(Length.ToInt32());
+
                 NegativeIntegerDigits =
                     PositiveIntegerDigits != new DbaseIntegerDigits(0)
                         ? PositiveIntegerDigits
@@ -234,62 +181,33 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public DbaseField After(DbaseField field)
         {
             if (field == null)
-            {
                 throw new ArgumentNullException(nameof(field));
-            }
 
             return new DbaseField(Name, FieldType, field.Offset.Plus(field.Length), Length, DecimalCount);
         }
 
-        public DbaseField At(ByteOffset offset)
-        {
-            return new DbaseField(Name, FieldType, offset, Length, DecimalCount);
-        }
+        public DbaseField At(ByteOffset offset) => new DbaseField(Name, FieldType, offset, Length, DecimalCount);
 
         public static DbaseField CreateStringField(DbaseFieldName name, DbaseFieldLength length)
-        {
-            return new DbaseField(name, DbaseFieldType.Character, ByteOffset.Initial, length, new DbaseDecimalCount(0));
-        }
+            => new DbaseField(name, DbaseFieldType.Character, ByteOffset.Initial, length, new DbaseDecimalCount(0));
 
         public static DbaseField CreateInt32Field(DbaseFieldName name, DbaseFieldLength length)
-        {
-            return new DbaseField(name, DbaseFieldType.Number, ByteOffset.Initial, length, new DbaseDecimalCount(0));
-        }
+            => new DbaseField(name, DbaseFieldType.Number, ByteOffset.Initial, length, new DbaseDecimalCount(0));
 
         public static DbaseField CreateInt16Field(DbaseFieldName name, DbaseFieldLength length)
-        {
-            return new DbaseField(name, DbaseFieldType.Number, ByteOffset.Initial, length, new DbaseDecimalCount(0));
-        }
+            => new DbaseField(name, DbaseFieldType.Number, ByteOffset.Initial, length, new DbaseDecimalCount(0));
 
         public static DbaseField CreateDateTimeField(DbaseFieldName name)
-        {
-            return new DbaseField(name, DbaseFieldType.DateTime, ByteOffset.Initial, new DbaseFieldLength(15),
-                new DbaseDecimalCount(0));
-        }
+            => new DbaseField(name, DbaseFieldType.DateTime, ByteOffset.Initial, new DbaseFieldLength(15), new DbaseDecimalCount(0));
 
-        // public static DbaseField CreateDecimalField(DbaseFieldName name, DbaseFieldLength length,
-        //     DbaseDecimalCount decimalCount)
-        // {
-        //     return new DbaseField(name, DbaseFieldType.Number, ByteOffset.Initial, length, decimalCount);
-        // }
+        public static DbaseField CreateDoubleField(DbaseFieldName name, DbaseFieldLength length, DbaseDecimalCount decimalCount)
+            => new DbaseField(name, DbaseFieldType.Number, ByteOffset.Initial, length, decimalCount);
 
-        public static DbaseField CreateDoubleField(DbaseFieldName name, DbaseFieldLength length,
-            DbaseDecimalCount decimalCount)
-        {
-            return new DbaseField(name, DbaseFieldType.Number, ByteOffset.Initial, length, decimalCount);
-        }
-
-        public static DbaseField CreateSingleField(DbaseFieldName name, DbaseFieldLength length,
-            DbaseDecimalCount decimalCount)
-        {
-            return new DbaseField(name, DbaseFieldType.Float, ByteOffset.Initial, length, decimalCount);
-        }
+        public static DbaseField CreateSingleField(DbaseFieldName name, DbaseFieldLength length, DbaseDecimalCount decimalCount)
+            => new DbaseField(name, DbaseFieldType.Float, ByteOffset.Initial, length, decimalCount);
 
         public static DbaseField CreateLogicalField(DbaseFieldName name)
-        {
-            return new DbaseField(name, DbaseFieldType.Logical, ByteOffset.Initial, new DbaseFieldLength(1),
-                new DbaseDecimalCount(0));
-        }
+            => new DbaseField(name, DbaseFieldType.Logical, ByteOffset.Initial, new DbaseFieldLength(1), new DbaseDecimalCount(0));
 
         public DbaseFieldName Name { get; }
         public DbaseFieldType FieldType { get; }
@@ -327,22 +245,17 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Length.GetHashCode() ^
             DecimalCount.GetHashCode();
 
-        public DbaseFieldValue CreateFieldValue()
-        {
-            return _factories[FieldType](this);
-        }
+        public DbaseFieldValue CreateFieldValue() => _factories[FieldType](this);
 
         public static DbaseField Read(BinaryReader reader)
         {
             if (reader == null)
-            {
                 throw new ArgumentNullException(nameof(reader));
-            }
 
             var name = new DbaseFieldName(reader.ReadRightPaddedString(11, char.MinValue));
             var typeOfField = reader.ReadByte();
 
-            if (!(Enum.IsDefined(typeof(DbaseFieldType), typeOfField)))
+            if (!Enum.IsDefined(typeof(DbaseFieldType), typeOfField))
             {
                 var values = Enum.GetValues(typeof(DbaseFieldType));
                 var supportedValues = string.Join(
@@ -352,6 +265,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         .Select(index =>
                             values.GetValue(index).ToString() + "[" + ((byte) values.GetValue(index)).ToString() + "]")
                 );
+
                 throw new DbaseFileHeaderException(
                     $"The field type {typeOfField} of field {name} is not supported ({supportedValues}).");
             }
@@ -361,17 +275,17 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var length = new DbaseFieldLength(reader.ReadByte());
             var decimalCount = new DbaseDecimalCount(reader.ReadByte());
             reader.ReadBytes(14);
+
             return new DbaseField(name, fieldType, offset, length, decimalCount);
         }
 
         public void Write(BinaryWriter writer)
         {
             if (writer == null)
-            {
                 throw new ArgumentNullException(nameof(writer));
-            }
 
             writer.WriteRightPaddedString(Name.ToString(), 11, char.MinValue);
+
             // HACK: Because legacy represents date times as characters - so why bother with DateTime support?
             if (FieldType == DbaseFieldType.DateTime)
             {

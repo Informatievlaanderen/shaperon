@@ -1,4 +1,4 @@
-﻿namespace Be.Vlaanderen.Basisregisters.Shaperon
+namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.Linq;
@@ -8,7 +8,14 @@
     {
         public static readonly BoundingBox3D Empty = new BoundingBox3D(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-        public BoundingBox3D(double xMin, double yMin, double xMax, double yMax, double zMin, double zMax, double mMin,
+        public BoundingBox3D(
+            double xMin,
+            double yMin,
+            double xMax,
+            double yMax,
+            double zMin,
+            double zMax,
+            double mMin,
             double mMax)
         {
             XMin = xMin;
@@ -34,14 +41,14 @@
 
         private bool Equals(BoundingBox3D other) =>
             other != null &&
-            ((Double.IsNaN(XMin) && Double.IsNaN(other.XMin)) || Math.Abs(XMin - other.XMin) < Double.Epsilon) &&
-            ((Double.IsNaN(YMin) && Double.IsNaN(other.YMin)) || Math.Abs(YMin - other.YMin) < Double.Epsilon) &&
-            ((Double.IsNaN(XMax) && Double.IsNaN(other.XMax)) || Math.Abs(XMax - other.XMax) < Double.Epsilon) &&
-            ((Double.IsNaN(YMax) && Double.IsNaN(other.YMax)) || Math.Abs(YMax - other.YMax) < Double.Epsilon) &&
-            ((Double.IsNaN(ZMin) && Double.IsNaN(other.ZMin)) || Math.Abs(ZMin - other.ZMin) < Double.Epsilon) &&
-            ((Double.IsNaN(ZMax) && Double.IsNaN(other.ZMax)) || Math.Abs(ZMax - other.ZMax) < Double.Epsilon) &&
-            ((Double.IsNaN(MMin) && Double.IsNaN(other.MMin)) || Math.Abs(MMin - other.MMin) < Double.Epsilon) &&
-            ((Double.IsNaN(MMax) && Double.IsNaN(other.MMax)) || Math.Abs(MMax - other.MMax) < Double.Epsilon);
+            ((double.IsNaN(XMin) && double.IsNaN(other.XMin)) || Math.Abs(XMin - other.XMin) < double.Epsilon) &&
+            ((double.IsNaN(YMin) && double.IsNaN(other.YMin)) || Math.Abs(YMin - other.YMin) < double.Epsilon) &&
+            ((double.IsNaN(XMax) && double.IsNaN(other.XMax)) || Math.Abs(XMax - other.XMax) < double.Epsilon) &&
+            ((double.IsNaN(YMax) && double.IsNaN(other.YMax)) || Math.Abs(YMax - other.YMax) < double.Epsilon) &&
+            ((double.IsNaN(ZMin) && double.IsNaN(other.ZMin)) || Math.Abs(ZMin - other.ZMin) < double.Epsilon) &&
+            ((double.IsNaN(ZMax) && double.IsNaN(other.ZMax)) || Math.Abs(ZMax - other.ZMax) < double.Epsilon) &&
+            ((double.IsNaN(MMin) && double.IsNaN(other.MMin)) || Math.Abs(MMin - other.MMin) < double.Epsilon) &&
+            ((double.IsNaN(MMax) && double.IsNaN(other.MMax)) || Math.Abs(MMax - other.MMax) < double.Epsilon);
 
         public override int GetHashCode() =>
             XMin.GetHashCode() ^
@@ -63,24 +70,23 @@
                 Math.Min(ZMin, other.ZMin),
                 Math.Max(ZMax, other.ZMax),
                 Math.Min(MMin, other.MMin),
-                Math.Max(MMax, other.MMax)
-            );
+                Math.Max(MMax, other.MMax));
         }
 
         public static BoundingBox3D FromGeometry(IGeometry geometry)
         {
             var z = geometry.GetOrdinates(Ordinate.Z);
             var m = geometry.GetOrdinates(Ordinate.M);
+
             return new BoundingBox3D(
                 geometry.EnvelopeInternal.MinX,
                 geometry.EnvelopeInternal.MinY,
                 geometry.EnvelopeInternal.MaxX,
                 geometry.EnvelopeInternal.MaxY,
-                z.DefaultIfEmpty(Double.NaN).Min(),
-                z.DefaultIfEmpty(Double.NaN).Max(),
-                m.DefaultIfEmpty(Double.NaN).Min(),
-                m.DefaultIfEmpty(Double.NaN).Max()
-            );
+                z.DefaultIfEmpty(double.NaN).Min(),
+                z.DefaultIfEmpty(double.NaN).Max(),
+                m.DefaultIfEmpty(double.NaN).Min(),
+                m.DefaultIfEmpty(double.NaN).Max());
         }
     }
 }

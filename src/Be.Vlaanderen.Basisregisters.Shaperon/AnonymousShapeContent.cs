@@ -17,9 +17,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public override void Write(BinaryWriter writer)
         {
             if (writer == null)
-            {
                 throw new ArgumentNullException(nameof(writer));
-            }
 
             writer.Write(Content);
         }

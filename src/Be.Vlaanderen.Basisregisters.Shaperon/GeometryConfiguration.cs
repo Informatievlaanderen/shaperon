@@ -9,7 +9,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public static readonly IGeometryFactory GeometryFactory = new GeometryFactory(
             new PrecisionModel(PrecisionModels.Floating),
             SpatialReferenceSystemIdentifier.BelgeLambert1972.ToInt32(),
-            new DotSpatialAffineCoordinateSequenceFactory(Ordinates.XYZM)
-        );
+            new DotSpatialAffineCoordinateSequenceFactory(Ordinates.XYZM));
     }
 }

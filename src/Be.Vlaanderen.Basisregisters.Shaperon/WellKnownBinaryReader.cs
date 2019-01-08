@@ -9,15 +9,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     {
         private readonly WKBReader _wkbReader;
 
-        public WellKnownBinaryReader()
-        {
+        public WellKnownBinaryReader() =>
             _wkbReader = new WKBReader(new NtsGeometryServices(
-                    GeometryConfiguration.GeometryFactory.CoordinateSequenceFactory,
-                    GeometryConfiguration.GeometryFactory.PrecisionModel,
-                    GeometryConfiguration.GeometryFactory.SRID
-                )
-            );
-        }
+                GeometryConfiguration.GeometryFactory.CoordinateSequenceFactory,
+                GeometryConfiguration.GeometryFactory.PrecisionModel,
+                GeometryConfiguration.GeometryFactory.SRID));
 
         public IGeometry Read(byte[] data)
         {
@@ -29,10 +25,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         public TGeometry ReadAs<TGeometry>(byte[] value)
-            where TGeometry : IGeometry
-        {
-            return (TGeometry) Read(value);
-        }
+            where TGeometry : IGeometry => (TGeometry) Read(value);
 
         public bool TryReadAs<TGeometry>(byte[] value, out TGeometry geometry)
             where TGeometry : IGeometry
@@ -49,9 +42,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         public bool CanBeReadAs<TGeometry>(byte[] value)
-            where TGeometry : IGeometry
-        {
-            return Read(value) is TGeometry;
-        }
+            where TGeometry : IGeometry => Read(value) is TGeometry;
     }
 }

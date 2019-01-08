@@ -1,8 +1,8 @@
-using System;
-using System.IO;
-
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
+    using System;
+    using System.IO;
+
     public class DbaseBoolean : DbaseFieldValue
     {
         private const byte Bytet = (byte) 't';
@@ -18,9 +18,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public DbaseBoolean(DbaseField field, bool? value = null) : base(field)
         {
             if (field == null)
-            {
                 throw new ArgumentNullException(nameof(field));
-            }
 
             if (field.FieldType != DbaseFieldType.Logical)
                 throw new ArgumentException(
@@ -43,7 +41,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public override void Read(BinaryReader reader)
         {
-            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            if (reader == null)
+                throw new ArgumentNullException(nameof(reader));
 
             var charValue = reader.ReadByte();
 
@@ -55,12 +54,14 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 case ByteY:
                     Value = true;
                     break;
+
                 case Bytef:
                 case ByteF:
                 case Byten:
                 case ByteN:
                     Value = false;
                     break;
+
                 default:
                     Value = null;
                     break;
@@ -69,17 +70,20 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public override void Write(BinaryWriter writer)
         {
-            if (writer == null) throw new ArgumentNullException(nameof(writer));
+            if (writer == null)
+                throw new ArgumentNullException(nameof(writer));
 
             var value = FormatAsByte(Value);
             writer.Write(value);
         }
 
-        private byte FormatAsByte(bool? value) => value.HasValue ? (value.Value ? ByteT : ByteF) : ByteUnknown;
+        private static byte FormatAsByte(bool? value) =>
+            value.HasValue
+                ? value.Value
+                    ? ByteT
+                    : ByteF
+                : ByteUnknown;
 
-        public override void Inspect(IDbaseFieldValueInspector writer)
-        {
-            writer.Inspect(this);
-        }
+        public override void Inspect(IDbaseFieldValueInspector writer) => writer.Inspect(this);
     }
 }

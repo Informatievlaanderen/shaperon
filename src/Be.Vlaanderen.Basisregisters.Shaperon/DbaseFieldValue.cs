@@ -1,8 +1,8 @@
-using System;
-using System.IO;
-
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
+    using System;
+    using System.IO;
+
     public abstract class DbaseFieldValue
     {
         protected DbaseFieldValue(DbaseField field)

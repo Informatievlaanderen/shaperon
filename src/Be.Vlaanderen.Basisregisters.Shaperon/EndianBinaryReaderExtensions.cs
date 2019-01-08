@@ -9,9 +9,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             var bytes = reader.ReadBytes(4);
             if (BitConverter.IsLittleEndian)
-            {
                 Array.Reverse(bytes);
-            }
 
             return BitConverter.ToInt32(bytes, 0);
         }
@@ -20,9 +18,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             var bytes = reader.ReadBytes(8);
             if (BitConverter.IsLittleEndian)
-            {
                 Array.Reverse(bytes);
-            }
 
             return BitConverter.ToDouble(bytes, 0);
         }
@@ -31,9 +27,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             var bytes = reader.ReadBytes(4);
             if (!BitConverter.IsLittleEndian)
-            {
                 Array.Reverse(bytes);
-            }
 
             return BitConverter.ToInt32(bytes, 0);
         }
@@ -42,9 +36,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             var bytes = reader.ReadBytes(8);
             if (!BitConverter.IsLittleEndian)
-            {
                 Array.Reverse(bytes);
-            }
 
             return BitConverter.ToDouble(bytes, 0);
         }

@@ -1,8 +1,7 @@
-using System.Diagnostics.Contracts;
-
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
+    using System.Diagnostics.Contracts;
 
     public readonly struct SpatialReferenceSystemIdentifier : IEquatable<SpatialReferenceSystemIdentifier>
     {
@@ -11,10 +10,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private readonly int _value;
 
-        public SpatialReferenceSystemIdentifier(int value)
-        {
-            _value = value;
-        }
+        public SpatialReferenceSystemIdentifier(int value) => _value = value;
 
         public bool Equals(SpatialReferenceSystemIdentifier other) => _value.Equals(other._value);
 
@@ -26,6 +22,5 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         [Pure]
         public int ToInt32() => _value;
-        //public static implicit operator int(SpatialReferenceSystemIdentifier instance) => instance.ToInt32();
     }
 }

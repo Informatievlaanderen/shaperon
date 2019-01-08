@@ -13,31 +13,19 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public PointM(Coordinate coordinate)
             : base(
                 GeometryConfiguration.GeometryFactory.CoordinateSequenceFactory.Create(new[] {coordinate}),
-                GeometryConfiguration.GeometryFactory
-            )
-        {
-        }
+                GeometryConfiguration.GeometryFactory) { }
 
         public PointM(double x, double y, double z, double m)
-            : this(new Coordinate(x, y, z))
-        {
-            ChangeMeasurement(m);
-        }
+            : this(new Coordinate(x, y, z)) => ChangeMeasurement(m);
 
         public PointM(double x, double y, double z)
-            : this(new Coordinate(x, y, z))
-        {
-        }
+            : this(new Coordinate(x, y, z)) { }
 
         public PointM(double x, double y)
-            : this(new Coordinate(x, y))
-        {
-        }
+            : this(new Coordinate(x, y)) { }
 
         public PointM(ICoordinateSequence coordinatesSequence)
-            : this(coordinatesSequence.GetCoordinate(0))
-        {
-        }
+            : this(coordinatesSequence.GetCoordinate(0)) { }
 
         // Values cannot be modified, so let's remove the Setters
         public new double X => base.X;
@@ -46,8 +34,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public new double M => base.M;
 
         public void ChangeMeasurement(double m)
-        {
-            base.M = m;
-        }
+            => base.M = m;
     }
 }

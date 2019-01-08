@@ -1,4 +1,4 @@
-﻿namespace Be.Vlaanderen.Basisregisters.Shaperon
+namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using GeoAPI.Geometries;
     using GeoAPI.IO;
@@ -8,17 +8,9 @@
     {
         private readonly WKBWriter _wkbWriter;
 
-        public WellKnownBinaryWriter()
-        {
-            _wkbWriter = new WKBWriter(ByteOrder.LittleEndian, true)
-            {
-                HandleOrdinates = Ordinates.XYZM
-            };
-        }
+        public WellKnownBinaryWriter() =>
+            _wkbWriter = new WKBWriter(ByteOrder.LittleEndian, true) { HandleOrdinates = Ordinates.XYZM };
 
-        public byte[] Write(IGeometry geometry)
-        {
-            return _wkbWriter.Write(geometry);
-        }
+        public byte[] Write(IGeometry geometry) => _wkbWriter.Write(geometry);
     }
 }

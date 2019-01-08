@@ -1,17 +1,12 @@
-using System;
-
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
+    using System;
+
     public class AnonymousDbaseSchema : DbaseSchema
     {
         public AnonymousDbaseSchema(DbaseField[] fields)
         {
-            if (fields == null)
-            {
-                throw new ArgumentNullException(nameof(fields));
-            }
-
-            Fields = fields;
+            Fields = fields ?? throw new ArgumentNullException(nameof(fields));
         }
     }
 }

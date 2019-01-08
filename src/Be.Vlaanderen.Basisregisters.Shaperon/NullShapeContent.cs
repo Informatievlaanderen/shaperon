@@ -1,4 +1,4 @@
-﻿namespace Be.Vlaanderen.Basisregisters.Shaperon
+namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.IO;
@@ -17,13 +17,13 @@
         public static ShapeContent ReadNull(BinaryReader reader)
         {
             if (reader == null)
-            {
                 throw new ArgumentNullException(nameof(reader));
-            }
 
             var shapeType = reader.ReadInt32LittleEndian();
+
             if (!Enum.IsDefined(typeof(ShapeType), shapeType))
                 throw new ShapeRecordContentException("The Shape Type field does not contain a known type of shape.");
+
             if (((ShapeType) shapeType) != ShapeType.NullShape)
                 throw new ShapeRecordContentException("The Shape Type field does not indicate a Null shape.");
 
@@ -33,9 +33,7 @@
         public override void Write(BinaryWriter writer)
         {
             if (writer == null)
-            {
                 throw new ArgumentNullException(nameof(writer));
-            }
 
             writer.WriteInt32LittleEndian((int) ShapeType); // Shape Type
         }

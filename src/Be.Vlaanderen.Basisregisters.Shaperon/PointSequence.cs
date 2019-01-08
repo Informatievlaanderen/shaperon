@@ -9,25 +9,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     {
         private readonly PointM[] _points;
 
-        public PointSequence(IEnumerable<PointM> points)
-        {
-            _points = points.ToArray();
-        }
+        public PointSequence(IEnumerable<PointM> points) => _points = points.ToArray();
 
-        public object Clone()
-        {
-            return Copy();
-        }
+        public object Clone() => Copy();
 
-        public Coordinate GetCoordinate(int index)
-        {
-            return GetCoordinateCopy(index);
-        }
+        public Coordinate GetCoordinate(int index) => GetCoordinateCopy(index);
 
-        public Coordinate GetCoordinateCopy(int index)
-        {
-            return new Coordinate(GetX(index), GetY(index), GetZ(index));
-        }
+        public Coordinate GetCoordinateCopy(int index) => new Coordinate(GetX(index), GetY(index), GetZ(index));
 
         public void GetCoordinate(int index, Coordinate mutableCoordinate)
         {
@@ -36,20 +24,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             mutableCoordinate.Z = GetZ(index);
         }
 
-        public double GetX(int index)
-        {
-            return GetOrdinate(index, Ordinate.X);
-        }
+        public double GetX(int index) => GetOrdinate(index, Ordinate.X);
 
-        public double GetY(int index)
-        {
-            return GetOrdinate(index, Ordinate.Y);
-        }
+        public double GetY(int index) => GetOrdinate(index, Ordinate.Y);
 
-        public double GetZ(int index)
-        {
-            return GetOrdinate(index, Ordinate.Z);
-        }
+        public double GetZ(int index) => GetOrdinate(index, Ordinate.Z);
 
         public double GetOrdinate(int index, Ordinate ordinate)
         {
@@ -60,12 +39,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 case Ordinate.X:
                     return _points[index].X;
+
                 case Ordinate.Y:
                     return _points[index].Y;
+
                 case Ordinate.Z:
                     return _points[index].Z;
+
                 case Ordinate.M:
                     return _points[index].M;
+
                 default:
                     return double.NaN;
             }
@@ -80,35 +63,24 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 ordinate == Ordinate.X ? value : _points[index].X,
                 ordinate == Ordinate.Y ? value : _points[index].Y,
                 ordinate == Ordinate.Z ? value : _points[index].Z,
-                ordinate == Ordinate.M ? value : _points[index].M
-            );
+                ordinate == Ordinate.M ? value : _points[index].M);
         }
 
-        public Coordinate[] ToCoordinateArray()
-        {
-            return Array.ConvertAll(_points, point => point.Coordinate.Copy());
-        }
+        public Coordinate[] ToCoordinateArray() => Array.ConvertAll(_points, point => point.Coordinate.Copy());
 
         public Envelope ExpandEnvelope(Envelope env)
         {
             var envelope = env.Copy();
+
             foreach (var point in _points)
-            {
                 envelope.ExpandToInclude(point.Coordinate);
-            }
 
             return envelope;
         }
 
-        public ICoordinateSequence Reversed()
-        {
-            return new PointSequence(_points.Reverse());
-        }
+        public ICoordinateSequence Reversed() => new PointSequence(_points.Reverse());
 
-        public ICoordinateSequence Copy()
-        {
-            return new PointSequence(_points);
-        }
+        public ICoordinateSequence Copy() => new PointSequence(_points);
 
         public int Dimension => 4;
         public Ordinates Ordinates => Ordinates.XYZM;

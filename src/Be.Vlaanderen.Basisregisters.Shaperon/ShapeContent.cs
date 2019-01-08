@@ -1,4 +1,4 @@
-﻿namespace Be.Vlaanderen.Basisregisters.Shaperon
+namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.IO;
@@ -15,25 +15,27 @@
         public static ShapeContent Read(BinaryReader reader)
         {
             if (reader == null)
-            {
                 throw new ArgumentNullException(nameof(reader));
-            }
 
             var shapeType = reader.ReadInt32LittleEndian();
             if (!Enum.IsDefined(typeof(ShapeType), shapeType))
                 throw new ShapeRecordContentException("The Shape Type field does not contain a known type of shape.");
 
             var content = NullShapeContent.Instance;
+
             switch ((ShapeType) shapeType)
             {
                 case ShapeType.NullShape:
                     break;
+
                 case ShapeType.Point:
                     content = PointShapeContent.ReadPointGeometry(reader);
                     break;
+
                 case ShapeType.PolyLineM:
                     content = PolyLineMShapeContent.ReadPolyLineMGeometry(reader);
                     break;
+
                 default:
                     throw new ShapeRecordContentException($"The Shape Type {shapeType} is currently not suppported.");
             }
@@ -44,9 +46,7 @@
         public static ShapeContent ReadAnonymous(BinaryReader reader)
         {
             if (reader == null)
-            {
                 throw new ArgumentNullException(nameof(reader));
-            }
 
             var shapeTypeAsBytes = reader.ReadBytes(4);
             var shapeType = EndianBitConverter.ToInt32LittleEndian(shapeTypeAsBytes);
@@ -54,16 +54,20 @@
                 throw new ShapeRecordContentException("The Shape Type field does not contain a known type of shape.");
 
             var content = NullShapeContent.Instance;
+
             switch ((ShapeType) shapeType)
             {
                 case ShapeType.NullShape:
                     break;
+
                 case ShapeType.Point:
                     content = PointShapeContent.ReadAnonymousPointGeometry(reader);
                     break;
+
                 case ShapeType.PolyLineM:
                     content = PolyLineMShapeContent.ReadAnonymousPolyLineMGeometry(reader);
                     break;
+
                 default:
                     throw new ShapeRecordContentException($"The Shape Type {shapeType} is currently not suppported.");
             }
@@ -82,12 +86,15 @@
             {
                 case ShapeType.NullShape:
                     break;
+
                 case ShapeType.Point:
                     content = PointShapeContent.ReadPointFromRecord(reader, header);
                     break;
+
                 case ShapeType.PolyLineM:
                     content = PolyLineMShapeContent.ReadPolyLineMFromRecord(reader, header);
                     break;
+
                 default:
                     throw new ShapeRecordContentException($"The Shape Type {shapeType} is currently not suppported.");
             }
@@ -98,33 +105,25 @@
         public abstract void Write(BinaryWriter writer);
 
         public ShapeRecord RecordAs(RecordNumber number)
-        {
-            return new ShapeRecord(new ShapeRecordHeader(number, ContentLength), this);
-        }
+            => new ShapeRecord(new ShapeRecordHeader(number, ContentLength), this);
 
         public ShapeContent Anonymous()
-        {
-            return ReferenceEquals(NullShapeContent.Instance, this)
+            => ReferenceEquals(NullShapeContent.Instance, this)
                 ? this
                 : new AnonymousShapeContent(ShapeType, ToBytes());
-        }
 
         public static ShapeContent FromBytes(byte[] bytes)
         {
             using (var input = new MemoryStream(bytes))
             using (var reader = new BinaryReader(input))
-            {
                 return Read(reader);
-            }
         }
 
         public static ShapeContent FromBytes(byte[] bytes, Encoding encoding)
         {
             using (var input = new MemoryStream(bytes))
             using (var reader = new BinaryReader(input, encoding))
-            {
                 return Read(reader);
-            }
         }
 
         public byte[] ToBytes()

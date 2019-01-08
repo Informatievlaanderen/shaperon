@@ -1,8 +1,8 @@
-using System;
-using System.Diagnostics.Contracts;
-
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
+    using System;
+    using System.Diagnostics.Contracts;
+
     public readonly struct ShapeRecordCount : IEquatable<ShapeRecordCount>
     {
         private readonly int _value;
@@ -12,6 +12,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (value < 0)
                 throw new ArgumentOutOfRangeException(nameof(value), value,
                     "The count of shape records must be greater than or equal to 0.");
+
             _value = value;
         }
 
@@ -22,6 +23,5 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         [Pure]
         public int ToInt32() => _value;
-        //public static implicit operator int(ShapeRecordCount instance) => instance.ToInt32();
     }
 }
