@@ -163,14 +163,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public static bool TryParse(byte value, out DbaseCodePage parsed)
         {
-            if (!Array.Exists(All, candidate => candidate._value == value))
-            {
-                parsed = null;
-            }
-            else
-            {
-                parsed = Array.Find(All, candidate => candidate._value == value);
-            }
+            parsed = Array.Exists(All, candidate => candidate._value == value)
+                ? Array.Find(All, candidate => candidate._value == value)
+                : null;
 
             return parsed != null;
         }
@@ -181,6 +176,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public override string ToString() => _value.ToString();
 
         public byte ToByte() => _value;
+
         //public static implicit operator byte(DbaseCodePage instance) => instance.ToByte();
+
+        public Encoding ToEncoding() => _codePage.HasValue ? Encoding.GetEncoding(_codePage.Value) : null;
     }
 }
