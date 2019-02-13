@@ -1,6 +1,7 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
+    using System.Linq;
     using AutoFixture;
     using AutoFixture.Idioms;
     using Xunit;
@@ -70,6 +71,26 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void IsEquatableToDbaseFieldName()
         {
             Assert.IsAssignableFrom<IEquatable<DbaseFieldName>>(_fixture.Create<DbaseFieldName>());
+        }
+
+        [Fact]
+        public void EqualsIgnoresCasing()
+        {
+            var value = new string(_fixture.CreateMany<char>(_fixture.Create<int>().AsDbaseFieldNameLength()).ToArray());
+            var lower = new DbaseFieldName(value.ToLowerInvariant());
+            var upper = new DbaseFieldName(value.ToUpperInvariant());
+
+            Assert.True(lower.Equals(upper));
+        }
+
+        [Fact]
+        public void GetHashCodeIgnoresCasing()
+        {
+            var value = new string(_fixture.CreateMany<char>(_fixture.Create<int>().AsDbaseFieldNameLength()).ToArray());
+            var lower = new DbaseFieldName(value.ToLowerInvariant());
+            var upper = new DbaseFieldName(value.ToUpperInvariant());
+
+            Assert.True(lower.GetHashCode().Equals(upper.GetHashCode()));
         }
     }
 }
