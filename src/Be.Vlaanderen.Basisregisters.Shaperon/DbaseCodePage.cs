@@ -138,10 +138,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Baltic_Windows
         };
 
+        public static readonly DbaseCodePage[] AllWithCodePage =
+            Array.FindAll(All, item => item._codePage.HasValue);
+
         private readonly byte _value;
         private readonly int? _codePage;
-
-        public int? CodePage => _codePage;
 
         private DbaseCodePage(byte value, int? codePage = default)
         {
@@ -166,6 +167,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return parsed != null;
         }
 
+        public Encoding ToEncoding(EncodingProvider provider = default)
+        {
+            if (provider == null)
+            {
+                return _codePage.HasValue ? Encoding.GetEncoding(_codePage.Value) : null;
+            }
+            return _codePage.HasValue ? provider.GetEncoding(_codePage.Value) : null;
+        }
+
         public bool Equals(DbaseCodePage other) => other != null && other._value == _value;
         public override bool Equals(object obj) => obj is DbaseCodePage other && Equals(other);
         public override int GetHashCode() => _value;
@@ -174,7 +184,5 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public byte ToByte() => _value;
 
         //public static implicit operator byte(DbaseCodePage instance) => instance.ToByte();
-
-        public Encoding ToEncoding() => _codePage.HasValue ? Encoding.GetEncoding(_codePage.Value) : null;
     }
 }

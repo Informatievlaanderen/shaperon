@@ -15,7 +15,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             _fixture = new Fixture();
             _fixture.CustomizeDbaseCodePage();
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         [Fact]
@@ -99,6 +98,50 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void IsEquatableToDbaseCodePage()
         {
             Assert.IsAssignableFrom<IEquatable<DbaseCodePage>>(_fixture.Create<DbaseCodePage>());
+        }
+
+        [Fact]
+        public void ToEncodingWithProviderReturnsExpectedResult()
+        {
+            var fixture = new Fixture();
+            fixture.CustomizeDbaseCodePageWithCodePage();
+
+            var sut = _fixture.Create<DbaseCodePage>();
+            var result = sut.ToEncoding(new FrozenEncodingProvider(Encoding.UTF8));
+            Assert.Same(result, Encoding.UTF8);
+        }
+
+        [Fact]
+        public void ToEncodingWithoutProviderReturnsExpectedResult()
+        {
+            var fixture = new Fixture();
+            fixture.CustomizeDbaseCodePageWithCodePage();
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            var sut = _fixture.Create<DbaseCodePage>();
+            var result = sut.ToEncoding();
+            Assert.NotNull(result);
+        }
+
+        private class FrozenEncodingProvider : EncodingProvider
+        {
+            private readonly Encoding _encoding;
+
+            public FrozenEncodingProvider(Encoding encoding)
+            {
+                _encoding = encoding;
+            }
+
+            public override Encoding GetEncoding(int codepage)
+            {
+                return _encoding;
+            }
+
+            public override Encoding GetEncoding(string name)
+            {
+                return _encoding;
+            }
         }
     }
 }
