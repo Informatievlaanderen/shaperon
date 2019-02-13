@@ -15,7 +15,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     {
         private readonly Fixture _fixture;
 
-        public DbaseBinaryWriterTests(ITestOutputHelper output)
+        public DbaseBinaryWriterTests()
         {
             _fixture = new Fixture();
             _fixture.CustomizeWordLength();
