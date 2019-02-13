@@ -1,3 +1,20 @@
+# [2.0.0](https://github.com/informatievlaanderen/shaperon/compare/v1.2.0...v2.0.0) (2019-02-13)
+
+
+### Features
+
+* change encoding resolution ([79b9880](https://github.com/informatievlaanderen/shaperon/commit/79b9880))
+* dbase field name ignores casing ([f3ac0eb](https://github.com/informatievlaanderen/shaperon/commit/f3ac0eb))
+* make each exception take an exception as a parameter ([ce93434](https://github.com/informatievlaanderen/shaperon/commit/ce93434))
+* split dbasefileheader and dbaserecord exception ([0e02474](https://github.com/informatievlaanderen/shaperon/commit/0e02474))
+
+
+### BREAKING CHANGES
+
+* remove CodePage property, ToEncoding takes an EncodingProvider
+* dbaserecord reading throw different exception
+* casing is being ignored for dbase field names
+
 # [1.2.0](https://github.com/informatievlaanderen/shaperon/compare/v1.1.0...v1.2.0) (2019-01-08)
 
 
