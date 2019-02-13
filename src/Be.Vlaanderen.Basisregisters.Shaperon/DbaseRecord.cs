@@ -19,10 +19,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             var flag = reader.ReadByte();
             if (flag == EndOfFile)
-                throw new DbaseFileHeaderException("The end of file was reached unexpectedly.");
+                throw new DbaseRecordException("The end of file was reached unexpectedly.");
 
             if (flag != 0x20 && flag != 0x2A)
-                throw new DbaseFileHeaderException(
+                throw new DbaseRecordException(
                     $"The record deleted flag must be either deleted (0x2A) or valid (0x20) but is 0x{flag:X2}");
 
             IsDeleted = flag == 0x2A;

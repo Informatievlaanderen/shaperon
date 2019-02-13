@@ -194,5 +194,52 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 }
             }
         }
+
+        [Fact]
+        public void ReadingEndOfFileHasExpectedResult()
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
+                {
+                    writer.Write(DbaseRecord.EndOfFile);
+                    writer.Flush();
+                }
+
+                stream.Position = 0;
+
+                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
+                {
+                    var sut = new AnonymousDbaseRecord(new DbaseField[0]);
+
+                    //Act
+                    Assert.Throws<DbaseRecordException>(() => sut.Read(reader));
+                }
+            }
+        }
+
+        [Fact]
+        public void ReadingUnacceptableIsDeletedFlagHasExpectedResult()
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
+                {
+                    var unacceptable = new Generator<byte>(_fixture).First(candidate => candidate != 0x20 && candidate != 0x2A);
+                    writer.Write(unacceptable);
+                    writer.Flush();
+                }
+
+                stream.Position = 0;
+
+                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
+                {
+                    var sut = new AnonymousDbaseRecord(new DbaseField[0]);
+
+                    //Act
+                    Assert.Throws<DbaseRecordException>(() => sut.Read(reader));
+                }
+            }
+        }
     }
 }
