@@ -17,9 +17,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             _value = value;
         }
 
-        public bool Equals(DbaseFieldName other) => _value.Equals(other._value);
+        public bool Equals(DbaseFieldName other) => string.Equals(_value, other._value, StringComparison.OrdinalIgnoreCase);
         public override bool Equals(object obj) => obj is DbaseFieldName name && Equals(name);
-        public override int GetHashCode() => _value.GetHashCode();
+        public override int GetHashCode() => _value.ToLowerInvariant().GetHashCode();
         public override string ToString() => _value;
         public static implicit operator string(DbaseFieldName instance) => instance.ToString();
     }
