@@ -217,6 +217,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     ));
         }
 
+        public static void CustomizeDbaseCodePageWithCodePage(this IFixture fixture)
+        {
+            fixture.Customize<DbaseCodePage>(
+                customization =>
+                    customization.FromFactory<int>(
+                        value => DbaseCodePage.AllWithCodePage[value % DbaseCodePage.AllWithCodePage.Length]
+                    ));
+        }
+
         public static void CustomizeDbaseSchema(this IFixture fixture)
         {
             fixture.Customize<DbaseSchema>(
