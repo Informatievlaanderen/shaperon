@@ -19,7 +19,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             var flag = reader.ReadByte();
             if (flag == EndOfFile)
-                throw new DbaseRecordException("The end of file was reached unexpectedly.");
+                throw new EndOfStreamException("The end of file marker was reached.");
 
             if (flag != 0x20 && flag != 0x2A)
                 throw new DbaseRecordException(

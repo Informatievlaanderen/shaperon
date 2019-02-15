@@ -213,7 +213,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     var sut = new AnonymousDbaseRecord(new DbaseField[0]);
 
                     //Act
-                    Assert.Throws<DbaseRecordException>(() => sut.Read(reader));
+                    var exception = Assert.Throws<EndOfStreamException>(() => sut.Read(reader));
+                    Assert.Equal("The end of file marker was reached.", exception.Message);
                 }
             }
         }
