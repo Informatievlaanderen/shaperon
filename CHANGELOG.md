@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/informatievlaanderen/shaperon/compare/v2.0.0...v3.0.0) (2019-02-16)
+
+
+### Features
+
+* switch dbaserecordexception for endofstreamexception ([1431323](https://github.com/informatievlaanderen/shaperon/commit/1431323))
+
+
+### BREAKING CHANGES
+
+* different exception being thrown by dbaserecord.read()
+
 # [2.0.0](https://github.com/informatievlaanderen/shaperon/compare/v1.2.0...v2.0.0) (2019-02-13)
 
 
