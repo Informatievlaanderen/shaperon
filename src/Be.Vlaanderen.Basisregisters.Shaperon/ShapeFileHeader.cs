@@ -1,6 +1,8 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.IO;
 
     public class ShapeFileHeader
@@ -92,6 +94,102 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             writer.WriteDoubleLittleEndian(BoundingBox.ZMax);
             writer.WriteDoubleLittleEndian(EscapeNoData(BoundingBox.MMin));
             writer.WriteDoubleLittleEndian(EscapeNoData(BoundingBox.MMax));
+        }
+
+        public IEnumerator<ShapeRecord> CreateShapeRecordEnumerator(BinaryReader reader)
+        {
+            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            return new ShapeRecordEnumerator(this, reader);
+        }
+
+        private class ShapeRecordEnumerator : IEnumerator<ShapeRecord>
+        {
+            private enum State { Initial, Started, Ended }
+
+            private readonly ShapeFileHeader _header;
+            private readonly BinaryReader _reader;
+
+            private ShapeRecord _current;
+            private State _state;
+            private WordLength _length;
+
+            public ShapeRecordEnumerator(ShapeFileHeader header, BinaryReader reader)
+            {
+                _header = header ?? throw new ArgumentNullException(nameof(header));
+                _reader = reader ?? throw new ArgumentNullException(nameof(reader));
+                _current = null;
+                _state = State.Initial;
+                _length = Length;
+            }
+
+            public bool MoveNext()
+            {
+                if (_state == State.Ended)
+                {
+                    return false;
+                }
+
+                if (_header.FileLength == _length)
+                {
+                    _current = null;
+                    _state = State.Ended;
+                    return false;
+                }
+
+                if (_state == State.Initial)
+                {
+                    _state = State.Started;
+                }
+
+                try
+                {
+                    _current = ShapeRecord.Read(_reader);
+                    _length = _length.Plus(_current.Length);
+                }
+                catch (EndOfStreamException)
+                {
+                    _current = null;
+                    _state = State.Ended;
+                }
+                catch (Exception)
+                {
+                    _current = null;
+                    _state = State.Ended;
+                    throw;
+                }
+
+                return _state == State.Started;
+            }
+
+            public void Reset()
+            {
+                throw new NotSupportedException("Reset is not supported. Enumeration can only be performed once.");
+            }
+
+            public ShapeRecord Current
+            {
+                get
+                {
+                    if (_state == State.Initial)
+                    {
+                        throw new InvalidOperationException("Enumeration has not started. Call MoveNext().");
+                    }
+
+                    if (_state == State.Ended)
+                    {
+                        throw new InvalidOperationException("Enumeration has already ended. Reset is not supported.");
+                    }
+
+                    return _current;
+                }
+            }
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose()
+            {
+                _reader.Dispose();
+            }
         }
 
         private static double ParseNoData(double value) => value < -10e38 ? double.NaN : value;

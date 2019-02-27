@@ -188,5 +188,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 }
             }
         }
+
+        [Fact]
+        public void CreateShapeRecordEnumeratorThrowsWhenReaderIsNull()
+        {
+            var sut = new ShapeFileHeader(
+                _fixture.Create<WordLength>(),
+                _fixture.Create<ShapeType>(),
+                _fixture.Create<BoundingBox3D>());
+
+            Assert.Throws<ArgumentNullException>(() => sut.CreateShapeRecordEnumerator(null));
+        }
     }
 }
