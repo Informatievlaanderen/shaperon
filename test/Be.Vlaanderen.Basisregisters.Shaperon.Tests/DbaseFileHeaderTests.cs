@@ -343,5 +343,41 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 }
             }
         }
+
+        [Fact]
+        public void CreateAnonymousDbaseRecordEnumeratorThrowsWhenReaderIsNull()
+        {
+            var sut = _fixture.Create<DbaseFileHeader>();
+
+            Assert.Throws<ArgumentNullException>(() => sut.CreateAnonymousDbaseRecordEnumerator(null));
+        }
+
+        [Fact]
+        public void CreateNumberedAnonymousDbaseRecordEnumeratorThrowsWhenReaderIsNull()
+        {
+            var sut = _fixture.Create<DbaseFileHeader>();
+
+            Assert.Throws<ArgumentNullException>(() => sut.CreateNumberedAnonymousDbaseRecordEnumerator(null));
+        }
+
+        [Fact]
+        public void CreateDbaseRecordEnumeratorThrowsWhenReaderIsNull()
+        {
+            var sut = _fixture.Create<DbaseFileHeader>();
+
+            Assert.Throws<ArgumentNullException>(() => sut.CreateDbaseRecordEnumerator<FakeDbaseRecord>(null));
+        }
+
+        [Fact]
+        public void CreateNumberedDbaseRecordEnumeratorThrowsWhenReaderIsNull()
+        {
+            var sut = _fixture.Create<DbaseFileHeader>();
+
+            Assert.Throws<ArgumentNullException>(() => sut.CreateNumberedDbaseRecordEnumerator<FakeDbaseRecord>(null));
+        }
+
+        private class FakeDbaseRecord : DbaseRecord
+        {
+        }
     }
 }

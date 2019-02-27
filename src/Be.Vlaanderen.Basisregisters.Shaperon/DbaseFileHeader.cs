@@ -146,13 +146,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return new NumberedAnonymousDbaseRecordEnumerator(this, reader);
         }
 
-        public IEnumerator<TDbaseRecord> CreateAnonymousDbaseRecordEnumerator<TDbaseRecord>(BinaryReader reader) where TDbaseRecord : DbaseRecord, new()
+        public IEnumerator<TDbaseRecord> CreateDbaseRecordEnumerator<TDbaseRecord>(BinaryReader reader) where TDbaseRecord : DbaseRecord, new()
         {
             if (reader == null) throw new ArgumentNullException(nameof(reader));
             return new DbaseRecordEnumerator<TDbaseRecord>(this, reader);
         }
 
-        public IEnumerator<NumberedDbaseRecord<TDbaseRecord>> CreateNumberedAnonymousDbaseRecordEnumerator<TDbaseRecord>(BinaryReader reader) where TDbaseRecord : DbaseRecord, new()
+        public IEnumerator<NumberedDbaseRecord<TDbaseRecord>> CreateNumberedDbaseRecordEnumerator<TDbaseRecord>(BinaryReader reader) where TDbaseRecord : DbaseRecord, new()
         {
             if (reader == null) throw new ArgumentNullException(nameof(reader));
             return new NumberedDbaseRecordEnumerator<TDbaseRecord>(this, reader);
