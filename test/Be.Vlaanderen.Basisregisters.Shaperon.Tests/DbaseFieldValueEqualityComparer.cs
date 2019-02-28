@@ -13,7 +13,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var rightInspector = new ValueInspector();
             left.Inspect(leftInspector);
             right.Inspect(rightInspector);
-            var sameField = left.Field.Equals(right.Field);
             if (left.Field.Length.Equals(new DbaseFieldLength(15)) &&
                 left.Field.DecimalCount.Equals(new DbaseDecimalCount(0)) &&
                 right.Field.Length.Equals(new DbaseFieldLength(15)) &&
@@ -43,12 +42,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 )
             )
             {
-                return sameField;
+                return left.Field.Equals(right.Field);
             }
-
-            IEqualityComparer<object> comparer = new ObjectEqualityComparer(left.Field.DecimalCount);
-            var sameValue = comparer.Equals(leftInspector.Value, rightInspector.Value);
-            return sameField && sameValue;
+            var selector = new ComparerSelectingInspector(left.Field.DecimalCount);
+            left.Inspect(selector);
+            return selector.Comparer.Equals(left, right);
         }
 
         public int GetHashCode(DbaseFieldValue instance)
@@ -58,66 +56,237 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return instance.Field.GetHashCode() ^ inspector.HashCode;
         }
 
-        private class ObjectEqualityComparer : IEqualityComparer<object>
+        private class DelegatingDbaseFieldValueEqualityComparer<TDbaseFieldValue> : IEqualityComparer<object>
+            where TDbaseFieldValue : DbaseFieldValue
         {
-            private readonly DbaseDecimalCount _digits;
+            private readonly IEqualityComparer<TDbaseFieldValue> _comparer;
 
-            public ObjectEqualityComparer(DbaseDecimalCount digits)
+            public DelegatingDbaseFieldValueEqualityComparer(IEqualityComparer<TDbaseFieldValue> comparer)
             {
-                _digits = digits;
+                _comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
             }
 
-            bool IEqualityComparer<object>.Equals(object left, object right)
+            public bool Equals(object left, object right)
             {
                 if (left == null && right == null) return true;
                 if (left == null || right == null) return false;
-
-                if (left is double leftDouble && right is double rightDouble)
-                {
-                    var doubleDigits = DbaseDecimalCount.Min(_digits, DbaseDouble.MaximumDecimalCount).ToInt32();
-                    var leftRounded = Math.Round(leftDouble, doubleDigits);
-                    var rightRounded = Math.Round(rightDouble, doubleDigits);
-                    return Math.Abs(leftRounded - rightRounded) <= Math.Pow(10, -doubleDigits);
-                }
-
-                if (left is double? && right is double?)
-                {
-                    var nullableLeft = (double?) left;
-                    var nullableRight = (double?) right;
-                    if (!nullableLeft.HasValue && !nullableRight.HasValue) return true;
-                    if (nullableLeft.HasValue || nullableRight.HasValue) return false;
-                    var doubleDigits = DbaseDecimalCount.Min(_digits, DbaseDouble.MaximumDecimalCount).ToInt32();
-                    var leftRounded = Math.Round((double) nullableLeft.Value, doubleDigits);
-                    var rightRounded = Math.Round((double) nullableRight.Value, doubleDigits);
-                    return Math.Abs(leftRounded - rightRounded) <= Math.Pow(10, -doubleDigits);
-                }
-
-                if (left is float leftSingle && right is float rightSingle)
-                {
-                    var singleDigits = DbaseDecimalCount.Min(_digits, DbaseSingle.MaximumDecimalCount).ToInt32();
-                    var leftRounded = Math.Round(leftSingle, singleDigits);
-                    var rightRounded = Math.Round(rightSingle, singleDigits);
-                    return Math.Abs(leftRounded - rightRounded) <= Math.Pow(10, -singleDigits);
-                }
-
-                if (left is float? && right is float?)
-                {
-                    var nullableLeft = (float?) left;
-                    var nullableRight = (float?) right;
-                    if (!nullableLeft.HasValue && !nullableRight.HasValue) return true;
-                    if (nullableLeft.HasValue || nullableRight.HasValue) return false;
-                    var singleDigits = DbaseDecimalCount.Min(_digits, DbaseSingle.MaximumDecimalCount).ToInt32();
-                    var leftRounded = Math.Round((float) nullableLeft.Value, singleDigits);
-                    var rightRounded = Math.Round((float) nullableRight.Value, singleDigits);
-                    return Math.Abs(leftRounded - rightRounded) <= Math.Pow(10, -singleDigits);
-                }
-
-                return Equals(left, right);
+                return left is TDbaseFieldValue leftValue && right is TDbaseFieldValue rightValue &&
+                       _comparer.Equals(leftValue, rightValue);
             }
 
-            int IEqualityComparer<object>.GetHashCode(object obj)
+            public int GetHashCode(object obj)
             {
-                throw new NotSupportedException();
+                return obj is TDbaseFieldValue instance ? _comparer.GetHashCode(instance) : 0;
+            }
+        }
+
+        private class DbaseInt16EqualityComparer : IEqualityComparer<DbaseInt16>
+        {
+            public bool Equals(DbaseInt16 left, DbaseInt16 right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
+            }
+
+            public int GetHashCode(DbaseInt16 obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseInt32EqualityComparer : IEqualityComparer<DbaseInt32>
+        {
+            public bool Equals(DbaseInt32 left, DbaseInt32 right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
+            }
+
+            public int GetHashCode(DbaseInt32 obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseStringEqualityComparer : IEqualityComparer<DbaseString>
+        {
+            public bool Equals(DbaseString left, DbaseString right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) &&
+                       Equals(left.Value, right.Value);
+            }
+
+            public int GetHashCode(DbaseString obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value?.GetHashCode() ?? 0;
+            }
+        }
+
+        private class DbaseBooleanEqualityComparer : IEqualityComparer<DbaseBoolean>
+        {
+            public bool Equals(DbaseBoolean left, DbaseBoolean right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
+            }
+
+            public int GetHashCode(DbaseBoolean obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseDateTimeEqualityComparer : IEqualityComparer<DbaseDateTime>
+        {
+            public bool Equals(DbaseDateTime left, DbaseDateTime right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
+            }
+
+            public int GetHashCode(DbaseDateTime obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseSingleEqualityComparer : IEqualityComparer<DbaseSingle>
+        {
+            private readonly DbaseDecimalCount _precision;
+
+            public DbaseSingleEqualityComparer(DbaseDecimalCount precision)
+            {
+                _precision = precision;
+            }
+
+            public bool Equals(DbaseSingle left, DbaseSingle right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                if (left.Value == null && right.Value == null) return left.Field.Equals(right.Field);
+                if (left.Value == null || right.Value == null) return false;
+                return left.Field.Equals(right.Field) &&
+                       Math.Abs(left.Value.Value - right.Value.Value) < _precision.ToInt32();
+            }
+
+            public int GetHashCode(DbaseSingle obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseDoubleEqualityComparer : IEqualityComparer<DbaseDouble>
+        {
+            private readonly DbaseDecimalCount _precision;
+
+            public DbaseDoubleEqualityComparer(DbaseDecimalCount precision)
+            {
+                _precision = precision;
+            }
+
+            public bool Equals(DbaseDouble left, DbaseDouble right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                if (left.Value == null && right.Value == null) return left.Field.Equals(right.Field);
+                if (left.Value == null || right.Value == null) return false;
+                return left.Field.Equals(right.Field) &&
+                       Math.Abs(left.Value.Value - right.Value.Value) < _precision.ToInt32();
+            }
+
+            public int GetHashCode(DbaseDouble obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseDecimalEqualityComparer : IEqualityComparer<DbaseDecimal>
+        {
+            private readonly DbaseDecimalCount _precision;
+
+            public DbaseDecimalEqualityComparer(DbaseDecimalCount precision)
+            {
+                _precision = precision;
+            }
+
+            public bool Equals(DbaseDecimal left, DbaseDecimal right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                if (left.Value == null && right.Value == null) return left.Field.Equals(right.Field);
+                if (left.Value == null || right.Value == null) return false;
+                return left.Field.Equals(right.Field) &&
+                       Math.Abs(left.Value.Value - right.Value.Value) < _precision.ToInt32();
+            }
+
+            public int GetHashCode(DbaseDecimal obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class ComparerSelectingInspector : IDbaseFieldValueInspector
+        {
+            private readonly DbaseDecimalCount _precision;
+            public IEqualityComparer<object> Comparer { get; private set; }
+
+            public ComparerSelectingInspector(DbaseDecimalCount precision)
+            {
+                _precision = precision;
+            }
+
+            public void Inspect(DbaseDateTime value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseDateTime>(
+                    new DbaseDateTimeEqualityComparer());
+            }
+
+            public void Inspect(DbaseDecimal value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseDecimal>(
+                    new DbaseDecimalEqualityComparer(_precision));
+            }
+
+            public void Inspect(DbaseDouble value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseDouble>(
+                    new DbaseDoubleEqualityComparer(_precision));
+            }
+
+            public void Inspect(DbaseSingle value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseSingle>(
+                    new DbaseSingleEqualityComparer(_precision));
+            }
+
+            public void Inspect(DbaseInt16 value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseInt16>(
+                    new DbaseInt16EqualityComparer());
+            }
+
+            public void Inspect(DbaseInt32 value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseInt32>(
+                    new DbaseInt32EqualityComparer());
+            }
+
+            public void Inspect(DbaseString value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseString>(
+                    new DbaseStringEqualityComparer());
+            }
+
+            public void Inspect(DbaseBoolean value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseBoolean>(
+                    new DbaseBooleanEqualityComparer());
             }
         }
 

@@ -10,3 +10,4 @@ AutoFixture.Idioms
 System.Text.Encoding.CodePages
 PublicApiGenerator
 dotnet-sourcelink
+Newtonsoft.Json

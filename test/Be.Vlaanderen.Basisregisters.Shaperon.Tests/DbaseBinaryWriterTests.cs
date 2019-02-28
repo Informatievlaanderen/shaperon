@@ -8,15 +8,19 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using Albedo;
     using AutoFixture;
     using AutoFixture.Idioms;
+    using Newtonsoft.Json;
     using Xunit;
     using Xunit.Abstractions;
 
     public class DbaseBinaryWriterTests
     {
+        private readonly ITestOutputHelper _output;
         private readonly Fixture _fixture;
 
-        public DbaseBinaryWriterTests()
+        public DbaseBinaryWriterTests(ITestOutputHelper output)
         {
+            _output = output ?? throw new ArgumentNullException(nameof(output));
+
             _fixture = new Fixture();
             _fixture.CustomizeWordLength();
             _fixture.CustomizeDbaseFieldName();
@@ -76,6 +80,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     actualRecord.Read(reader);
                     var actualEndOfFile = reader.ReadByte();
 
+                    _output.WriteLine("ExpectedRecord:{0}", JsonConvert.SerializeObject(expectedRecord));
+                    _output.WriteLine("ActualRecord  :{0}", JsonConvert.SerializeObject(actualRecord));
+
                     Assert.Equal(expectedHeader, actualHeader);
                     Assert.Equal(expectedRecord, actualRecord, new DbaseRecordEqualityComparer());
                     Assert.Equal(DbaseRecord.EndOfFile, actualEndOfFile);
@@ -115,6 +122,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     }
 
                     var actualEndOfFile = reader.ReadByte();
+
+                    _output.WriteLine("ExpectedRecords:{0}", JsonConvert.SerializeObject(expectedRecords));
+                    _output.WriteLine("ActualRecords  :{0}", JsonConvert.SerializeObject(actualRecords));
 
                     Assert.Equal(expectedHeader, actualHeader);
                     Assert.Equal(expectedRecords, actualRecords, new DbaseRecordEqualityComparer());

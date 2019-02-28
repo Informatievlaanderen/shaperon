@@ -23,6 +23,7 @@ nuget Microsoft.NET.Test.Sdk 15.9.0
 nuget xunit 2.4.1
 nuget xunit.runner.visualstudio 2.4.1
 nuget xunit.categories 2.0.4
+nuget Newtonsoft.Json 12.0.1
 
 clitool dotnet-xunit 2.3.1
 
