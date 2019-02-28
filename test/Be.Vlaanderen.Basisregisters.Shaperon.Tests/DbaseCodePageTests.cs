@@ -106,7 +106,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var fixture = new Fixture();
             fixture.CustomizeDbaseCodePageWithCodePage();
 
-            var sut = _fixture.Create<DbaseCodePage>();
+            var sut = fixture.Create<DbaseCodePage>();
             var result = sut.ToEncoding(new FrozenEncodingProvider(Encoding.UTF8));
             Assert.Same(result, Encoding.UTF8);
         }
@@ -119,7 +119,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            var sut = _fixture.Create<DbaseCodePage>();
+            var sut = fixture.Create<DbaseCodePage>();
             var result = sut.ToEncoding();
             Assert.NotNull(result);
         }
