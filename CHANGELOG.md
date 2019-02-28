@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/informatievlaanderen/shaperon/compare/v3.0.1...v3.1.0) (2019-02-28)
+
+
+### Features
+
+* enumerators for shape and dbase records ([c894472](https://github.com/informatievlaanderen/shaperon/commit/c894472))
+
 ## [3.0.1](https://github.com/informatievlaanderen/shaperon/compare/v3.0.0...v3.0.1) (2019-02-26)
 
 # [3.0.0](https://github.com/informatievlaanderen/shaperon/compare/v2.0.0...v3.0.0) (2019-02-16)
