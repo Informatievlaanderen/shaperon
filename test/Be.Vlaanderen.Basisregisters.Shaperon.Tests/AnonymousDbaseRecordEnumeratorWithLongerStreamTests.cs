@@ -11,7 +11,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
     public class AnonymousDbaseRecordEnumeratorWithLongerStreamTests
     {
-        private readonly IEnumerator<DbaseRecord> _sut;
+        private readonly IDbaseRecordEnumerator _sut;
         private readonly DisposableBinaryReader _reader;
         private readonly DbaseRecord _record;
 
@@ -71,6 +71,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             _sut.MoveNext();
 
             Assert.Throws<InvalidOperationException>(() => _sut.Current);
+        }
+        
+        
+        [Fact]
+        public void CurrentRecordNumberReturnsExpectedResult()
+        {
+            Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
+
+            _sut.MoveNext();
+
+            Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
+            
+            _sut.MoveNext();
+
+            Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
         }
 
         [Fact]

@@ -7,6 +7,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.IO;
     using System.Text;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using Be.Vlaanderen.Basisregisters.Shaperon.Framework;
 
@@ -198,6 +199,17 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 _fixture.Create<BoundingBox3D>());
 
             Assert.Throws<ArgumentNullException>(() => sut.CreateShapeRecordEnumerator(null));
+        }
+
+        [Fact]
+        public void CreateShapeRecordEnumeratorReturnsExpectedResult()
+        {
+            var sut = new ShapeFileHeader(
+                _fixture.Create<WordLength>(),
+                _fixture.Create<ShapeType>(),
+                _fixture.Create<BoundingBox3D>());
+
+            Assert.IsAssignableFrom<IEnumerator<ShapeRecord>>(sut.CreateShapeRecordEnumerator(_fixture.Create<BinaryReader>()));
         }
     }
 }

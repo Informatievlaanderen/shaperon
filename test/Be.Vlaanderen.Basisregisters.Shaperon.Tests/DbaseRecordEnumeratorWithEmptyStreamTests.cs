@@ -1,18 +1,17 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Text;
     using AutoFixture;
     using Xunit;
 
-    public class AnonymousDbaseRecordEnumeratorWithEmptyStreamTests
+    public class DbaseRecordEnumeratorWithEmptyStreamTests
     {
-        private readonly IDbaseRecordEnumerator _sut;
+        private readonly IDbaseRecordEnumerator<FakeDbaseRecord> _sut;
         private readonly DisposableBinaryReader _reader;
 
-        public AnonymousDbaseRecordEnumeratorWithEmptyStreamTests()
+        public DbaseRecordEnumeratorWithEmptyStreamTests()
         {
             var fixture = new Fixture();
             fixture.CustomizeWordLength();
@@ -26,7 +25,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             var header = fixture.Create<DbaseFileHeader>();
             _reader = new DisposableBinaryReader(new MemoryStream(), Encoding.UTF8, false);
-            _sut = header.CreateAnonymousDbaseRecordEnumerator(_reader);
+            _sut = header.CreateDbaseRecordEnumerator<FakeDbaseRecord>(_reader);
         }
 
         [Fact]
@@ -67,6 +66,33 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Assert.False(_reader.Disposed);
             _sut.Dispose();
             Assert.True(_reader.Disposed);
+        }
+        
+        private class FakeDbaseSchema : DbaseSchema
+        {
+            public FakeDbaseSchema()
+            {
+                Fields = new[]
+                {
+                    DbaseField.CreateInt32Field(new DbaseFieldName(nameof(Id)), new DbaseFieldLength(4))
+                };
+            }
+
+            public DbaseField Id => Fields[0];
+        }
+
+        private class FakeDbaseRecord : DbaseRecord
+        {
+            private static readonly FakeDbaseSchema Schema = new FakeDbaseSchema();
+
+            public FakeDbaseRecord()
+            {
+                Id = new DbaseInt32(Schema.Id);
+
+                Values = new DbaseFieldValue[] {Id};
+            }
+
+            public DbaseInt32 Id { get; }
         }
     }
 }

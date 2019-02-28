@@ -1,20 +1,19 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
     using AutoFixture;
     using Xunit;
 
-    public class AnonymousDbaseRecordEnumeratorWithShorterStreamTests
+    public class DbaseRecordEnumeratorWithShorterStreamTests
     {
-        private readonly IDbaseRecordEnumerator _sut;
+        private readonly IDbaseRecordEnumerator<FakeDbaseRecord> _sut;
         private readonly DisposableBinaryReader _reader;
         private readonly DbaseRecord _record;
 
-        public AnonymousDbaseRecordEnumeratorWithShorterStreamTests()
+        public DbaseRecordEnumeratorWithShorterStreamTests()
         {
             var fixture = new Fixture();
             fixture.CustomizeWordLength();
@@ -48,7 +47,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             stream.Position = position;
 
             _reader = new DisposableBinaryReader(stream, Encoding.UTF8, false);
-            _sut = header.CreateAnonymousDbaseRecordEnumerator(_reader);
+            _sut = header.CreateDbaseRecordEnumerator<FakeDbaseRecord>(_reader);
         }
 
         [Fact]
