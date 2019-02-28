@@ -66,7 +66,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 _comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
             }
 
-            public bool Equals(object left, object right)
+            bool IEqualityComparer<object>.Equals(object left, object right)
             {
                 if (left == null && right == null) return true;
                 if (left == null || right == null) return false;
@@ -74,7 +74,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                        _comparer.Equals(leftValue, rightValue);
             }
 
-            public int GetHashCode(object obj)
+            int IEqualityComparer<object>.GetHashCode(object obj)
             {
                 return obj is TDbaseFieldValue instance ? _comparer.GetHashCode(instance) : 0;
             }
@@ -172,7 +172,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 if (left.Value == null && right.Value == null) return left.Field.Equals(right.Field);
                 if (left.Value == null || right.Value == null) return false;
                 return left.Field.Equals(right.Field) &&
-                       Math.Abs(left.Value.Value - right.Value.Value) < _precision.ToInt32();
+                       Math.Abs(left.Value.Value - right.Value.Value) < Convert.ToSingle(Math.Pow(10, -_precision.ToInt32()));
             }
 
             public int GetHashCode(DbaseSingle obj)
@@ -197,7 +197,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 if (left.Value == null && right.Value == null) return left.Field.Equals(right.Field);
                 if (left.Value == null || right.Value == null) return false;
                 return left.Field.Equals(right.Field) &&
-                       Math.Abs(left.Value.Value - right.Value.Value) < _precision.ToInt32();
+                       Math.Abs(left.Value.Value - right.Value.Value) < Math.Pow(10, -_precision.ToInt32());
             }
 
             public int GetHashCode(DbaseDouble obj)
@@ -222,7 +222,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 if (left.Value == null && right.Value == null) return left.Field.Equals(right.Field);
                 if (left.Value == null || right.Value == null) return false;
                 return left.Field.Equals(right.Field) &&
-                       Math.Abs(left.Value.Value - right.Value.Value) < _precision.ToInt32();
+                       Math.Abs(left.Value.Value - right.Value.Value) < Convert.ToDecimal(Math.Pow(10, -_precision.ToInt32()));
             }
 
             public int GetHashCode(DbaseDecimal obj)
