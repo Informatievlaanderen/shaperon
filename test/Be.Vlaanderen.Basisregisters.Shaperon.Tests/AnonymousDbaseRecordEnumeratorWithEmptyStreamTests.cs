@@ -7,23 +7,26 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using AutoFixture;
     using Xunit;
 
-    public class ShapeRecordEnumeratorWithEmptyStreamTests
+    public class AnonymousDbaseRecordEnumeratorWithEmptyStreamTests
     {
-        private readonly IEnumerator<ShapeRecord> _sut;
+        private readonly IEnumerator<DbaseRecord> _sut;
         private readonly DisposableBinaryReader _reader;
 
-        public ShapeRecordEnumeratorWithEmptyStreamTests()
+        public AnonymousDbaseRecordEnumeratorWithEmptyStreamTests()
         {
             var fixture = new Fixture();
-            fixture.CustomizeShapeRecordCount();
             fixture.CustomizeWordLength();
+            fixture.CustomizeDbaseFieldName();
+            fixture.CustomizeDbaseFieldLength();
+            fixture.CustomizeDbaseDecimalCount();
+            fixture.CustomizeDbaseField();
+            fixture.CustomizeDbaseCodePage();
+            fixture.CustomizeDbaseRecordCount();
+            fixture.CustomizeDbaseSchema();
 
-            var header = new ShapeFileHeader(
-                fixture.Create<WordLength>(),
-                fixture.Create<ShapeType>(),
-                fixture.Create<BoundingBox3D>());
+            var header = fixture.Create<DbaseFileHeader>();
             _reader = new DisposableBinaryReader(new MemoryStream(), Encoding.UTF8, false);
-            _sut = header.CreateShapeRecordEnumerator(_reader);
+            _sut = header.CreateAnonymousDbaseRecordEnumerator(_reader);
         }
 
         [Fact]

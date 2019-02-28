@@ -10,16 +10,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
     public class ShapeRecordEnumeratorWithShorterStreamTests
     {
-        private readonly Fixture _fixture;
         private readonly IEnumerator<ShapeRecord> _sut;
         private readonly DisposableBinaryReader _reader;
         private readonly ShapeRecord _record;
 
         public ShapeRecordEnumeratorWithShorterStreamTests()
         {
-            _fixture = new Fixture();
-            _fixture.CustomizeShapeRecordCount();
-            _fixture.CustomizeWordLength();
+            var fixture = new Fixture();
+            fixture.CustomizeShapeRecordCount();
+            fixture.CustomizeWordLength();
 
             var content = new PointShapeContent(new PointM(1.0, 1.0));
             var number = RecordNumber.Initial;
@@ -27,13 +26,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var header = new ShapeFileHeader(
                 ShapeFileHeader.Length.Plus(_record.Length.Times(2)),
                 ShapeType.Point,
-                _fixture.Create<BoundingBox3D>());
+                fixture.Create<BoundingBox3D>());
             var stream = new MemoryStream();
             using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
             {
                 header.Write(writer);
                 _record.Write(writer);
-                writer.Write(_fixture.CreateMany<byte>(_record.Length.ToByteLength().ToInt32() / 2).ToArray());
+                writer.Write(fixture.CreateMany<byte>(_record.Length.ToByteLength().ToInt32() / 2).ToArray());
                 writer.Flush();
             }
 
