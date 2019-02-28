@@ -1,3 +1,15 @@
+# [4.0.0](https://github.com/informatievlaanderen/shaperon/compare/v3.1.0...v4.0.0) (2019-02-28)
+
+
+### Features
+
+* dbase record enumerators ([db7da4a](https://github.com/informatievlaanderen/shaperon/commit/db7da4a))
+
+
+### BREAKING CHANGES
+
+* removed numbered dbase record support
+
 # [3.1.0](https://github.com/informatievlaanderen/shaperon/compare/v3.0.1...v3.1.0) (2019-02-28)
 
 
