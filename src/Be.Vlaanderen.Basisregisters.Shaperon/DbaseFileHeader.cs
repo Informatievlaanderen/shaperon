@@ -172,9 +172,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     return false;
                 }
 
-                var nextNumber = _state == State.Initial
-                    ? _number
-                    : _number.Next();
                 if (_state == State.Initial)
                 {
                     _state = State.Started;
@@ -187,6 +184,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         _state = State.Ended;
                         return false;
                     }
+
+                    _number = _number.Next();
                 }
 
                 try
@@ -194,7 +193,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     var record = _header.CreateDbaseRecord();
                     record.Read(_reader);
                     _current = record;
-                    _number = nextNumber;
                 }
                 catch (EndOfStreamException)
                 {
@@ -270,9 +268,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     return false;
                 }
 
-                var nextNumber = _state == State.Initial
-                    ? _number
-                    : _number.Next();
                 if (_state == State.Initial)
                 {
                     _state = State.Started;
@@ -285,6 +280,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         _state = State.Ended;
                         return false;
                     }
+
+                    _number = _number.Next();
                 }
 
                 try
@@ -292,7 +289,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     var record = new TDbaseRecord();
                     record.Read(_reader);
                     _current = record;
-                    _number = nextNumber;
                 }
                 catch (EndOfStreamException)
                 {
