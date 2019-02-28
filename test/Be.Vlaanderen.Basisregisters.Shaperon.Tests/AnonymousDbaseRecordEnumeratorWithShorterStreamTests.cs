@@ -83,7 +83,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
 
-            Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
+            Assert.Equal(RecordNumber.Initial.Next(), _sut.CurrentRecordNumber);
         }
 
         [Fact]
