@@ -353,11 +353,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Fact]
-        public void CreateNumberedAnonymousDbaseRecordEnumeratorThrowsWhenReaderIsNull()
+        public void CreateAnonymousDbaseRecordEnumeratorReturnsExpectedResult()
         {
             var sut = _fixture.Create<DbaseFileHeader>();
 
-            Assert.Throws<ArgumentNullException>(() => sut.CreateNumberedAnonymousDbaseRecordEnumerator(null));
+            Assert.IsAssignableFrom<IDbaseRecordEnumerator>(sut.CreateAnonymousDbaseRecordEnumerator(_fixture.Create<BinaryReader>()));
         }
 
         [Fact]
@@ -369,11 +369,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Fact]
-        public void CreateNumberedDbaseRecordEnumeratorThrowsWhenReaderIsNull()
+        public void CreateDbaseRecordEnumeratorReturnsExpectedResult()
         {
             var sut = _fixture.Create<DbaseFileHeader>();
 
-            Assert.Throws<ArgumentNullException>(() => sut.CreateNumberedDbaseRecordEnumerator<FakeDbaseRecord>(null));
+            Assert.IsAssignableFrom<IDbaseRecordEnumerator<FakeDbaseRecord>>(sut.CreateDbaseRecordEnumerator<FakeDbaseRecord>(_fixture.Create<BinaryReader>()));
         }
 
         private class FakeDbaseRecord : DbaseRecord

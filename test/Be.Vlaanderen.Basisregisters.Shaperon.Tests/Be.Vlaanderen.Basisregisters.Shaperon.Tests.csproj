@@ -2,9 +2,10 @@
   <Import Project="..\..\packages\Be.Vlaanderen.Basisregisters.Build.Pipeline\Content\Be.Vlaanderen.Basisregisters.Build.Pipeline.Settings.Test.props" />
 
   <PropertyGroup>
+    <IsPackable>false</IsPackable>
     <RootNamespace>Be.Vlaanderen.Basisregisters.Shaperon</RootNamespace>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\..\src\Be.Vlaanderen.Basisregisters.Shaperon\Be.Vlaanderen.Basisregisters.Shaperon.csproj" />
   </ItemGroup>
