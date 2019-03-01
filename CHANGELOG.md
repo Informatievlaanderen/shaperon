@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/informatievlaanderen/shaperon/compare/v4.0.0...v4.0.1) (2019-03-01)
+
+
+### Bug Fixes
+
+* slight change to how record number progresses ([ad60a64](https://github.com/informatievlaanderen/shaperon/commit/ad60a64))
+
 # [4.0.0](https://github.com/informatievlaanderen/shaperon/compare/v3.1.0...v4.0.0) (2019-02-28)
 
 
