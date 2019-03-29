@@ -34,6 +34,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Fact]
+        public void FieldsCanNotBeSetToNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => new SetsFieldsToNullSchema());
+        }
+
+        [Fact]
         public void FieldsCanNotExceedMaximumFieldCount()
         {
             var fieldCount = new Random().Next(DbaseSchema.MaximumFieldCount + 1, DbaseSchema.MaximumFieldCount * 2);
@@ -127,6 +133,14 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 new EqualsSuccessiveAssertion(_fixture),
                 new GetHashCodeSuccessiveAssertion(_fixture)
             ).Verify(typeof(AnonymousDbaseSchema));
+        }
+
+        private class SetsFieldsToNullSchema : DbaseSchema
+        {
+            public SetsFieldsToNullSchema()
+            {
+                Fields = null;
+            }
         }
     }
 }

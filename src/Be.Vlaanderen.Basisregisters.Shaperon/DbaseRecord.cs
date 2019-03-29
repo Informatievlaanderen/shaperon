@@ -4,7 +4,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.IO;
     using System.Text;
 
-    public abstract class DbaseRecord
+    public abstract partial class DbaseRecord
     {
         public const byte EndOfFile = 0x1a;
 
@@ -31,18 +31,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         protected virtual void ReadValues(BinaryReader reader)
         {
-            if (reader == null)
-                throw new ArgumentNullException(nameof(reader));
-
             foreach (var value in Values)
                 value.Read(reader);
-        }
-
-        public void FromBytes(byte[] bytes, Encoding encoding)
-        {
-            using (var input = new MemoryStream(bytes))
-            using (var reader = new BinaryReader(input, encoding))
-                Read(reader);
         }
 
         public void Write(BinaryWriter writer)
@@ -56,22 +46,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         protected virtual void WriteValues(BinaryWriter writer)
         {
-            if (writer == null)
-                throw new ArgumentNullException(nameof(writer));
-
             foreach (var value in Values)
                 value.Write(writer);
-        }
-
-        public byte[] ToBytes(Encoding encoding)
-        {
-            using (var output = new MemoryStream())
-            using (var writer = new BinaryWriter(output, encoding))
-            {
-                Write(writer);
-                writer.Flush();
-                return output.ToArray();
-            }
         }
     }
 }

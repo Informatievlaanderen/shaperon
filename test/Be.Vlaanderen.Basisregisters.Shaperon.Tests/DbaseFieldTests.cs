@@ -512,7 +512,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [InlineData(0)]
         [InlineData(1)]
         [InlineData(2)]
         public void CreateDoubleFieldThrowsWhenDecimalCountGreaterThanZeroAndLengthSmallerThan3(int smallerThan3)
@@ -570,7 +569,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [InlineData(0)]
         [InlineData(1)]
         [InlineData(2)]
         public void CreateSingleFieldThrowsWhenDecimalCountGreaterThanZeroAndLengthSmallerThan3(int smallerThan3)

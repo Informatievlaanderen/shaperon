@@ -3,8 +3,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using Albedo;
     using AutoFixture;
     using AutoFixture.Idioms;
-    using GeoAPI.Geometries;
-    using NetTopologySuite.Geometries;
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -44,29 +43,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     }
                 ).OmitAutoProperties()
             );
-            _fixture.Customize<PointM>(customization =>
-                customization.FromFactory(generator =>
-                    new PointM(
-                        _fixture.Create<double>(),
-                        _fixture.Create<double>(),
-                        _fixture.Create<double>(),
-                        _fixture.Create<double>()
-                    )
-                ).OmitAutoProperties()
-            );
-            _fixture.Customize<ILineString>(customization =>
-                customization.FromFactory(generator =>
-                    new LineString(
-                        new PointSequence(_fixture.CreateMany<PointM>()),
-                        GeometryConfiguration.GeometryFactory)
-                ).OmitAutoProperties()
-            );
-            _fixture.Customize<MultiLineString>(customization =>
-                customization.FromFactory(generator =>
-                    new MultiLineString(_fixture.CreateMany<ILineString>(generator.Next(1, 10)).ToArray())
-                ).OmitAutoProperties()
-            );
+            _fixture.CustomizePoint();
             _fixture.CustomizePolygon();
+            _fixture.CustomizePolyLineM();
             _fixture.Customize<ShapeContent>(customization =>
                 customization.FromFactory(generator =>
                 {
@@ -77,10 +56,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                             content = NullShapeContent.Instance;
                             break;
                         case 1:
-                            content = new PointShapeContent(_fixture.Create<PointM>());
+                            content = new PointShapeContent(_fixture.Create<Point>());
                             break;
                         case 2:
-                            content = new PolyLineMShapeContent(_fixture.Create<MultiLineString>());
+                            content = new PolyLineMShapeContent(_fixture.Create<PolyLineM>());
                             break;
                         case 3:
                             content = new PolygonShapeContent(_fixture.Create<Polygon>());
@@ -108,6 +87,23 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 Assert.Same(header, sut.Header);
                 Assert.Same(writer, sut.Writer);
+            }
+        }
+
+        [Fact]
+        public void WriteOneRecordCanNotBeNull()
+        {
+            var expectedHeader = new ShapeFileHeader(
+                ShapeFileHeader.Length,
+                _fixture.Create<ShapeType>(),
+                BoundingBox3D.Empty
+            );
+            using (var stream = new MemoryStream())
+            {
+                using (var sut = new ShapeBinaryWriter(expectedHeader, new BinaryWriter(stream, Encoding.ASCII, true)))
+                {
+                    Assert.Throws<ArgumentNullException>(() => sut.Write((ShapeRecord) null));
+                }
             }
         }
 
@@ -143,6 +139,45 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                     Assert.Equal(expectedHeader, actualHeader);
                     Assert.Equal(expectedRecord, actualRecord, new ShapeRecordEqualityComparer());
+                }
+            }
+        }
+
+        [Fact]
+        public void WriteOneOnDisposedInstanceHasExpectedResult()
+        {
+            var shapeType = _fixture.Create<ShapeType>();
+            var expectedRecord = GenerateOneRecord(shapeType);
+            var length = ShapeFileHeader.Length.Plus(expectedRecord.Length);
+            var boundingBox = BoundingBox3D.Empty;
+            if (expectedRecord.Content is PointShapeContent pointContent)
+                boundingBox = BoundingBox3D.FromGeometry(pointContent.Shape);
+            if (expectedRecord.Content is PolyLineMShapeContent lineContent)
+                boundingBox = BoundingBox3D.FromGeometry(lineContent.Shape);
+            var expectedHeader = new ShapeFileHeader(length, shapeType, boundingBox);
+            using (var stream = new MemoryStream())
+            {
+                using (var sut = new ShapeBinaryWriter(expectedHeader, new BinaryWriter(stream, Encoding.ASCII, true)))
+                {
+                    sut.Dispose();
+                    Assert.Throws<ObjectDisposedException>(() => sut.Write(expectedRecord));
+                }
+            }
+        }
+
+        [Fact]
+        public void WriteManyRecordsCanNotBeNull()
+        {
+            var expectedHeader = new ShapeFileHeader(
+                ShapeFileHeader.Length,
+                _fixture.Create<ShapeType>(),
+                BoundingBox3D.Empty
+            );
+            using (var stream = new MemoryStream())
+            {
+                using (var sut = new ShapeBinaryWriter(expectedHeader, new BinaryWriter(stream, Encoding.ASCII, true)))
+                {
+                    Assert.Throws<ArgumentNullException>(() => sut.Write((IEnumerable<ShapeRecord>) null));
                 }
             }
         }
@@ -193,16 +228,65 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
+        [Fact]
+        public void WriteManyOnDisposedInstanceHasExpectedResult()
+        {
+            var shapeType = _fixture.Create<ShapeType>();
+            var recordCount = _fixture.Create<ShapeRecordCount>();
+            var expectedRecords = GenerateManyRecords(shapeType, recordCount);
+            var length = expectedRecords.Aggregate(ShapeFileHeader.Length,
+                (result, current) => result.Plus(current.Length));
+            var boundingBox = expectedRecords.Aggregate(BoundingBox3D.Empty,
+                (result, current) =>
+                {
+                    if (current.Content is PointShapeContent pointContent)
+                        return result.ExpandWith(BoundingBox3D.FromGeometry(pointContent.Shape));
+                    if (current.Content is PolyLineMShapeContent lineContent)
+                        return result.ExpandWith(BoundingBox3D.FromGeometry(lineContent.Shape));
+                    return result;
+                });
+            var expectedHeader = new ShapeFileHeader(length, shapeType, boundingBox);
+            using (var stream = new MemoryStream())
+            {
+                using (var sut = new ShapeBinaryWriter(expectedHeader, new BinaryWriter(stream, Encoding.ASCII, true)))
+                {
+                    sut.Dispose();
+                    Assert.Throws<ObjectDisposedException>(() => sut.Write(expectedRecords));
+                }
+            }
+        }
+
+
+        [Fact]
+        public void DisposeHasExpectedResult()
+        {
+            var expectedHeader = new ShapeFileHeader(
+                ShapeFileHeader.Length,
+                _fixture.Create<ShapeType>(),
+                BoundingBox3D.Empty
+            );
+
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream, Encoding.ASCII, false))
+                using (var sut = new ShapeBinaryWriter(expectedHeader, writer))
+                {
+                    sut.Dispose();
+                    Assert.Throws<ObjectDisposedException>(() => writer.Write(_fixture.Create<byte>()));
+                }
+            }
+        }
+
         private ShapeRecord GenerateOneRecord(ShapeType typeOfShape)
         {
             ShapeContent content = null;
             switch (typeOfShape)
             {
                 case ShapeType.Point:
-                    content = new PointShapeContent(_fixture.Create<PointM>());
+                    content = new PointShapeContent(_fixture.Create<Point>());
                     break;
                 case ShapeType.PolyLineM:
-                    content = new PolyLineMShapeContent(_fixture.Create<MultiLineString>());
+                    content = new PolyLineMShapeContent(_fixture.Create<PolyLineM>());
                     break;
                 case ShapeType.Polygon:
                     content = new PolygonShapeContent(_fixture.Create<Polygon>());
@@ -226,10 +310,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 switch (typeOfShape)
                 {
                     case ShapeType.Point:
-                        content = new PointShapeContent(_fixture.Create<PointM>());
+                        content = new PointShapeContent(_fixture.Create<Point>());
                         break;
                     case ShapeType.PolyLineM:
-                        content = new PolyLineMShapeContent(_fixture.Create<MultiLineString>());
+                        content = new PolyLineMShapeContent(_fixture.Create<PolyLineM>());
                         break;
                     case ShapeType.Polygon:
                         content = new PolygonShapeContent(_fixture.Create<Polygon>());

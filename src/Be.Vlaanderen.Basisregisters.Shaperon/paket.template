@@ -14,10 +14,6 @@ licenseUrl https://opensource.org/licenses/MIT
 
 description Lightweight dbase and shape record handling.
 
-dependencies
-  framework: netstandard20
-    NetTopologySuite >= LOCKEDVERSION
-
 files
   bin\Release\netstandard2.0\Be.Vlaanderen.Basisregisters.Shaperon.dll => lib\netstandard2.0
   bin\Release\netstandard2.0\Be.Vlaanderen.Basisregisters.Shaperon.pdb => lib\netstandard2.0

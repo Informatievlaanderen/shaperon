@@ -17,10 +17,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [InlineData(0, 0, 0)]
-        [InlineData(1, 0, 1)]
-        [InlineData(0, 1, 1)]
         [InlineData(1, 1, 1)]
+        [InlineData(2, 1, 2)]
+        [InlineData(1, 2, 2)]
+        [InlineData(2, 2, 2)]
         public void MaxReturnsExpectedResult(int left, int right, int expected)
         {
             var result = DbaseFieldLength.Max(new DbaseFieldLength(left), new DbaseFieldLength(right));
@@ -29,10 +29,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [InlineData(0, 0, 0)]
-        [InlineData(1, 0, 0)]
-        [InlineData(0, 1, 0)]
         [InlineData(1, 1, 1)]
+        [InlineData(2, 1, 1)]
+        [InlineData(1, 2, 1)]
+        [InlineData(2, 2, 2)]
         public void MinReturnsExpectedResult(int left, int right, int expected)
         {
             var result = DbaseFieldLength.Min(new DbaseFieldLength(left), new DbaseFieldLength(right));
@@ -45,7 +45,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             var result = DbaseFieldLength.MinLength;
 
-            Assert.Equal(new DbaseFieldLength(0), result);
+            Assert.Equal(new DbaseFieldLength(1), result);
         }
 
         [Fact]
@@ -165,7 +165,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void MinusDbaseFieldLengthReturnsExpectedValue()
         {
             var value = _fixture.Create<DbaseFieldLength>();
-            var sut = new Generator<DbaseFieldLength>(_fixture).First(candidate => candidate >= value);
+            var sut = new Generator<DbaseFieldLength>(_fixture).First(candidate => candidate > value);
 
             var result = sut.Minus(value);
 
@@ -176,7 +176,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void MinusDbaseFieldLengthOperatorReturnsExpectedValue()
         {
             var value = _fixture.Create<DbaseFieldLength>();
-            var sut = new Generator<DbaseFieldLength>(_fixture).First(candidate => candidate >= value);
+            var sut = new Generator<DbaseFieldLength>(_fixture).First(candidate => candidate > value);
 
             var result = sut - value;
 
@@ -190,11 +190,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [InlineData(0, 254, -1)]
-        [InlineData(0, 1, -1)]
-        [InlineData(1, 1, 0)]
-        [InlineData(1, 0, 1)]
-        [InlineData(254, 0, 1)]
+        [InlineData(1, 254, -1)]
+        [InlineData(1, 2, -1)]
+        [InlineData(2, 2, 0)]
+        [InlineData(2, 1, 1)]
+        [InlineData(254, 1, 1)]
         public void CompareToDbaseFieldLengthReturnsExpectedResult(int left, int right, int expected)
         {
             var sut = new DbaseFieldLength(left);
@@ -207,9 +207,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
 
         [Theory]
-        [InlineData(0, 0, true)]
-        [InlineData(0, 1, false)]
-        [InlineData(1, 0, false)]
+        [InlineData(1, 1, true)]
+        [InlineData(1, 2, false)]
+        [InlineData(2, 1, false)]
         public void EqualityOperatorReturnsExpectedValue(int left, int right, bool expected)
         {
             var sut = new DbaseFieldLength(left);
@@ -221,9 +221,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [InlineData(0, 0, false)]
-        [InlineData(0, 1, true)]
-        [InlineData(1, 0, true)]
+        [InlineData(1, 1, false)]
+        [InlineData(1, 2, true)]
+        [InlineData(2, 1, true)]
         public void InequalityOperatorReturnsExpectedValue(int left, int right, bool expected)
         {
             var sut = new DbaseFieldLength(left);
@@ -235,11 +235,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [InlineData(0, 254, false)]
-        [InlineData(0, 1, false)]
-        [InlineData(1, 1, false)]
-        [InlineData(1, 0, true)]
-        [InlineData(254, 0, true)]
+        [InlineData(1, 254, false)]
+        [InlineData(1, 2, false)]
+        [InlineData(2, 2, false)]
+        [InlineData(2, 1, true)]
+        [InlineData(254, 1, true)]
         public void GreaterThanDbaseFieldLengthOperatorReturnsExpectedValue(int left, int right, bool expected)
         {
             var sut = new DbaseFieldLength(left);
@@ -251,11 +251,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [InlineData(0, 254, false)]
-        [InlineData(0, 1, false)]
-        [InlineData(1, 1, true)]
-        [InlineData(1, 0, true)]
-        [InlineData(254, 0, true)]
+        [InlineData(1, 254, false)]
+        [InlineData(1, 2, false)]
+        [InlineData(2, 2, true)]
+        [InlineData(2, 1, true)]
+        [InlineData(254, 1, true)]
         public void GreaterThanOrEqualToDbaseFieldLengthOperatorReturnsExpectedValue(int left, int right, bool expected)
         {
             var sut = new DbaseFieldLength(left);
@@ -267,11 +267,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [InlineData(0, 254, true)]
-        [InlineData(0, 1, true)]
-        [InlineData(1, 1, false)]
-        [InlineData(1, 0, false)]
-        [InlineData(254, 0, false)]
+        [InlineData(1, 254, true)]
+        [InlineData(1, 2, true)]
+        [InlineData(2, 2, false)]
+        [InlineData(2, 1, false)]
+        [InlineData(254, 1, false)]
         public void LessThanDbaseFieldLengthOperatorReturnsExpectedValue(int left, int right, bool expected)
         {
             var sut = new DbaseFieldLength(left);
@@ -283,11 +283,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [InlineData(0, 254, true)]
-        [InlineData(0, 1, true)]
-        [InlineData(1, 1, true)]
-        [InlineData(1, 0, false)]
-        [InlineData(254, 0, false)]
+        [InlineData(1, 254, true)]
+        [InlineData(1, 2, true)]
+        [InlineData(2, 2, true)]
+        [InlineData(2, 1, false)]
+        [InlineData(254, 1, false)]
         public void LessThanOrEqualToDbaseFieldLengthOperatorReturnsExpectedValue(int left, int right, bool expected)
         {
             var sut = new DbaseFieldLength(left);

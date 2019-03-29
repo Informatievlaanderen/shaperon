@@ -24,6 +24,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (record == null)
                 throw new ArgumentNullException(nameof(record));
+            if (_disposed)
+                throw new ObjectDisposedException(nameof(DbaseBinaryWriter));
 
             record.Write(Writer);
         }
@@ -32,6 +34,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (records == null)
                 throw new ArgumentNullException(nameof(records));
+            if (_disposed)
+                throw new ObjectDisposedException(nameof(DbaseBinaryWriter));
 
             foreach (var record in records)
                 record.Write(Writer);

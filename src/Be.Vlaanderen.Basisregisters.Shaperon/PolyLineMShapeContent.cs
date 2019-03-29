@@ -1,11 +1,8 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using GeoAPI.Geometries;
-    using NetTopologySuite.Geometries;
 
     public class PolyLineMShapeContent : ShapeContent
     {
@@ -19,21 +16,18 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     .Times(3)
                     .Plus(BoundingBoxByteLength); // ShapeType, NumberOfParts, NumberOfPoints, BoundingBox
 
-        public MultiLineString Shape { get; }
+        public PolyLineM Shape { get; }
 
-        public PolyLineMShapeContent(MultiLineString shape)
+        public PolyLineMShapeContent(PolyLineM shape)
         {
             Shape = shape ?? throw new ArgumentNullException(nameof(shape));
             ShapeType = ShapeType.PolyLineM;
 
-            var numberOfParts = shape.NumGeometries;
-            var numberOfPoints = shape.NumPoints;
-
             ContentLength = ContentHeaderLength
-                .Plus(ByteLength.Int32.Times(numberOfParts)) // Parts
-                .Plus(ByteLength.Double.Times(numberOfPoints * 2)) // Points(X,Y)
+                .Plus(ByteLength.Int32.Times(shape.NumberOfParts)) // Parts
+                .Plus(ByteLength.Double.Times(shape.NumberOfPoints * 2)) // Points(X,Y)
                 .Plus(MeasureRangeByteLength)
-                .Plus(ByteLength.Double.Times(numberOfPoints)) // Points(M)
+                .Plus(ByteLength.Double.Times(shape.NumberOfPoints)) // Points(M)
                 .ToWordLength();
         }
 
@@ -42,7 +36,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
 
-            reader.ReadBytes(BoundingBoxByteLength.ToInt32()); // skip BoundingBox
+            var box = new BoundingBox2D(
+                reader.ReadDoubleLittleEndian(),
+                reader.ReadDoubleLittleEndian(),
+                reader.ReadDoubleLittleEndian(),
+                reader.ReadDoubleLittleEndian());
             var numberOfParts = reader.ReadInt32LittleEndian();
             var numberOfPoints = reader.ReadInt32LittleEndian();
 
@@ -50,9 +48,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             for (var partIndex = 0; partIndex < numberOfParts; partIndex++)
                 parts[partIndex] = reader.ReadInt32LittleEndian();
 
-            var points = new PointM[numberOfPoints];
+            var points = new Point[numberOfPoints];
             for (var pointIndex = 0; pointIndex < numberOfPoints; pointIndex++)
-                points[pointIndex] = new PointM(
+                points[pointIndex] = new Point(
                     reader.ReadDoubleLittleEndian(),
                     reader.ReadDoubleLittleEndian());
 
@@ -60,28 +58,20 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .Plus(ByteLength.Int32.Times(numberOfParts)) // Parts
                 .Plus(ByteLength.Double.Times(numberOfPoints * 2)); // Points(X,Y)
 
+            double[] measures;
             if (header.ContentLength > contentLengthWithoutMeasures)
             {
+                measures = new double[numberOfPoints];
                 reader.ReadBytes(MeasureRangeByteLength.ToInt32()); // skip MeasureRange
                 for (var measureIndex = 0; measureIndex < numberOfPoints; measureIndex++)
-                    points[measureIndex].ChangeMeasurement(reader.ReadDoubleLittleEndian()); // Points[i].M
+                    measures[measureIndex] = reader.ReadDoubleLittleEndian();
             }
-
-            var lines = new ILineString[numberOfParts];
-            var toPointIndex = points.Length;
-
-            for (var partIndex = numberOfParts - 1; partIndex >= 0; partIndex--)
+            else
             {
-                var fromPointIndex = parts[partIndex];
-
-                lines[partIndex] = new LineString(
-                    new PointSequence(new ArraySegment<PointM>(points, fromPointIndex, toPointIndex - fromPointIndex)),
-                    GeometryConfiguration.GeometryFactory);
-
-                toPointIndex = fromPointIndex;
+                measures = new double[0];
             }
 
-            return new PolyLineMShapeContent(new MultiLineString(lines));
+            return new PolyLineMShapeContent(new PolyLineM(box, parts, points, measures));
         }
 
         public static ShapeContent ReadPolyLineM(BinaryReader reader)
@@ -109,7 +99,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
 
-            reader.ReadBytes(BoundingBoxByteLength.ToInt32()); // skip BoundingBox
+            var box = new BoundingBox2D(
+                reader.ReadDoubleLittleEndian(),
+                reader.ReadDoubleLittleEndian(),
+                reader.ReadDoubleLittleEndian(),
+                reader.ReadDoubleLittleEndian());
             var numberOfParts = reader.ReadInt32LittleEndian();
             var numberOfPoints = reader.ReadInt32LittleEndian();
 
@@ -117,34 +111,26 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             for (var partIndex = 0; partIndex < numberOfParts; partIndex++)
                 parts[partIndex] = reader.ReadInt32LittleEndian();
 
-            var points = new PointM[numberOfPoints];
+            var points = new Point[numberOfPoints];
             for (var pointIndex = 0; pointIndex < numberOfPoints; pointIndex++)
-                points[pointIndex] = new PointM(
+                points[pointIndex] = new Point(
                     reader.ReadDoubleLittleEndian(),
                     reader.ReadDoubleLittleEndian());
 
+            double[] measures;
             if (reader.BaseStream.CanSeek && reader.BaseStream.Position != reader.BaseStream.Length)
             {
+                measures = new double[numberOfPoints];
                 reader.ReadBytes(MeasureRangeByteLength.ToInt32()); // skip MeasureRange
                 for (var measureIndex = 0; measureIndex < numberOfPoints; measureIndex++)
-                    points[measureIndex].ChangeMeasurement(reader.ReadDoubleLittleEndian()); // Points[i].M
-            } //else try-catch-EndOfStreamException?? or only support seekable streams?
-
-            var lines = new ILineString[numberOfParts];
-            var toPointIndex = points.Length;
-
-            for (var partIndex = numberOfParts - 1; partIndex >= 0; partIndex--)
+                    measures[measureIndex] = reader.ReadDoubleLittleEndian();
+            }
+            else
             {
-                var fromPointIndex = parts[partIndex];
-
-                lines[partIndex] = new LineString(
-                    new PointSequence(new ArraySegment<PointM>(points, fromPointIndex, toPointIndex - fromPointIndex)),
-                    GeometryConfiguration.GeometryFactory);
-
-                toPointIndex = fromPointIndex;
+                measures = new double[0];
             }
 
-            return new PolyLineMShapeContent(new MultiLineString(lines));
+            return new PolyLineMShapeContent(new PolyLineM(box, parts, points, measures));
         }
 
         internal static ShapeContent ReadAnonymousPolyLineMGeometry(BinaryReader reader)
@@ -182,50 +168,32 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (writer == null)
                 throw new ArgumentNullException(nameof(writer));
 
-            //TODO: If the shape is empty, emit null shape instead?
-
             writer.WriteInt32LittleEndian((int) ShapeType);
 
-            var boundingBox = Shape.EnvelopeInternal;
-            writer.WriteDoubleLittleEndian(boundingBox.MinX);
-            writer.WriteDoubleLittleEndian(boundingBox.MinY);
-            writer.WriteDoubleLittleEndian(boundingBox.MaxX);
-            writer.WriteDoubleLittleEndian(boundingBox.MaxY);
-            writer.WriteInt32LittleEndian(Shape.NumGeometries);
-            writer.WriteInt32LittleEndian(Shape.NumPoints);
+            writer.WriteDoubleLittleEndian(Shape.BoundingBox.XMin);
+            writer.WriteDoubleLittleEndian(Shape.BoundingBox.YMin);
+            writer.WriteDoubleLittleEndian(Shape.BoundingBox.XMax);
+            writer.WriteDoubleLittleEndian(Shape.BoundingBox.YMax);
+            writer.WriteInt32LittleEndian(Shape.NumberOfParts);
+            writer.WriteInt32LittleEndian(Shape.NumberOfPoints);
 
-            var lineStrings = Shape
-                .Geometries
-                .Cast<LineString>()
-                .ToArray();
-
-            var offset = 0;
-            foreach (var line in lineStrings)
+            foreach (var part in Shape.Parts)
             {
-                writer.WriteInt32LittleEndian(offset);
-                offset += line.NumPoints;
+                writer.WriteInt32LittleEndian(part);
             }
 
-            foreach (var point in lineStrings.SelectMany(line => line.Coordinates))
+            foreach (var point in Shape.Points)
             {
                 writer.WriteDoubleLittleEndian(point.X);
                 writer.WriteDoubleLittleEndian(point.Y);
             }
 
-            var measures = Shape.GetOrdinates(Ordinate.M).ToArray();
-
-            var validMeasureValues = measures
-                .Where(number => false == double.IsNaN(number))
-                .ToArray();
-
-            writer.WriteDoubleLittleEndian(validMeasureValues.DefaultIfEmpty(double.PositiveInfinity)
-                .Min()); // Measure.Min
-
-            writer.WriteDoubleLittleEndian(validMeasureValues.DefaultIfEmpty(double.NegativeInfinity)
-                .Max()); // Measure.Max
-
-            foreach (var measure in measures)
-                writer.WriteDoubleLittleEndian(measure); // Points[i].M
+            writer.WriteDoubleLittleEndian(Shape.MeasureRange.Min);
+            writer.WriteDoubleLittleEndian(Shape.MeasureRange.Max);
+            foreach (var measure in Shape.Measures)
+            {
+                writer.WriteDoubleLittleEndian(measure);
+            }
         }
     }
 }

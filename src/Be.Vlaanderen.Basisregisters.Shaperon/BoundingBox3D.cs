@@ -2,7 +2,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.Linq;
-    using GeoAPI.Geometries;
 
     public class BoundingBox3D
     {
@@ -73,20 +72,43 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 Math.Max(MMax, other.MMax));
         }
 
-        public static BoundingBox3D FromGeometry(IGeometry geometry)
+        public static BoundingBox3D FromGeometry(Point geometry)
         {
-            var z = geometry.GetOrdinates(Ordinate.Z);
-            var m = geometry.GetOrdinates(Ordinate.M);
-
             return new BoundingBox3D(
-                geometry.EnvelopeInternal.MinX,
-                geometry.EnvelopeInternal.MinY,
-                geometry.EnvelopeInternal.MaxX,
-                geometry.EnvelopeInternal.MaxY,
-                z.DefaultIfEmpty(double.NaN).Min(),
-                z.DefaultIfEmpty(double.NaN).Max(),
-                m.DefaultIfEmpty(double.NaN).Min(),
-                m.DefaultIfEmpty(double.NaN).Max());
+                geometry.X,
+                geometry.Y,
+                geometry.X,
+                geometry.Y,
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                double.NaN);
+        }
+
+        public static BoundingBox3D FromGeometry(PolyLineM geometry)
+        {
+            return new BoundingBox3D(
+                geometry.Points.Select(point => point.X).Min(),
+                geometry.Points.Select(point => point.Y).Min(),
+                geometry.Points.Select(point => point.X).Max(),
+                geometry.Points.Select(point => point.Y).Max(),
+                double.NaN,
+                double.NaN,
+                geometry.MeasureRange.Min,
+                geometry.MeasureRange.Max);
+        }
+
+        public static BoundingBox3D FromGeometry(Polygon geometry)
+        {
+            return new BoundingBox3D(
+                geometry.Points.Select(point => point.X).Min(),
+                geometry.Points.Select(point => point.Y).Min(),
+                geometry.Points.Select(point => point.X).Max(),
+                geometry.Points.Select(point => point.Y).Max(),
+                double.NaN,
+                double.NaN,
+                double.NaN,
+                double.NaN);
         }
     }
 }

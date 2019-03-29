@@ -7,7 +7,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.IO;
     using System.Text;
 
-    public class NullShapeContentTests
+    public partial class NullShapeContentTests
     {
         private readonly Fixture _fixture;
 
@@ -53,70 +53,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Fact]
-        public void AnonymousHasExpectedResult()
-        {
-            var sut = NullShapeContent.Instance;
-
-            var result = sut.Anonymous();
-
-            Assert.Same(sut, result);
-        }
-
-        [Fact]
-        public void ToBytesHasExpectedResult()
-        {
-            var sut = NullShapeContent.Instance;
-
-            var result = sut.ToBytes();
-
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
-            {
-                sut.Write(writer);
-                writer.Flush();
-
-                Assert.Equal(stream.ToArray(), result);
-            }
-        }
-
-        [Fact]
-        public void FromBytesHasExpectedResult()
-        {
-            var content = NullShapeContent.Instance;
-
-            var result = ShapeContent.FromBytes(content.ToBytes());
-
-            Assert.Same(content, result);
-        }
-
-        [Fact]
-        public void ToBytesWithEncodingHasExpectedResult()
-        {
-            var sut = NullShapeContent.Instance;
-
-            var result = sut.ToBytes(Encoding.UTF8);
-
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8))
-            {
-                sut.Write(writer);
-                writer.Flush();
-
-                Assert.Equal(stream.ToArray(), result);
-            }
-        }
-
-        [Fact]
-        public void FromBytesWithEncodingHasExpectedResult()
-        {
-            var content = NullShapeContent.Instance;
-
-            var result = ShapeContent.FromBytes(content.ToBytes(Encoding.UTF8), Encoding.UTF8);
-
-            Assert.Same(content, result);
-        }
-
-        [Fact]
         public void ReadCanReadWriteNullShape()
         {
             var sut = NullShapeContent.Instance;
@@ -134,31 +70,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
                     var result = (NullShapeContent) ShapeContent.Read(reader);
-
-                    Assert.Equal(sut.ShapeType, result.ShapeType);
-                    Assert.Equal(sut.ContentLength, result.ContentLength);
-                }
-            }
-        }
-
-        [Fact]
-        public void ReadAnonymousCanReadWriteNullShape()
-        {
-            var sut = NullShapeContent.Instance;
-
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
-                {
-                    sut.Write(writer);
-                    writer.Flush();
-                }
-
-                stream.Position = 0;
-
-                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
-                {
-                    var result = (NullShapeContent) ShapeContent.ReadAnonymous(reader);
 
                     Assert.Equal(sut.ShapeType, result.ShapeType);
                     Assert.Equal(sut.ContentLength, result.ContentLength);
