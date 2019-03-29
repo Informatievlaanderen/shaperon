@@ -3,10 +3,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using Albedo;
     using AutoFixture;
     using AutoFixture.Idioms;
-    using GeoAPI.Geometries;
-    using NetTopologySuite.Geometries;
     using System.IO;
-    using System.Linq;
     using System.Text;
     using Xunit;
 
@@ -20,29 +17,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             _fixture.CustomizeRecordNumber();
             _fixture.CustomizeWordLength();
             _fixture.CustomizeWordOffset();
-            _fixture.Customize<PointM>(customization =>
-                customization.FromFactory(generator =>
-                    new PointM(
-                        _fixture.Create<double>(),
-                        _fixture.Create<double>(),
-                        _fixture.Create<double>(),
-                        _fixture.Create<double>()
-                    )
-                ).OmitAutoProperties()
-            );
-            _fixture.Customize<ILineString>(customization =>
-                customization.FromFactory(generator =>
-                    new LineString(
-                        new PointSequence(_fixture.CreateMany<PointM>()),
-                        GeometryConfiguration.GeometryFactory)
-                ).OmitAutoProperties()
-            );
-            _fixture.Customize<MultiLineString>(customization =>
-                customization.FromFactory(generator =>
-                    new MultiLineString(_fixture.CreateMany<ILineString>(generator.Next(1, 10)).ToArray())
-                ).OmitAutoProperties()
-            );
+            _fixture.CustomizePoint();
             _fixture.CustomizePolygon();
+            _fixture.CustomizePolyLineM();
             _fixture.Customize<ShapeContent>(customization =>
                 customization.FromFactory<int>(value =>
                 {
@@ -53,10 +30,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                             content = NullShapeContent.Instance;
                             break;
                         case 1:
-                            content = new PointShapeContent(_fixture.Create<PointM>());
+                            content = new PointShapeContent(_fixture.Create<Point>());
                             break;
                         case 2:
-                            content = new PolyLineMShapeContent(_fixture.Create<MultiLineString>());
+                            content = new PolyLineMShapeContent(_fixture.Create<PolyLineM>());
                             break;
                         case 3:
                             content = new PolygonShapeContent(_fixture.Create<Polygon>());

@@ -53,22 +53,17 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var length = new Generator<DbaseFieldLength>(_fixture)
                 .First(specimen => specimen <= value.Field.Length);
 
-            switch (_random.Next() % 2)
+            switch (_random.Next() % 3)
             {
                 case 0:
                     value.Value = null;
                     break;
                 case 1:
-                    if (value.Field.Length != new DbaseFieldLength(0))
-                    {
-                        var generated = _fixture.Create<string>();
-                        value.Value = generated.Substring(0, Math.Min(generated.Length, length.ToInt32()));
-                    }
-                    else
-                    {
-                        value.Value = string.Empty;
-                    }
-
+                    var generated = _fixture.Create<string>();
+                    value.Value = generated.Substring(0, Math.Min(generated.Length, length.ToInt32()));
+                    break;
+                case 2:
+                    value.Value = string.Empty;
                     break;
             }
         }

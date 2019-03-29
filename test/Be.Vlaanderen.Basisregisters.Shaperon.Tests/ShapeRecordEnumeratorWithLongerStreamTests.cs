@@ -1,6 +1,7 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -20,7 +21,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             fixture.CustomizeShapeRecordCount();
             fixture.CustomizeWordLength();
 
-            var content = new PointShapeContent(new PointM(1.0, 1.0));
+            var content = new PointShapeContent(new Point(1.0, 1.0));
             var number = RecordNumber.Initial;
             _record = content.RecordAs(number);
             var header = new ShapeFileHeader(
@@ -50,6 +51,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Fact]
+        public void MoveNextRepeatedlyReturnsExpectedResult()
+        {
+            _sut.MoveNext();
+            _sut.MoveNext();
+
+            Assert.False(_sut.MoveNext());
+        }
+
+        [Fact]
         public void CurrentReturnsExpectedResult()
         {
             Assert.Throws<InvalidOperationException>(() => _sut.Current);
@@ -61,6 +71,20 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             _sut.MoveNext();
 
             Assert.Throws<InvalidOperationException>(() => _sut.Current);
+        }
+
+        [Fact]
+        public void EnumeratorCurrentReturnsExpectedResult()
+        {
+            Assert.Throws<InvalidOperationException>(() => ((IEnumerator)_sut).Current);
+
+            _sut.MoveNext();
+
+            Assert.Equal(_record, (ShapeRecord) ((IEnumerator)_sut).Current, new ShapeRecordEqualityComparer());
+
+            _sut.MoveNext();
+
+            Assert.Throws<InvalidOperationException>(() => ((IEnumerator)_sut).Current);
         }
 
         [Fact]

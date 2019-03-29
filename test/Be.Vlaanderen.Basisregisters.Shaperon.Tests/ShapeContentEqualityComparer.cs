@@ -41,7 +41,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             var sameContentLength = left.ContentLength.Equals(right.ContentLength);
             var sameShapeType = left.ShapeType.Equals(right.ShapeType);
-            var sameShape = left.Shape.EqualsTopologically(right.Shape);
+            var sameShape = left.Shape.Equals(right.Shape);
             return sameContentLength && sameShapeType && sameShape;
         }
 

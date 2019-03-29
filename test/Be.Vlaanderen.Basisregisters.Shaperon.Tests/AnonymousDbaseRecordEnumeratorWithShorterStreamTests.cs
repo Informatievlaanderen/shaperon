@@ -1,6 +1,7 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -59,6 +60,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Fact]
+        public void MoveNextRepeatedlyReturnsExpectedResult()
+        {
+            _sut.MoveNext();
+            Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
+
+            Assert.False(_sut.MoveNext());
+        }
+
+        [Fact]
         public void CurrentReturnsExpectedResult()
         {
             Assert.Throws<InvalidOperationException>(() => _sut.Current);
@@ -70,6 +80,20 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
 
             Assert.Throws<InvalidOperationException>(() => _sut.Current);
+        }
+
+        [Fact]
+        public void EnumeratorCurrentReturnsExpectedResult()
+        {
+            Assert.Throws<InvalidOperationException>(() => ((IEnumerator)_sut).Current);
+
+            _sut.MoveNext();
+
+            Assert.Equal(_record, (DbaseRecord) ((IEnumerator)_sut).Current, new DbaseRecordEqualityComparer());
+
+            Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
+
+            Assert.Throws<InvalidOperationException>(() => ((IEnumerator)_sut).Current);
         }
 
         [Fact]

@@ -254,11 +254,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public short? GenerateAcceptableValue(DbaseInt16 value)
         {
-            if (value.Field.Length == new DbaseFieldLength(0))
-            {
-                return null;
-            }
-
             var result = default(short?);
             switch (_random.Next() % 3)
             {
@@ -279,7 +274,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private short? GeneratePositiveInt16Value(DbaseField field)
         {
-            if (field.Length == new DbaseFieldLength(0) || !Int16SupportedFieldTypes.Contains(field.FieldType))
+            if (!Int16SupportedFieldTypes.Contains(field.FieldType))
             {
                 return null;
             }
@@ -299,7 +294,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private short? GenerateNegativeInt16Value(DbaseField field)
         {
-            if (field.Length == new DbaseFieldLength(0) || !Int16SupportedFieldTypes.Contains(field.FieldType))
+            if (!Int16SupportedFieldTypes.Contains(field.FieldType))
             {
                 return null;
             }
@@ -319,11 +314,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public int? GenerateAcceptableValue(DbaseInt32 value)
         {
-            if (value.Field.Length == new DbaseFieldLength(0))
-            {
-                return null;
-            }
-
             var result = default(int?);
             switch (_random.Next() % 3)
             {
@@ -344,7 +334,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private int? GeneratePositiveInt32Value(DbaseField field)
         {
-            if (field.Length == new DbaseFieldLength(0) || !Int32SupportedFieldTypes.Contains(field.FieldType))
+            if (!Int32SupportedFieldTypes.Contains(field.FieldType))
             {
                 return null;
             }
@@ -364,7 +354,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private int? GenerateNegativeInt32Value(DbaseField field)
         {
-            if (field.Length == new DbaseFieldLength(0) || !Int32SupportedFieldTypes.Contains(field.FieldType))
+            if (!Int32SupportedFieldTypes.Contains(field.FieldType))
             {
                 return null;
             }

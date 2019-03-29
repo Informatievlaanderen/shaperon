@@ -8,14 +8,14 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     {
         public static readonly WordLength Length = new WordLength(10);
 
-        public PointShapeContent(PointM shape)
+        public PointShapeContent(Point shape)
         {
-            Shape = shape ?? throw new ArgumentNullException(nameof(shape));
+            Shape = shape;
             ShapeType = ShapeType.Point;
             ContentLength = Length;
         }
 
-        public PointM Shape { get; }
+        public Point Shape { get; }
 
         internal static ShapeContent ReadPointFromRecord(BinaryReader reader, ShapeRecordHeader header)
         {
@@ -25,7 +25,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var x = reader.ReadDoubleLittleEndian();
             var y = reader.ReadDoubleLittleEndian();
 
-            return new PointShapeContent(new PointM(x, y));
+            return new PointShapeContent(new Point(x, y));
         }
 
         public static ShapeContent ReadPoint(BinaryReader reader)
@@ -53,7 +53,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 throw new ArgumentNullException(nameof(reader));
 
             return new PointShapeContent(
-                new PointM(
+                new Point(
                     reader.ReadDoubleLittleEndian(),
                     reader.ReadDoubleLittleEndian()));
         }

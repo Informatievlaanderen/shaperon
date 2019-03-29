@@ -3,7 +3,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System;
     using System.IO;
 
-    public class ShapeRecord
+    public partial class ShapeRecord
     {
         //Rationale: 100 byte file header means first record appears at offset 50 (16-bit word) of the mainfile.
         public static readonly WordOffset InitialOffset = new WordOffset(50);
@@ -38,20 +38,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             Header.Write(writer);
             Content.Write(writer);
-        }
-
-        public byte[] ToBytes()
-        {
-            using (var output = new MemoryStream())
-            {
-                using (var writer = new BinaryWriter(output))
-                {
-                    Write(writer);
-                    writer.Flush();
-                }
-
-                return output.ToArray();
-            }
         }
 
         public ShapeIndexRecord IndexAt(WordOffset offset) => new ShapeIndexRecord(offset, Header.ContentLength);

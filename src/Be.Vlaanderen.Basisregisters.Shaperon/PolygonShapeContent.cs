@@ -1,10 +1,6 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
-    using GeoAPI.Geometries;
-    using NetTopologySuite.Geometries;
-    using NetTopologySuite.Geometries.Implementation;
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
@@ -27,8 +23,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             ShapeType = ShapeType.Polygon;
 
             ContentLength = ContentHeaderLength
-                .Plus(ByteLength.Int32.Times(shape.NumInteriorRings + 1)) // Parts
-                .Plus(ByteLength.Double.Times(shape.NumPoints * 2)) // Points(X,Y)
+                .Plus(ByteLength.Int32.Times(shape.NumberOfParts))
+                .Plus(ByteLength.Double.Times(shape.NumberOfPoints).Times(2))
                 .ToWordLength();
         }
 
@@ -37,7 +33,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
 
-            reader.ReadBytes(BoundingBoxByteLength.ToInt32()); // skip BoundingBox
+            var box = new BoundingBox2D(
+                reader.ReadDoubleLittleEndian(),
+                reader.ReadDoubleLittleEndian(),
+                reader.ReadDoubleLittleEndian(),
+                reader.ReadDoubleLittleEndian());
             var numberOfParts = reader.ReadInt32LittleEndian();
             var numberOfPoints = reader.ReadInt32LittleEndian();
 
@@ -51,26 +51,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     reader.ReadDoubleLittleEndian(),
                     reader.ReadDoubleLittleEndian());
 
-            var linearRings = new ILinearRing[numberOfParts];
-            var toPointIndex = points.Length;
-
-            for (var partIndex = numberOfParts - 1; partIndex >= 0; partIndex--)
-            {
-                var fromPointIndex = parts[partIndex];
-
-                linearRings[partIndex] = new LinearRing(
-                    new CoordinateArraySequence(
-                        points
-                            .Skip(fromPointIndex)
-                            .Take(toPointIndex - fromPointIndex)
-                            .Select(x => new Coordinate(x.X, x.Y))
-                            .ToArray()),
-                    GeometryConfiguration.GeometryFactory);
-
-                toPointIndex = fromPointIndex;
-            }
-
-            return new PolygonShapeContent(new Polygon(linearRings[0], linearRings.Skip(1).ToArray()));
+            return new PolygonShapeContent(new Polygon(box, parts, points));
         }
 
         public static ShapeContent ReadPolygon(BinaryReader reader)
@@ -98,7 +79,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
 
-            reader.ReadBytes(BoundingBoxByteLength.ToInt32()); // skip BoundingBox
+            var box = new BoundingBox2D(
+                reader.ReadDoubleLittleEndian(),
+                reader.ReadDoubleLittleEndian(),
+                reader.ReadDoubleLittleEndian(),
+                reader.ReadDoubleLittleEndian());
             var numberOfParts = reader.ReadInt32LittleEndian();
             var numberOfPoints = reader.ReadInt32LittleEndian();
 
@@ -112,26 +97,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     reader.ReadDoubleLittleEndian(),
                     reader.ReadDoubleLittleEndian());
 
-            var linearRings = new ILinearRing[numberOfParts];
-            var toPointIndex = points.Length;
-
-            for (var partIndex = numberOfParts - 1; partIndex >= 0; partIndex--)
-            {
-                var fromPointIndex = parts[partIndex];
-
-                linearRings[partIndex] = new LinearRing(
-                    new CoordinateArraySequence(
-                        points
-                            .Skip(fromPointIndex)
-                            .Take(toPointIndex - fromPointIndex)
-                            .Select(x => new Coordinate(x.X, x.Y))
-                            .ToArray()),
-                    GeometryConfiguration.GeometryFactory);
-
-                toPointIndex = fromPointIndex;
-            }
-
-            return new PolygonShapeContent(new Polygon(linearRings[0], linearRings.Skip(1).ToArray()));
+            return new PolygonShapeContent(new Polygon(box, parts, points));
         }
 
         internal static ShapeContent ReadAnonymousPolygonGeometry(BinaryReader reader)
@@ -154,12 +120,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .Concat(reader.ReadBytes(numberOfParts * 4))
                 .Concat(reader.ReadBytes(numberOfPoints * 16));
 
-            if (reader.BaseStream.CanSeek && reader.BaseStream.Position != reader.BaseStream.Length)
-            {
-                content = content
-                    .Concat(reader.ReadBytes(numberOfPoints * 8));
-            } //else try-catch-EndOfStreamException?? or only support seekable streams?
-
             return new AnonymousShapeContent(ShapeType.Polygon, content.ToArray());
         }
 
@@ -170,34 +130,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             //TODO: If the shape is empty, emit null shape instead?
 
-            writer.WriteInt32LittleEndian((int)ShapeType);
+            writer.WriteInt32LittleEndian((int) ShapeType);
 
-            var boundingBox = Shape.EnvelopeInternal;
-            writer.WriteDoubleLittleEndian(boundingBox.MinX);
-            writer.WriteDoubleLittleEndian(boundingBox.MinY);
-            writer.WriteDoubleLittleEndian(boundingBox.MaxX);
-            writer.WriteDoubleLittleEndian(boundingBox.MaxY);
-            writer.WriteInt32LittleEndian(Shape.NumInteriorRings + 1);
-            writer.WriteInt32LittleEndian(Shape.NumPoints);
+            writer.WriteDoubleLittleEndian(Shape.BoundingBox.XMin);
+            writer.WriteDoubleLittleEndian(Shape.BoundingBox.YMin);
+            writer.WriteDoubleLittleEndian(Shape.BoundingBox.XMax);
+            writer.WriteDoubleLittleEndian(Shape.BoundingBox.YMax);
+            writer.WriteInt32LittleEndian(Shape.NumberOfParts);
+            writer.WriteInt32LittleEndian(Shape.NumberOfPoints);
 
-            var lineStrings = new List<LineString>
+            foreach (var part in Shape.Parts)
             {
-                (LineString) Shape.ExteriorRing
-            };
-
-            lineStrings.AddRange(
-                Shape
-                .InteriorRings
-                .Cast<LineString>());
-
-            var offset = 0;
-            foreach (var line in lineStrings)
-            {
-                writer.WriteInt32LittleEndian(offset);
-                offset += line.NumPoints;
+                writer.WriteInt32LittleEndian(part);
             }
 
-            foreach (var point in lineStrings.SelectMany(line => line.Coordinates))
+            foreach (var point in Shape.Points)
             {
                 writer.WriteDoubleLittleEndian(point.X);
                 writer.WriteDoubleLittleEndian(point.Y);

@@ -5,18 +5,18 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
     public readonly struct DbaseFieldLength : IEquatable<DbaseFieldLength>, IComparable<DbaseFieldLength>
     {
-        public static readonly DbaseFieldLength MinLength = new DbaseFieldLength(0);
+        public static readonly DbaseFieldLength MinLength = new DbaseFieldLength(1);
         public static readonly DbaseFieldLength MaxLength = new DbaseFieldLength(254);
 
         private readonly int _value;
 
         public DbaseFieldLength(int value)
         {
-            if (value < 0 || value > 254)
+            if (value < 1 || value > 254)
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
                     value,
-                    "The length of a dbase field must be between 0 and 254.");
+                    "The length of a dbase field must be between 1 and 254.");
 
             _value = value;
         }

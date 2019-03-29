@@ -6,9 +6,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using Xunit;
     using System.IO;
     using System.Text;
-    using NetTopologySuite.Geometries;
 
-    public class PolygonShapeContentTests
+    public partial class PolygonShapeContentTests
     {
         private readonly Fixture _fixture;
 
@@ -46,8 +45,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             var shape = _fixture.Create<Polygon>();
             var sut = new PolygonShapeContent(shape);
-            var numberOfParts = shape.InteriorRings.Length + 1;
-            var numberOfPoints = shape.NumPoints;
+            var numberOfParts = shape.NumberOfParts;
+            var numberOfPoints = shape.NumberOfPoints;
             var contentLength = new WordLength(
                 2 + 2 + 2 // shape type, number of parts, number of points,
                 + 4 * 4 // bounding box,
@@ -65,86 +64,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Assert.Same(shape, sut.Shape);
         }
 
-        [Fact]
-        public void AnonymousHasExpectedResult()
-        {
-            var sut = new PolygonShapeContent(_fixture.Create<Polygon>());
 
-            var result = sut.Anonymous();
-
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
-            {
-                sut.Write(writer);
-                writer.Flush();
-
-                Assert.Equal(sut.ShapeType, result.ShapeType);
-                Assert.Equal(sut.ContentLength, result.ContentLength);
-                Assert.Equal(
-                    stream.ToArray(),
-                    Assert.IsType<AnonymousShapeContent>(result).Content);
-            }
-        }
-
-        [Fact]
-        public void ToBytesHasExpectedResult()
-        {
-            var sut = new PolygonShapeContent(_fixture.Create<Polygon>());
-
-            var result = sut.ToBytes();
-
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
-            {
-                sut.Write(writer);
-                writer.Flush();
-
-                Assert.Equal(stream.ToArray(), result);
-            }
-        }
-
-        [Fact]
-        public void FromBytesHasExpectedResult()
-        {
-            var sut = new PolygonShapeContent(_fixture.Create<Polygon>());
-
-            var result = ShapeContent.FromBytes(sut.ToBytes());
-
-            var actual = Assert.IsType<PolygonShapeContent>(result);
-            Assert.Equal(sut.Shape, actual.Shape);
-            Assert.Equal(sut.ShapeType, actual.ShapeType);
-            Assert.Equal(sut.ContentLength, actual.ContentLength);
-        }
-
-        [Fact]
-        public void ToBytesWithEncodingHasExpectedResult()
-        {
-            var sut = new PolygonShapeContent(_fixture.Create<Polygon>());
-
-            var result = sut.ToBytes(Encoding.UTF8);
-
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8))
-            {
-                sut.Write(writer);
-                writer.Flush();
-
-                Assert.Equal(stream.ToArray(), result);
-            }
-        }
-
-        [Fact]
-        public void FromBytesWithEncodingHasExpectedResult()
-        {
-            var sut = new PolygonShapeContent(_fixture.Create<Polygon>());
-
-            var result = ShapeContent.FromBytes(sut.ToBytes(Encoding.UTF8), Encoding.UTF8);
-
-            var actual = Assert.IsType<PolygonShapeContent>(result);
-            Assert.Equal(sut.Shape, actual.Shape);
-            Assert.Equal(sut.ShapeType, actual.ShapeType);
-            Assert.Equal(sut.ContentLength, actual.ContentLength);
-        }
 
         [Fact]
         public void ReadCanReadWrittenPolygonShape()
@@ -167,33 +87,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     var result = (PolygonShapeContent) ShapeContent.Read(reader);
 
                     Assert.Equal(sut.Shape, result.Shape);
-                    Assert.Equal(sut.ShapeType, result.ShapeType);
-                    Assert.Equal(sut.ContentLength, result.ContentLength);
-                }
-            }
-        }
-
-        [Fact]
-        public void ReadAnonymousCanReadWrittenPolygonMShape()
-        {
-            var shape = _fixture.Create<Polygon>();
-            var sut = new PolygonShapeContent(shape);
-
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
-                {
-                    sut.Write(writer);
-                    writer.Flush();
-                }
-
-                stream.Position = 0;
-
-                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
-                {
-                    var result = (AnonymousShapeContent) ShapeContent.ReadAnonymous(reader);
-
-                    Assert.Equal(stream.ToArray(), result.Content);
                     Assert.Equal(sut.ShapeType, result.ShapeType);
                     Assert.Equal(sut.ContentLength, result.ContentLength);
                 }

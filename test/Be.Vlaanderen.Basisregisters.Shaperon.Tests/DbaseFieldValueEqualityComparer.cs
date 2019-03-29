@@ -16,29 +16,22 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (left.Field.Length.Equals(new DbaseFieldLength(15)) &&
                 left.Field.DecimalCount.Equals(new DbaseDecimalCount(0)) &&
                 right.Field.Length.Equals(new DbaseFieldLength(15)) &&
-                right.Field.DecimalCount.Equals(new DbaseDecimalCount(0)) &&
-                (
-                    (
-                        left.Field.FieldType == DbaseFieldType.Character
-                        ||
-                        left.Field.FieldType == DbaseFieldType.DateTime
-                    )
-                    &&
-                    (
-                        right.Field.FieldType == DbaseFieldType.Character
-                        ||
-                        right.Field.FieldType == DbaseFieldType.DateTime
-                    )
-                ) &&
-                (
+                right.Field.DecimalCount.Equals(new DbaseDecimalCount(0)) && (
+                    left.Field.FieldType == DbaseFieldType.Character
+                    ||
+                    left.Field.FieldType == DbaseFieldType.DateTime
+                ) && (
+                    right.Field.FieldType == DbaseFieldType.Character
+                    ||
+                    right.Field.FieldType == DbaseFieldType.DateTime
+                ) && (
                     leftInspector.Value == null
                     ||
-                    (leftInspector.Value is string leftString && leftString == "")
-                ) &&
-                (
+                    leftInspector.Value is string leftString && leftString == ""
+                ) && (
                     rightInspector.Value == null
                     ||
-                    (rightInspector.Value is string rightString && rightString == "")
+                    rightInspector.Value is string rightString && rightString == ""
                 )
             )
             {
@@ -110,7 +103,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        private class DbaseStringEqualityComparer : IEqualityComparer<DbaseString>
+        public class DbaseStringEqualityComparer : IEqualityComparer<DbaseString>
         {
             public bool Equals(DbaseString left, DbaseString right)
             {

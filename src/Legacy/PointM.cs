@@ -5,7 +5,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
     // Default point does not support Ordinate.M
 
-    // Point uses a ICoordinateSequence as underlaying type
+    // Point uses a ICoordinateSequence as underlying type
     // The default ICoordinateSequenceFactory from NetTopologySuite used to create the underlaying ICoordinateSequence is configured for Ordinate.XYZ
 
     public class PointM : Point

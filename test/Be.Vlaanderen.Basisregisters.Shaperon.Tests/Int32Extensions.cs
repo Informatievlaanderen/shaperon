@@ -32,12 +32,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public static int AsDbaseFieldLengthValue(this int value)
         {
-            return new Random(value).Next(0, 255);
+            return new Random(value).Next(1, 255);
         }
 
         public static int AsDbaseFieldLengthValue(this int value, int maximum)
         {
-            return new Random(value).Next(0, Math.Min(255, maximum));
+            return new Random(value).Next(1, Math.Min(255, maximum));
         }
 
         public static int AsDbaseRecordCountValue(this int value)

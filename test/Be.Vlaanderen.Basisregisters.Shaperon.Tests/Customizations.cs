@@ -2,72 +2,70 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using AutoFixture;
     using AutoFixture.Dsl;
-    using GeoAPI.Geometries;
-    using NetTopologySuite.Geometries;
-    using NetTopologySuite.Geometries.Implementation;
     using System;
     using System.Linq;
 
     internal static class Customizations
     {
-        public static void CustomizePolygon(this IFixture fixture)
+        public static void CustomizePoint(this IFixture fixture)
         {
-            var fixturePoint = new Fixture();
-            const int polygonExteriorBufferCoordinate = 50;
-            fixturePoint.Customize<Point>(customization =>
+            fixture.Customize<Point>(customization =>
                 customization.FromFactory(generator =>
                     new Point(
-                        generator.Next(polygonExteriorBufferCoordinate - 1),
-                        generator.Next(polygonExteriorBufferCoordinate - 1)
+                        fixture.Create<double>(),
+                        fixture.Create<double>()
                     )
                 ).OmitAutoProperties()
             );
+        }
 
-            var fixtureRing = new Fixture();
-            fixtureRing.Customize<ILinearRing>(customization =>
-               customization.FromFactory(generator =>
-               {
-                   LinearRing ring;
-                   do
-                   {
-                       var coordinates = fixturePoint.CreateMany<Point>(3)
-                           .Select(point => new Coordinate(point.X, point.Y))
-                           .ToList();
-
-                       var coordinate = coordinates.First();
-                       coordinates.Add(new Coordinate(coordinate.X, coordinate.Y)); //first coordinate must be last
-
-                       ring = new LinearRing(
-                          new CoordinateArraySequence(coordinates.ToArray()),
-                          GeometryConfiguration.GeometryFactory
-                      );
-                   } while (!ring.IsRing || !ring.IsValid || !ring.IsClosed);
-
-                   return ring;
-               }).OmitAutoProperties()
-           );
+        public static void CustomizePolygon(this IFixture fixture)
+        {
+            fixture.Customize<BoundingBox2D>(customization =>
+                customization.FromFactory(generator =>
+                    new BoundingBox2D(
+                        fixture.Create<double>(),
+                        fixture.Create<double>(),
+                        fixture.Create<double>(),
+                        fixture.Create<double>()
+                    )
+                ).OmitAutoProperties()
+            );
             fixture.Customize<Polygon>(customization =>
                 customization.FromFactory(generator =>
                 {
-                    LinearRing exteriorRing;
-                    do
-                    {
-                        var exteriorCoordinates = fixturePoint.CreateMany<Point>(3)
-                            .Select(point => new Coordinate(point.X + polygonExteriorBufferCoordinate, point.Y + polygonExteriorBufferCoordinate))
-                            .ToList();
+                    var numberOfPoints = generator.Next(10, 101);
+                    numberOfPoints = numberOfPoints % 2 == 0 ? numberOfPoints : numberOfPoints + 1;
+                    var numberOfParts = numberOfPoints * 2;
+                    var parts = Enumerable.Range(0, numberOfParts).Select(part => part * 2).ToArray();
+                    var points = fixture.CreateMany<Point>(numberOfPoints).ToArray();
+                    return new Polygon(fixture.Create<BoundingBox2D>(), parts, points);
+                }).OmitAutoProperties()
+            );
+        }
 
-                        var coordinate = exteriorCoordinates.First();
-                        exteriorCoordinates.Add(new Coordinate(coordinate.X, coordinate.Y)); //first coordinate must be last
-
-                        exteriorRing = new LinearRing(
-                            new CoordinateArraySequence(exteriorCoordinates.ToArray()),
-                            GeometryConfiguration.GeometryFactory
-                        );
-                    } while (!exteriorRing.IsRing || !exteriorRing.IsValid || !exteriorRing.IsClosed);
-
-                    return new Polygon(exteriorRing,
-                        fixtureRing.CreateMany<ILinearRing>(generator.Next(0, 1)).ToArray(),
-                        GeometryConfiguration.GeometryFactory);
+        public static void CustomizePolyLineM(this IFixture fixture)
+        {
+            fixture.Customize<BoundingBox2D>(customization =>
+                customization.FromFactory(generator =>
+                    new BoundingBox2D(
+                        fixture.Create<double>(),
+                        fixture.Create<double>(),
+                        fixture.Create<double>(),
+                        fixture.Create<double>()
+                    )
+                ).OmitAutoProperties()
+            );
+            fixture.Customize<PolyLineM>(customization =>
+                customization.FromFactory(generator =>
+                {
+                    var numberOfPoints = generator.Next(10, 101);
+                    numberOfPoints = numberOfPoints % 2 == 0 ? numberOfPoints : numberOfPoints + 1;
+                    var numberOfParts = numberOfPoints * 2;
+                    var parts = Enumerable.Range(0, numberOfParts).Select(part => part * 2).ToArray();
+                    var points = fixture.CreateMany<Point>(numberOfPoints).ToArray();
+                    var measures = fixture.CreateMany<double>(numberOfPoints).ToArray();
+                    return new PolyLineM(fixture.Create<BoundingBox2D>(), parts, points, measures);
                 }).OmitAutoProperties()
             );
         }
@@ -220,10 +218,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 if (fieldType == DbaseFieldType.Number)
                 {
-                    return new DbaseFieldLength(random.Next(DbaseDouble.MaximumLength.ToInt32()));
+                    return new DbaseFieldLength(random.Next(1, DbaseDouble.MaximumLength.ToInt32()));
                 }
 
-                return new DbaseFieldLength(random.Next(DbaseSingle.MaximumLength.ToInt32()));
+                return new DbaseFieldLength(random.Next(1, DbaseSingle.MaximumLength.ToInt32()));
             }
         }
 
@@ -233,10 +231,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 if (fieldType == DbaseFieldType.Number)
                 {
-                    return new DbaseFieldLength(random.Next(DbaseDouble.MaximumLength.ToInt32()));
+                    return new DbaseFieldLength(random.Next(1, DbaseDouble.MaximumLength.ToInt32()));
                 }
 
-                return new DbaseFieldLength(random.Next(DbaseSingle.MaximumLength.ToInt32()));
+                return new DbaseFieldLength(random.Next(1, DbaseSingle.MaximumLength.ToInt32()));
             }
         }
 
@@ -245,7 +243,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             using (var random = new PooledRandom())
             {
-                return new DbaseFieldLength(random.Next(maxLength.ToInt32()));
+                return new DbaseFieldLength(random.Next(1, maxLength.ToInt32()));
             }
         }
 
@@ -654,7 +652,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                             {
                                 using (var random = new PooledRandom(value))
                                 {
-                                    var length = new DbaseFieldLength(random.Next(0, 255));
+                                    var length = new DbaseFieldLength(random.Next(1, 255));
                                     return new DbaseString(
                                         new DbaseField(
                                             fixture.Create<DbaseFieldName>(),

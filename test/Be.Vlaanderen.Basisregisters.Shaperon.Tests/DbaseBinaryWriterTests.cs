@@ -1,6 +1,7 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -14,10 +15,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
     public class DbaseBinaryWriterTests
     {
+        private readonly ITestOutputHelper _helper;
         private readonly Fixture _fixture;
 
-        public DbaseBinaryWriterTests()
+        public DbaseBinaryWriterTests(ITestOutputHelper helper)
         {
+            _helper = helper ?? throw new ArgumentNullException(nameof(helper));
             _fixture = new Fixture();
             _fixture.CustomizeWordLength();
             _fixture.CustomizeDbaseFieldName();
@@ -55,6 +58,19 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Fact]
+        public void WriteOneRecordCanNotBeNull()
+        {
+            var expectedHeader = _fixture.Create<DbaseFileHeader>();
+            using (var stream = new MemoryStream())
+            {
+                using (var sut = new DbaseBinaryWriter(expectedHeader, new BinaryWriter(stream, Encoding.ASCII, true)))
+                {
+                    Assert.Throws<ArgumentNullException>(() => sut.Write((DbaseRecord) null));
+                }
+            }
+        }
+
+        [Fact]
         public void WriteOneHasExpectedResult()
         {
             var expectedHeader = _fixture.Create<DbaseFileHeader>();
@@ -85,6 +101,36 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Fact]
+        public void WriteOneWhenDisposedHasExpectedResult()
+        {
+            var expectedHeader = _fixture.Create<DbaseFileHeader>();
+            var record = _fixture.GenerateDbaseRecord(expectedHeader.Schema.Fields);
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
+                using (var sut = new DbaseBinaryWriter(expectedHeader, writer))
+                {
+                    //Act
+                    sut.Dispose();
+                    Assert.Throws<ObjectDisposedException>(() => sut.Write(record));
+                }
+            }
+        }
+
+        [Fact]
+        public void WriteManyRecordsCanNotBeNull()
+        {
+            var expectedHeader = _fixture.Create<DbaseFileHeader>();
+            using (var stream = new MemoryStream())
+            {
+                using (var sut = new DbaseBinaryWriter(expectedHeader, new BinaryWriter(stream, Encoding.ASCII, true)))
+                {
+                    Assert.Throws<ArgumentNullException>(() => sut.Write((IEnumerable<DbaseRecord>) null));
+                }
+            }
+        }
+
+        [Fact]
         public void WriteManyHasExpectedResult()
         {
             var expectedHeader = _fixture.Create<DbaseFileHeader>();
@@ -95,10 +141,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 using (var sut = new DbaseBinaryWriter(expectedHeader, new BinaryWriter(stream, Encoding.ASCII, true)))
                 {
                     //Act
-                    foreach (var expectedRecord in expectedRecords)
-                    {
-                        sut.Write(expectedRecord);
-                    }
+                    sut.Write(expectedRecords);
                 }
 
                 // Assert
@@ -120,6 +163,39 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     Assert.Equal(expectedHeader, actualHeader);
                     Assert.Equal(expectedRecords, actualRecords, new DbaseRecordEqualityComparer());
                     Assert.Equal(DbaseRecord.EndOfFile, actualEndOfFile);
+                }
+            }
+        }
+
+        [Fact]
+        public void WritManyWhenDisposedHasExpectedResult()
+        {
+            var expectedHeader = _fixture.Create<DbaseFileHeader>();
+            var records = _fixture.GenerateDbaseRecords(expectedHeader.Schema.Fields, expectedHeader.RecordCount);
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
+                using (var sut = new DbaseBinaryWriter(expectedHeader, writer))
+                {
+                    //Act
+                    sut.Dispose();
+                    Assert.Throws<ObjectDisposedException>(() => sut.Write(records));
+                }
+            }
+        }
+
+        [Fact]
+        public void DisposeHasExpectedResult()
+        {
+            var expectedHeader = _fixture.Create<DbaseFileHeader>();
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream, Encoding.ASCII, false))
+                using (var sut = new DbaseBinaryWriter(expectedHeader, writer))
+                {
+                    //Act
+                    sut.Dispose();
+                    Assert.Throws<ObjectDisposedException>(() => writer.Write(_fixture.Create<byte>()));
                 }
             }
         }
