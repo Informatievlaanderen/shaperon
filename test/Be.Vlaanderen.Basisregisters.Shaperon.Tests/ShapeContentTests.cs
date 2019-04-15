@@ -66,7 +66,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         [Theory]
         [InlineData(ShapeType.PolyLine)]
-        [InlineData(ShapeType.Polygon)]
         [InlineData(ShapeType.MultiPoint)]
         [InlineData(ShapeType.PointZ)]
         [InlineData(ShapeType.PolyLineZ)]

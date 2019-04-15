@@ -1,22 +1,32 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
-    using System.IO;
-    using System.Linq;
-    using System.Text;
     using Albedo;
     using AutoFixture;
     using AutoFixture.Idioms;
     using GeoAPI.Geometries;
     using NetTopologySuite.Geometries;
+    using NetTopologySuite.Geometries.Implementation;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
     using Xunit;
 
     public class AnonymousShapeContentTests
     {
         private readonly Fixture _fixture;
+        private readonly int _polygonExteriorBufferCoordinate = 50;
 
         public AnonymousShapeContentTests()
         {
             _fixture = new Fixture();
+            _fixture.Customize<Point>(customization =>
+                customization.FromFactory(generator =>
+                    new Point(
+                        generator.Next(_polygonExteriorBufferCoordinate),
+                        generator.Next(_polygonExteriorBufferCoordinate)
+                    )
+                ).OmitAutoProperties()
+            );
             _fixture.Customize<PointM>(customization =>
                 customization.FromFactory(generator =>
                     new PointM(
@@ -40,11 +50,44 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new MultiLineString(_fixture.CreateMany<ILineString>(generator.Next(2, 20)).ToArray())
                 ).OmitAutoProperties()
             );
+            _fixture.Customize<ILinearRing>(customization =>
+                customization.FromFactory(generator =>
+                {
+                    var coordinates = _fixture.CreateMany<Point>(generator.Next(3, 10))
+                        .Select(point => new Coordinate(point.X, point.Y))
+                        .ToList();
+
+                    var coordinate = coordinates.First();
+                    coordinates.Add(new Coordinate(coordinate.X, coordinate.Y)); //first coordinate must be last
+
+                    return new LinearRing(
+                        new CoordinateArraySequence(coordinates.ToArray()),
+                        GeometryConfiguration.GeometryFactory
+                    );
+                }).OmitAutoProperties()
+            );
+            _fixture.Customize<Polygon>(customization =>
+                customization.FromFactory(generator =>
+                {
+                    var exteriorCoordinates = _fixture.CreateMany<Point>(generator.Next(3, 10))
+                        .Select(point => new Coordinate(point.X + _polygonExteriorBufferCoordinate, point.Y + _polygonExteriorBufferCoordinate))
+                        .ToList();
+
+                    var coordinate = exteriorCoordinates.First();
+                    exteriorCoordinates.Add(new Coordinate(coordinate.X, coordinate.Y)); //first coordinate must be last
+
+                    var exteriorRing = new LinearRing(new CoordinateArraySequence(exteriorCoordinates.ToArray()), GeometryConfiguration.GeometryFactory);
+
+                    return new Polygon(exteriorRing,
+                        _fixture.CreateMany<ILinearRing>(generator.Next(1, 5)).ToArray(),
+                        GeometryConfiguration.GeometryFactory);
+                }).OmitAutoProperties()
+            );
             _fixture.Customize<ShapeContent>(
                 composer => composer.FromFactory(random =>
                     {
                         var content = NullShapeContent.Instance;
-                        switch (random.Next() % 3)
+                        switch (random.Next() % 4)
                         {
                             // case 0: null shape
                             case 1:
@@ -52,6 +95,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                 break;
                             case 2:
                                 content = _fixture.Create<PolyLineMShapeContent>();
+                                break;
+                            case 3:
+                                content = _fixture.Create<PolygonShapeContent>();
                                 break;
                         }
 
@@ -63,16 +109,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 composer => composer.FromFactory(random =>
                     {
                         AnonymousShapeContent content = null;
-                        switch (random.Next() % 2)
+                        switch (random.Next() % 3)
                         {
                             case 0:
-                                content = (AnonymousShapeContent) _fixture
+                                content = (AnonymousShapeContent)_fixture
                                     .Create<PointShapeContent>()
                                     .Anonymous();
                                 break;
                             case 1:
-                                content = (AnonymousShapeContent) _fixture
+                                content = (AnonymousShapeContent)_fixture
                                     .Create<PolyLineMShapeContent>()
+                                    .Anonymous();
+                                break;
+                            case 2:
+                                content = (AnonymousShapeContent)_fixture
+                                    .Create<PolygonShapeContent>()
                                     .Anonymous();
                                 break;
                         }

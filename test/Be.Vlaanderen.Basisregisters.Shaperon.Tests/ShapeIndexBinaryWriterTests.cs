@@ -1,19 +1,21 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
     using Albedo;
     using AutoFixture;
     using AutoFixture.Idioms;
     using GeoAPI.Geometries;
     using NetTopologySuite.Geometries;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using NetTopologySuite.Geometries.Implementation;
     using Xunit;
 
     public class ShapeIndexBinaryWriterTests
     {
         private readonly Fixture _fixture;
+        private readonly int _polygonExteriorBufferCoordinate = 50;
 
         public ShapeIndexBinaryWriterTests()
         {
@@ -26,7 +28,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 customization.FromFactory(generator =>
                     {
                         var result = ShapeType.NullShape;
-                        switch (generator.Next() % 3)
+                        switch (generator.Next() % 4)
                         {
                             //case 0:
                             case 1:
@@ -35,10 +37,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                             case 2:
                                 result = ShapeType.PolyLineM;
                                 break;
+                            case 3:
+                                result = ShapeType.Polygon;
+                                break;
                         }
 
                         return result;
                     }
+                ).OmitAutoProperties()
+            );
+            _fixture.Customize<Point>(customization =>
+                customization.FromFactory(generator =>
+                    new Point(
+                        generator.Next(_polygonExteriorBufferCoordinate - 1),
+                        generator.Next(_polygonExteriorBufferCoordinate - 1)
+                    )
                 ).OmitAutoProperties()
             );
             _fixture.Customize<PointM>(customization =>
@@ -63,11 +76,57 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new MultiLineString(_fixture.CreateMany<ILineString>(generator.Next(1, 10)).ToArray())
                 ).OmitAutoProperties()
             );
+            _fixture.Customize<ILinearRing>(customization =>
+                customization.FromFactory(generator =>
+                {
+                    LinearRing ring;
+                    do
+                    {
+                        var coordinates = _fixture.CreateMany<Point>(3)
+                            .Select(point => new Coordinate(point.X, point.Y))
+                            .ToList();
+
+                        var coordinate = coordinates.First();
+                        coordinates.Add(new Coordinate(coordinate.X, coordinate.Y)); //first coordinate must be last
+
+                        ring = new LinearRing(
+                            new CoordinateArraySequence(coordinates.ToArray()),
+                            GeometryConfiguration.GeometryFactory
+                        );
+                    } while (!ring.IsRing || !ring.IsValid || !ring.IsClosed);
+
+                    return ring;
+                }).OmitAutoProperties()
+            );
+            _fixture.Customize<Polygon>(customization =>
+                customization.FromFactory(generator =>
+                {
+                    LinearRing exteriorRing;
+                    do
+                    {
+                        var exteriorCoordinates = _fixture.CreateMany<Point>(3)
+                            .Select(point => new Coordinate(point.X + _polygonExteriorBufferCoordinate, point.Y + _polygonExteriorBufferCoordinate))
+                            .ToList();
+
+                        var coordinate = exteriorCoordinates.First();
+                        exteriorCoordinates.Add(new Coordinate(coordinate.X, coordinate.Y)); //first coordinate must be last
+
+                        exteriorRing = new LinearRing(
+                            new CoordinateArraySequence(exteriorCoordinates.ToArray()),
+                            GeometryConfiguration.GeometryFactory
+                        );
+                    } while (!exteriorRing.IsRing || !exteriorRing.IsValid || !exteriorRing.IsClosed);
+
+                    return new Polygon(exteriorRing,
+                        _fixture.CreateMany<ILinearRing>(generator.Next(0, 1)).ToArray(),
+                        GeometryConfiguration.GeometryFactory);
+                }).OmitAutoProperties()
+            );
             _fixture.Customize<ShapeContent>(customization =>
                 customization.FromFactory(generator =>
                 {
                     ShapeContent content = null;
-                    switch (generator.Next() % 3)
+                    switch (generator.Next() % 4)
                     {
                         case 0:
                             content = NullShapeContent.Instance;
@@ -77,6 +136,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                             break;
                         case 2:
                             content = new PolyLineMShapeContent(_fixture.Create<MultiLineString>());
+                            break;
+                        case 3:
+                            content = new PolygonShapeContent(_fixture.Create<Polygon>());
                             break;
                     }
 
@@ -116,6 +178,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 boundingBox = BoundingBox3D.FromGeometry(pointContent.Shape);
             if (shapeRecord.Content is PolyLineMShapeContent lineContent)
                 boundingBox = BoundingBox3D.FromGeometry(lineContent.Shape);
+            if (shapeRecord.Content is PolygonShapeContent polygonContent)
+                boundingBox = BoundingBox3D.FromGeometry(polygonContent.Shape);
             var expectedHeader = new ShapeFileHeader(length, shapeType, boundingBox).ForIndex(recordCount);
             var expectedRecord = shapeRecord.IndexAt(ShapeIndexRecord.InitialOffset);
             using (var stream = new MemoryStream())
@@ -156,6 +220,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         return result.ExpandWith(BoundingBox3D.FromGeometry(pointContent.Shape));
                     if (current.Content is PolyLineMShapeContent lineContent)
                         return result.ExpandWith(BoundingBox3D.FromGeometry(lineContent.Shape));
+                    if (current.Content is PolygonShapeContent polygonShapeContent)
+                        return result.ExpandWith(BoundingBox3D.FromGeometry(polygonShapeContent.Shape));
                     return result;
                 });
             var expectedHeader = new ShapeFileHeader(length, shapeType, boundingBox);
@@ -206,6 +272,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 case ShapeType.PolyLineM:
                     content = new PolyLineMShapeContent(_fixture.Create<MultiLineString>());
                     break;
+                case ShapeType.Polygon:
+                    content = new PolygonShapeContent(_fixture.Create<Polygon>());
+                    break;
                 //case ShapeType.NullShape:
                 default:
                     content = NullShapeContent.Instance;
@@ -229,6 +298,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         break;
                     case ShapeType.PolyLineM:
                         content = new PolyLineMShapeContent(_fixture.Create<MultiLineString>());
+                        break;
+                    case ShapeType.Polygon:
+                        content = new PolygonShapeContent(_fixture.Create<Polygon>());
                         break;
                     //case ShapeType.NullShape:
                     default:
