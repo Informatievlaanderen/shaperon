@@ -16,6 +16,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 return Equals(leftPointContent, rightPointContent);
             if (left is PolyLineMShapeContent leftLineContent && right is PolyLineMShapeContent rightLineContent)
                 return Equals(leftLineContent, rightLineContent);
+            if (left is PolygonShapeContent leftPolygonContent && right is PolygonShapeContent rightPolygonContent)
+                return Equals(leftPolygonContent, rightPolygonContent);
             return false;
         }
 
@@ -35,6 +37,14 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return sameContentLength && sameShapeType && sameShape;
         }
 
+        private bool Equals(PolygonShapeContent left, PolygonShapeContent right)
+        {
+            var sameContentLength = left.ContentLength.Equals(right.ContentLength);
+            var sameShapeType = left.ShapeType.Equals(right.ShapeType);
+            var sameShape = left.Shape.EqualsTopologically(right.Shape);
+            return sameContentLength && sameShapeType && sameShape;
+        }
+
         public int GetHashCode(ShapeContent instance)
         {
             if (instance is NullShapeContent)
@@ -45,6 +55,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (instance is PolyLineMShapeContent lineContent)
                 return lineContent.ContentLength.GetHashCode() ^ lineContent.ShapeType.GetHashCode() ^
                        lineContent.Shape.GetHashCode();
+            if (instance is PolygonShapeContent polygonContent)
+                return polygonContent.ContentLength.GetHashCode() ^ polygonContent.ShapeType.GetHashCode() ^
+                       polygonContent.Shape.GetHashCode();
             return -1;
         }
     }

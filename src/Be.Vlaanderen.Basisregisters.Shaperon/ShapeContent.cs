@@ -36,6 +36,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     content = PolyLineMShapeContent.ReadPolyLineMGeometry(reader);
                     break;
 
+                case ShapeType.Polygon:
+                    content = PolygonShapeContent.ReadPolygonGeometry(reader);
+                    break;
+
                 default:
                     throw new ShapeRecordContentException($"The Shape Type {shapeType} is currently not suppported.");
             }
@@ -68,6 +72,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     content = PolyLineMShapeContent.ReadAnonymousPolyLineMGeometry(reader);
                     break;
 
+                case ShapeType.Polygon:
+                    content = PolygonShapeContent.ReadAnonymousPolygonGeometry(reader);
+                    break;
+
                 default:
                     throw new ShapeRecordContentException($"The Shape Type {shapeType} is currently not suppported.");
             }
@@ -93,6 +101,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 case ShapeType.PolyLineM:
                     content = PolyLineMShapeContent.ReadPolyLineMFromRecord(reader, header);
+                    break;
+
+                case ShapeType.Polygon:
+                    content = PolygonShapeContent.ReadPolygonFromRecord(reader, header);
                     break;
 
                 default:
