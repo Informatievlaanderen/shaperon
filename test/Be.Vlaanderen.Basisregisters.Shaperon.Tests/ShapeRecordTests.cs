@@ -5,7 +5,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using AutoFixture.Idioms;
     using GeoAPI.Geometries;
     using NetTopologySuite.Geometries;
-    using NetTopologySuite.Geometries.Implementation;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -14,7 +13,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     public class ShapeRecordTests
     {
         private readonly Fixture _fixture;
-        private readonly int _polygonExteriorBufferCoordinate = 50;
 
         public ShapeRecordTests()
         {
@@ -22,14 +20,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             _fixture.CustomizeRecordNumber();
             _fixture.CustomizeWordLength();
             _fixture.CustomizeWordOffset();
-            _fixture.Customize<Point>(customization =>
-                customization.FromFactory(generator =>
-                    new Point(
-                        generator.Next(_polygonExteriorBufferCoordinate - 1),
-                        generator.Next(_polygonExteriorBufferCoordinate - 1)
-                    )
-                ).OmitAutoProperties()
-            );
             _fixture.Customize<PointM>(customization =>
                 customization.FromFactory(generator =>
                     new PointM(
@@ -52,52 +42,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new MultiLineString(_fixture.CreateMany<ILineString>(generator.Next(1, 10)).ToArray())
                 ).OmitAutoProperties()
             );
-            _fixture.Customize<ILinearRing>(customization =>
-                customization.FromFactory(generator =>
-                {
-                    LinearRing ring;
-                    do
-                    {
-                        var coordinates = _fixture.CreateMany<Point>(3)
-                            .Select(point => new Coordinate(point.X, point.Y))
-                            .ToList();
-
-                        var coordinate = coordinates.First();
-                        coordinates.Add(new Coordinate(coordinate.X, coordinate.Y)); //first coordinate must be last
-
-                        ring = new LinearRing(
-                            new CoordinateArraySequence(coordinates.ToArray()),
-                            GeometryConfiguration.GeometryFactory
-                        );
-                    } while (!ring.IsRing || !ring.IsValid || !ring.IsClosed);
-
-                    return ring;
-                }).OmitAutoProperties()
-            );
-            _fixture.Customize<Polygon>(customization =>
-                customization.FromFactory(generator =>
-                {
-                    LinearRing exteriorRing;
-                    do
-                    {
-                        var exteriorCoordinates = _fixture.CreateMany<Point>(3)
-                            .Select(point => new Coordinate(point.X + _polygonExteriorBufferCoordinate, point.Y + _polygonExteriorBufferCoordinate))
-                            .ToList();
-
-                        var coordinate = exteriorCoordinates.First();
-                        exteriorCoordinates.Add(new Coordinate(coordinate.X, coordinate.Y)); //first coordinate must be last
-
-                        exteriorRing = new LinearRing(
-                            new CoordinateArraySequence(exteriorCoordinates.ToArray()),
-                            GeometryConfiguration.GeometryFactory
-                        );
-                    } while (!exteriorRing.IsRing || !exteriorRing.IsValid || !exteriorRing.IsClosed);
-
-                    return new Polygon(exteriorRing,
-                        _fixture.CreateMany<ILinearRing>(generator.Next(0, 1)).ToArray(),
-                        GeometryConfiguration.GeometryFactory);
-                }).OmitAutoProperties()
-            );
+            _fixture.CustomizePolygon();
             _fixture.Customize<ShapeContent>(customization =>
                 customization.FromFactory<int>(value =>
                 {
