@@ -30,7 +30,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         {
                             //case 0:
                             case 1:
-                                result = ShapeType.PointM;
+                                result = ShapeType.Point;
                                 break;
                             case 2:
                                 result = ShapeType.PolyLineM;
