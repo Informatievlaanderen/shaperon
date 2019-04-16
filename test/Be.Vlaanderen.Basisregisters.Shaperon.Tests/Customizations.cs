@@ -1,12 +1,77 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
-    using System;
-    using System.Linq;
     using AutoFixture;
     using AutoFixture.Dsl;
+    using GeoAPI.Geometries;
+    using NetTopologySuite.Geometries;
+    using NetTopologySuite.Geometries.Implementation;
+    using System;
+    using System.Linq;
 
     internal static class Customizations
     {
+        public static void CustomizePolygon(this IFixture fixture)
+        {
+            var fixturePoint = new Fixture();
+            const int polygonExteriorBufferCoordinate = 50;
+            fixturePoint.Customize<Point>(customization =>
+                customization.FromFactory(generator =>
+                    new Point(
+                        generator.Next(polygonExteriorBufferCoordinate - 1),
+                        generator.Next(polygonExteriorBufferCoordinate - 1)
+                    )
+                ).OmitAutoProperties()
+            );
+
+            var fixtureRing = new Fixture();
+            fixtureRing.Customize<ILinearRing>(customization =>
+               customization.FromFactory(generator =>
+               {
+                   LinearRing ring;
+                   do
+                   {
+                       var coordinates = fixturePoint.CreateMany<Point>(3)
+                           .Select(point => new Coordinate(point.X, point.Y))
+                           .ToList();
+
+                       var coordinate = coordinates.First();
+                       coordinates.Add(new Coordinate(coordinate.X, coordinate.Y)); //first coordinate must be last
+
+                       ring = new LinearRing(
+                          new CoordinateArraySequence(coordinates.ToArray()),
+                          GeometryConfiguration.GeometryFactory
+                      );
+                   } while (!ring.IsRing || !ring.IsValid || !ring.IsClosed);
+
+                   return ring;
+               }).OmitAutoProperties()
+           );
+            fixture.Customize<Polygon>(customization =>
+                customization.FromFactory(generator =>
+                {
+                    LinearRing exteriorRing;
+                    do
+                    {
+                        var exteriorCoordinates = fixturePoint.CreateMany<Point>(3)
+                            .Select(point => new Coordinate(point.X + polygonExteriorBufferCoordinate, point.Y + polygonExteriorBufferCoordinate))
+                            .ToList();
+
+                        var coordinate = exteriorCoordinates.First();
+                        exteriorCoordinates.Add(new Coordinate(coordinate.X, coordinate.Y)); //first coordinate must be last
+
+                        exteriorRing = new LinearRing(
+                            new CoordinateArraySequence(exteriorCoordinates.ToArray()),
+                            GeometryConfiguration.GeometryFactory
+                        );
+                    } while (!exteriorRing.IsRing || !exteriorRing.IsValid || !exteriorRing.IsClosed);
+
+                    return new Polygon(exteriorRing,
+                        fixtureRing.CreateMany<ILinearRing>(generator.Next(0, 1)).ToArray(),
+                        GeometryConfiguration.GeometryFactory);
+                }).OmitAutoProperties()
+            );
+        }
+
         public static void CustomizeWordLength(this IFixture fixture)
         {
             fixture.Customize<WordLength>(

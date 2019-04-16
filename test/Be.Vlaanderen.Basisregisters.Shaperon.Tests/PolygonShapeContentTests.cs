@@ -7,9 +7,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.IO;
     using System.Text;
     using NetTopologySuite.Geometries;
-    using GeoAPI.Geometries;
-    using System.Linq;
-    using NetTopologySuite.Geometries.Implementation;
 
     public class PolygonShapeContentTests
     {
@@ -18,50 +15,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public PolygonShapeContentTests()
         {
             _fixture = new Fixture();
-            _fixture.Customize<Point>(customization =>
-                customization.FromFactory(generator =>
-                    new Point(
-                        generator.Next(50), //limit value to make sure it's within the exterior ring
-                        generator.Next(50)
-                    )
-                ).OmitAutoProperties()
-            );
-            _fixture.Customize<ILinearRing>(customization =>
-                customization.FromFactory(generator =>
-                {
-                    var coordinates = _fixture.CreateMany<Point>(generator.Next(3, 10))
-                        .Select(point => new Coordinate(point.X, point.Y))
-                        .ToList();
-
-                    var coordinate = coordinates.First();
-                    coordinates.Add(new Coordinate(coordinate.X, coordinate.Y)); //first coordinate must be last
-
-                    return new LinearRing(
-                        new CoordinateArraySequence(coordinates.ToArray()),
-                        GeometryConfiguration.GeometryFactory
-                    );
-                }).OmitAutoProperties()
-            );
-
-            _fixture.Customize<Polygon>(customization =>
-                customization.FromFactory(generator =>
-                {
-                    var coordinates = _fixture.CreateMany<Point>(generator.Next(3, 10))
-                        .Select(point => new Coordinate(point.X + 50, point.Y + 50))
-                        .ToList();
-
-                    var coordinate = coordinates.First();
-                    coordinates.Add(new Coordinate(coordinate.X, coordinate.Y)); //first coordinate must be last
-
-                    return new Polygon(
-                        new LinearRing(
-                            new CoordinateArraySequence(coordinates.ToArray()),
-                            GeometryConfiguration.GeometryFactory
-                        ),
-                        _fixture.CreateMany<ILinearRing>(generator.Next(0, 5)).ToArray(),
-                        GeometryConfiguration.GeometryFactory);
-                }).OmitAutoProperties()
-            );
+            _fixture.CustomizePolygon();
             _fixture.Register(() => new BinaryReader(new MemoryStream()));
             _fixture.Register(() => new BinaryWriter(new MemoryStream()));
         }
