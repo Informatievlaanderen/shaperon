@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/informatievlaanderen/shaperon/compare/v4.0.1...v4.1.0) (2019-04-16)
+
+
+### Features
+
+* add PolygonShapeContent ([4b01f9a](https://github.com/informatievlaanderen/shaperon/commit/4b01f9a))
+
 ## [4.0.1](https://github.com/informatievlaanderen/shaperon/compare/v4.0.0...v4.0.1) (2019-03-01)
 
 
