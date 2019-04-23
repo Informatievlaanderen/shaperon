@@ -4,7 +4,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.IO;
     using System.Linq;
 
-    public class PointShapeContent : ShapeContent
+    public partial class PointShapeContent : ShapeContent
     {
         public static readonly WordLength Length = new WordLength(10);
 
@@ -56,19 +56,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 new Point(
                     reader.ReadDoubleLittleEndian(),
                     reader.ReadDoubleLittleEndian()));
-        }
-
-        internal static ShapeContent ReadAnonymousPointGeometry(BinaryReader reader)
-        {
-            if (reader == null)
-                throw new ArgumentNullException(nameof(reader));
-
-            var content = EndianBitConverter
-                .GetLittleEndianBytes((int) ShapeType.Point)
-                .Concat(reader.ReadBytes(16))
-                .ToArray();
-
-            return new AnonymousShapeContent(ShapeType.Point, content);
         }
 
         public override void Write(BinaryWriter writer)

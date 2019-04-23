@@ -1,10 +1,9 @@
-namespace Be.Vlaanderen.Basisregisters.Shaperon
+namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
 {
-    using System;
     using System.Linq;
     using GeoAPI.Geometries;
 
-    public static class BoundingBox3DLegacy
+    public static class BoundingBox3DTranslator
     {
         public static BoundingBox3D FromGeometry(IGeometry geometry)
         {

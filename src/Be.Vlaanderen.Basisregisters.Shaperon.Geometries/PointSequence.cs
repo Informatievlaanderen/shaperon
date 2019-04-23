@@ -1,4 +1,4 @@
-namespace Be.Vlaanderen.Basisregisters.Shaperon
+namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
 {
     using System;
     using System.Collections.Generic;

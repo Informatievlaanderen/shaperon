@@ -1,4 +1,4 @@
-namespace Be.Vlaanderen.Basisregisters.Shaperon
+namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
 {
     using GeoAPI.Geometries;
     using NetTopologySuite.Geometries;

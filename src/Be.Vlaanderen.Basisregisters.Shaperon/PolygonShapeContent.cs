@@ -4,7 +4,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.IO;
     using System.Linq;
 
-    public class PolygonShapeContent : ShapeContent
+    public partial class PolygonShapeContent : ShapeContent
     {
         private static readonly ByteLength BoundingBoxByteLength = ByteLength.Double.Times(4); // MinX, MinY, MaxX, MaxY
 
@@ -98,29 +98,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     reader.ReadDoubleLittleEndian());
 
             return new PolygonShapeContent(new Polygon(box, parts, points));
-        }
-
-        internal static ShapeContent ReadAnonymousPolygonGeometry(BinaryReader reader)
-        {
-            if (reader == null)
-                throw new ArgumentNullException(nameof(reader));
-
-            var content = EndianBitConverter
-                .GetLittleEndianBytes((int)ShapeType.Polygon)
-                .Concat(reader.ReadBytes(BoundingBoxByteLength.ToInt32()));
-
-            var numberOfPartsAsBytes = reader.ReadBytes(4);
-            var numberOfParts = EndianBitConverter.ToInt32LittleEndian(numberOfPartsAsBytes);
-            var numberOfPointsAsBytes = reader.ReadBytes(4);
-            var numberOfPoints = EndianBitConverter.ToInt32LittleEndian(numberOfPointsAsBytes);
-
-            content = content
-                .Concat(numberOfPartsAsBytes)
-                .Concat(numberOfPointsAsBytes)
-                .Concat(reader.ReadBytes(numberOfParts * 4))
-                .Concat(reader.ReadBytes(numberOfPoints * 16));
-
-            return new AnonymousShapeContent(ShapeType.Polygon, content.ToArray());
         }
 
         public override void Write(BinaryWriter writer)

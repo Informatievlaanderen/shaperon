@@ -1,8 +1,7 @@
-namespace Be.Vlaanderen.Basisregisters.Shaperon
+namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
 {
     using GeoAPI.Geometries;
     using NetTopologySuite;
-    using NetTopologySuite.Geometries;
     using NetTopologySuite.IO;
 
     public class WellKnownBinaryReader
@@ -18,7 +17,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public IGeometry Read(byte[] data)
         {
             var geometry = _wkbReader.Read(data);
-            if (geometry is Point point)
+            if (geometry is NetTopologySuite.Geometries.Point point)
                 return new PointM(point.X, point.Y, point.Z, point.M);
 
             return geometry;
