@@ -2,6 +2,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Text;
 
     public abstract partial class DbaseRecord
@@ -112,6 +113,82 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 return output.ToArray();
             }
         }
+    }
+
+    public partial class PointShapeContent
+    {
+        internal static ShapeContent ReadAnonymousPointGeometry(BinaryReader reader)
+        {
+            if (reader == null)
+                throw new ArgumentNullException(nameof(reader));
+
+            var content = EndianBitConverter
+                .GetLittleEndianBytes((int) ShapeType.Point)
+                .Concat(reader.ReadBytes(16))
+                .ToArray();
+
+            return new AnonymousShapeContent(ShapeType.Point, content);
+        }
+    }
+
+    public partial class PolygonShapeContent
+    {
+        internal static ShapeContent ReadAnonymousPolygonGeometry(BinaryReader reader)
+        {
+            if (reader == null)
+                throw new ArgumentNullException(nameof(reader));
+
+            var content = EndianBitConverter
+                .GetLittleEndianBytes((int)ShapeType.Polygon)
+                .Concat(reader.ReadBytes(BoundingBoxByteLength.ToInt32()));
+
+            var numberOfPartsAsBytes = reader.ReadBytes(4);
+            var numberOfParts = EndianBitConverter.ToInt32LittleEndian(numberOfPartsAsBytes);
+            var numberOfPointsAsBytes = reader.ReadBytes(4);
+            var numberOfPoints = EndianBitConverter.ToInt32LittleEndian(numberOfPointsAsBytes);
+
+            content = content
+                .Concat(numberOfPartsAsBytes)
+                .Concat(numberOfPointsAsBytes)
+                .Concat(reader.ReadBytes(numberOfParts * 4))
+                .Concat(reader.ReadBytes(numberOfPoints * 16));
+
+            return new AnonymousShapeContent(ShapeType.Polygon, content.ToArray());
+        }
+    }
+
+    public partial class PolyLineMShapeContent
+    {
+        internal static ShapeContent ReadAnonymousPolyLineMGeometry(BinaryReader reader)
+        {
+            if (reader == null)
+                throw new ArgumentNullException(nameof(reader));
+
+            var content = EndianBitConverter
+                .GetLittleEndianBytes((int) ShapeType.PolyLineM)
+                .Concat(reader.ReadBytes(BoundingBoxByteLength.ToInt32()));
+
+            var numberOfPartsAsBytes = reader.ReadBytes(4);
+            var numberOfParts = EndianBitConverter.ToInt32LittleEndian(numberOfPartsAsBytes);
+            var numberOfPointsAsBytes = reader.ReadBytes(4);
+            var numberOfPoints = EndianBitConverter.ToInt32LittleEndian(numberOfPointsAsBytes);
+
+            content = content
+                .Concat(numberOfPartsAsBytes)
+                .Concat(numberOfPointsAsBytes)
+                .Concat(reader.ReadBytes(numberOfParts * 4))
+                .Concat(reader.ReadBytes(numberOfPoints * 16));
+
+            if (reader.BaseStream.CanSeek && reader.BaseStream.Position != reader.BaseStream.Length)
+            {
+                content = content
+                    .Concat(reader.ReadBytes(MeasureRangeByteLength.ToInt32()))
+                    .Concat(reader.ReadBytes(numberOfPoints * 8));
+            } //else try-catch-EndOfStreamException?? or only support seekable streams?
+
+            return new AnonymousShapeContent(ShapeType.PolyLineM, content.ToArray());
+        }
+
     }
 
     public partial class ShapeRecord
