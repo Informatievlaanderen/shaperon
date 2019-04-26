@@ -1,3 +1,5 @@
+## [4.1.1](https://github.com/informatievlaanderen/shaperon/compare/v4.1.0...v4.1.1) (2019-04-26)
+
 # [4.1.0](https://github.com/informatievlaanderen/shaperon/compare/v4.0.1...v4.1.0) (2019-04-16)
 
 
