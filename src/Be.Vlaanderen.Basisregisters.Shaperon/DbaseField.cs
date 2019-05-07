@@ -252,7 +252,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
 
-            var name = new DbaseFieldName(reader.ReadRightPaddedString(11, char.MinValue));
+            var name = new DbaseFieldName(reader.ReadRightPaddedFieldName(11, char.MinValue));
             var typeOfField = reader.ReadByte();
 
             if (!Enum.IsDefined(typeof(DbaseFieldType), typeOfField))

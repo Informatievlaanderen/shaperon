@@ -7,6 +7,7 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Be.Vlaanderen.Basisregisters.Shaperon.Geometries\Be.Vlaanderen.Basisregisters.Shaperon.Geometries.csproj" />
     <ProjectReference Include="..\..\src\Be.Vlaanderen.Basisregisters.Shaperon\Be.Vlaanderen.Basisregisters.Shaperon.csproj" />
   </ItemGroup>
 

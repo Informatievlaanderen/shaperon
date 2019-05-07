@@ -305,6 +305,29 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Fact]
+        public void CanNotReadPastEndOfStream()
+        {
+            var sut = _fixture.Create<DbaseSingle>();
+
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
+                {
+                    writer.Write(_fixture.CreateMany<byte>(new Random().Next(0, sut.Field.Length.ToInt32())).ToArray());
+                    writer.Flush();
+                }
+
+                stream.Position = 0;
+
+                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
+                {
+                    var result = new DbaseSingle(sut.Field);
+                    Assert.Throws<EndOfStreamException>(() => result.Read(reader));
+                }
+            }
+        }
+
+        [Fact]
         public void WritesExcessDecimalsAsZero()
         {
             var length = _fixture.GenerateDbaseSingleLength();
