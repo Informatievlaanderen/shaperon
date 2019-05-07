@@ -77,18 +77,22 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                 var fromPointIndex = polygon.Parts[partIndex];
 
                 linearRings[partIndex] = new NetTopologySuite.Geometries.LinearRing(
-                    new NetTopologySuite.Geometries.Implementation.CoordinateArraySequence(
+                    GeometryConfiguration.GeometryFactory.CoordinateSequenceFactory.Create(
                         polygon.Points
                             .Skip(fromPointIndex)
                             .Take(toPointIndex - fromPointIndex)
-                            .Select(x => new GeoAPI.Geometries.Coordinate(x.X, x.Y))
+                            .Select(point => new GeoAPI.Geometries.Coordinate(point.X, point.Y))
                             .ToArray()),
                     GeometryConfiguration.GeometryFactory);
 
                 toPointIndex = fromPointIndex;
             }
 
-            return new NetTopologySuite.Geometries.Polygon(linearRings[0], linearRings.Skip(1).ToArray());
+            return new NetTopologySuite.Geometries.Polygon(
+                linearRings[0],
+                linearRings.Length > 1
+                    ? linearRings.Skip(1).ToArray()
+                    : Array.Empty<GeoAPI.Geometries.ILinearRing>());
         }
 
         public static PolyLineM FromGeometryMultiLineString(NetTopologySuite.Geometries.MultiLineString multiLineString)

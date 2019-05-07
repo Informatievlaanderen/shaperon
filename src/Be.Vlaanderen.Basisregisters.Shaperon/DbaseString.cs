@@ -48,12 +48,18 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             if (reader.PeekChar() == '\0')
             {
-                reader.ReadBytes(Field.Length.ToInt32());
+                var read = reader.ReadBytes(Field.Length.ToInt32());
+                if (read.Length != Field.Length.ToInt32())
+                {
+                    throw new EndOfStreamException(
+                        $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
+                    );
+                }
                 Value = null;
             }
             else
             {
-                Value = reader.ReadRightPaddedString(Field.Length.ToInt32(), ' ');
+                Value = reader.ReadRightPaddedString(Field.Name.ToString(), Field.Length.ToInt32(), ' ');
             }
         }
 

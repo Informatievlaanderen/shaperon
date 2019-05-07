@@ -154,6 +154,23 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Fact]
+        public void CanNotReadPastEndOfStream()
+        {
+            var sut = _fixture.Create<DbaseBoolean>();
+
+            using (var stream = new MemoryStream())
+            {
+                stream.Position = 0;
+
+                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
+                {
+                    var result = new DbaseBoolean(sut.Field);
+                    Assert.Throws<EndOfStreamException>(() => result.Read(reader));
+                }
+            }
+        }
+
+        [Fact]
         public void CreateFailsIfFieldDecimalCountIsNot0()
         {
             var decimalCount = new Generator<DbaseDecimalCount>(_fixture)

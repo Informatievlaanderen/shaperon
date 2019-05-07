@@ -9,3 +9,4 @@ AutoFixture
 AutoFixture.Idioms
 PublicApiGenerator
 Newtonsoft.Json
+NetTopologySuite
