@@ -2,6 +2,7 @@
 .fake/
 .idea/
 .vscode/
+.ionide/
 
 [Pp]ackages/
 [Pp]aket-files/

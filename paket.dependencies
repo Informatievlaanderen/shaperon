@@ -9,31 +9,31 @@ source https://api.nuget.org/v3/index.json
 // source https://informatievlaanderen.myget.org/F/nuget-mirror/api/v3/index.json username: "%MYGET_FEED_USER%" password: "%MYGET_FEED_PASS%" authtype: "basic"
 
 // DOTNETCORE ISSUES
-nuget Microsoft.NETCore.App 2.2.4
-nuget Microsoft.NETCore.DotNetAppHost 2.2.4
-nuget Microsoft.NETCore.DotNetHostResolver 2.2.4
-nuget Microsoft.NETCore.DotNetHostPolicy 2.2.4
+nuget Microsoft.NETCore.App 2.2.6
+nuget Microsoft.NETCore.DotNetAppHost 2.2.6
+nuget Microsoft.NETCore.DotNetHostResolver 2.2.6
+nuget Microsoft.NETCore.DotNetHostPolicy 2.2.6
 nuget NETStandard.Library 2.0.3
 
 // PRODUCTION STUFF
 nuget System.Text.Encoding.CodePages 4.5.1
-nuget NetTopologySuite 1.15.2
+nuget NetTopologySuite 1.15.3
 
 // TEST STUFF
-nuget Microsoft.NET.Test.Sdk 16.0.1
+nuget Microsoft.NET.Test.Sdk 16.2.0
 nuget xunit 2.4.1
 nuget xunit.runner.visualstudio 2.4.1
 nuget xunit.categories 2.0.4
 nuget Newtonsoft.Json 12.0.2
 
 nuget Albedo 2.0.0
-nuget AutoFixture 4.8.0
-nuget AutoFixture.Idioms 4.8.0
+nuget AutoFixture 4.11.0
+nuget AutoFixture.Idioms 4.11.0
 
-nuget PublicApiGenerator 8.1.0
+nuget PublicApiGenerator 9.3.0
 
 // BUILD STUFF
-nuget Be.Vlaanderen.Basisregisters.Build.Pipeline ~> 1.6
+nuget Be.Vlaanderen.Basisregisters.Build.Pipeline ~> 1.7
 
 nuget FAKE 4.64.13 // Don't update to v5!
 nuget SourceLink.Embed.AllSourceFiles 2.8.3 copy_local: true
