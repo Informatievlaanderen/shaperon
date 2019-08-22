@@ -1,3 +1,10 @@
+# [4.2.0](https://github.com/informatievlaanderen/shaperon/compare/v4.1.1...v4.2.0) (2019-08-22)
+
+
+### Features
+
+* bump to .net 2.2.6 ([88a0efa](https://github.com/informatievlaanderen/shaperon/commit/88a0efa))
+
 ## [4.1.1](https://github.com/informatievlaanderen/shaperon/compare/v4.1.0...v4.1.1) (2019-04-26)
 
 # [4.1.0](https://github.com/informatievlaanderen/shaperon/compare/v4.0.1...v4.1.0) (2019-04-16)
