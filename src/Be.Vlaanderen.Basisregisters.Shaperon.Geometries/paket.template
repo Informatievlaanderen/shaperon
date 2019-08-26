@@ -14,6 +14,10 @@ licenseUrl https://opensource.org/licenses/MIT
 
 description Lightweight dbase and shape record handling (net topology suite integration).
 
+dependencies:
+  framework: netstandard20
+    NetTopologySuite >= LOCKEDVERSION
+
 include-referenced-projects true
 
 files

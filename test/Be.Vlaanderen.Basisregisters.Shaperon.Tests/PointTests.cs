@@ -1,5 +1,6 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
+    using System;
     using System.Globalization;
     using AutoFixture;
     using AutoFixture.Idioms;
@@ -12,6 +13,49 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public PointTests()
         {
             _fixture = new Fixture();
+            _fixture.Customize<double>(customizer => customizer.FromFactory(rnd => rnd.NextDouble()));
+        }
+
+        [Fact]
+        public void XCanNotBeNaN()
+        {
+            Assert.Throws<ArgumentException>(
+                () => new Point(double.NaN, _fixture.Create<double>()));
+        }
+
+        [Fact]
+        public void YCanNotBeNaN()
+        {
+            Assert.Throws<ArgumentException>(
+                () => new Point(_fixture.Create<double>(), double.NaN));
+        }
+
+        [Fact]
+        public void XCanNotBeNegativeInfinite()
+        {
+            Assert.Throws<ArgumentException>(
+                () => new Point(double.NegativeInfinity, _fixture.Create<double>()));
+        }
+
+        [Fact]
+        public void YCanNotBeNegativeInfinite()
+        {
+            Assert.Throws<ArgumentException>(
+                () => new Point(_fixture.Create<double>(), double.NegativeInfinity));
+        }
+
+        [Fact]
+        public void XCanNotBePositiveInfinite()
+        {
+            Assert.Throws<ArgumentException>(
+                () => new Point(double.PositiveInfinity, _fixture.Create<double>()));
+        }
+
+        [Fact]
+        public void YCanNotBePositiveInfinite()
+        {
+            Assert.Throws<ArgumentException>(
+                () => new Point(_fixture.Create<double>(),double.PositiveInfinity));
         }
 
         [Fact]
