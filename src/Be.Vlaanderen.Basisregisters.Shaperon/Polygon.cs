@@ -2,6 +2,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
 
     public class Polygon : IEquatable<Polygon>
@@ -24,7 +25,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public int[] Parts { get; }
         public Point[] Points { get; }
 
-        public bool Equals(Polygon other, double tolerance) => other != null
+        [Pure]
+        public bool Equals(Polygon other, Tolerance tolerance) => other != null
                                                                && BoundingBox.Equals(other.BoundingBox, tolerance)
                                                                && NumberOfParts.Equals(other.NumberOfParts)
                                                                && NumberOfPoints.Equals(other.NumberOfPoints)
@@ -49,9 +51,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private class TolerantPointEqualityComparer : IEqualityComparer<Point>
         {
-            private readonly double _tolerance;
+            private readonly Tolerance _tolerance;
 
-            public TolerantPointEqualityComparer(double tolerance)
+            public TolerantPointEqualityComparer(Tolerance tolerance)
             {
                 _tolerance = tolerance;
             }

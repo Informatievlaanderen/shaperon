@@ -2,6 +2,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
 
     public class PolyLineM : IEquatable<PolyLineM>
@@ -29,7 +30,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public MeasureRange MeasureRange { get; }
         public double[] Measures { get; }
 
-        public bool Equals(PolyLineM other, double tolerance) => other != null
+        [Pure]
+        public bool Equals(PolyLineM other, Tolerance tolerance) => other != null
                                                && BoundingBox.Equals(other.BoundingBox, tolerance)
                                                && NumberOfParts.Equals(other.NumberOfParts)
                                                && NumberOfPoints.Equals(other.NumberOfPoints)
@@ -59,9 +61,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private class TolerantPointEqualityComparer : IEqualityComparer<Point>
         {
-            private readonly double _tolerance;
+            private readonly Tolerance _tolerance;
 
-            public TolerantPointEqualityComparer(double tolerance)
+            public TolerantPointEqualityComparer(Tolerance tolerance)
             {
                 _tolerance = tolerance;
             }
@@ -81,14 +83,17 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             private readonly double _tolerance;
 
-            public TolerantDoubleEqualityComparer(double tolerance)
+            public TolerantDoubleEqualityComparer(Tolerance tolerance)
             {
-                _tolerance = tolerance;
+                _tolerance = tolerance.ToDouble();
             }
 
             public bool Equals(double x, double y)
             {
-                return double.IsNaN(x) && double.IsNaN(y) || Math.Abs(x - y) < _tolerance;
+                return double.IsNaN(x) && double.IsNaN(y)
+                       || double.IsNegativeInfinity(x) && double.IsNegativeInfinity(y)
+                       || double.IsPositiveInfinity(x) && double.IsPositiveInfinity(y)
+                       || Math.Abs(x - y) < _tolerance;
             }
 
             public int GetHashCode(double obj)
