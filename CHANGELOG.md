@@ -1,3 +1,27 @@
+# [5.0.0](https://github.com/informatievlaanderen/shaperon/compare/v4.2.0...v5.0.0) (2019-08-26)
+
+
+### Features
+
+* added tolerance as type and to signatures ([bbfa892](https://github.com/informatievlaanderen/shaperon/commit/bbfa892))
+* nts integration as package ([bb01268](https://github.com/informatievlaanderen/shaperon/commit/bb01268))
+* reintroduced nts geometry under test ([0a45d6e](https://github.com/informatievlaanderen/shaperon/commit/0a45d6e))
+* removed nettopologysuite as dependency ([8e381d1](https://github.com/informatievlaanderen/shaperon/commit/8e381d1))
+
+
+### BREAKING CHANGES
+
+* no longer depend on nts, api changes around shape content
+
+test: more coverage
+
+test: more tests
+
+feat: obsolete anonymous, to and from bytes
+* - obsolete anonymous, to and from bytes
+
+test: extra test
+
 # [4.2.0](https://github.com/informatievlaanderen/shaperon/compare/v4.1.1...v4.2.0) (2019-08-22)
 
 
