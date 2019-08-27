@@ -17,7 +17,7 @@ nuget NETStandard.Library 2.0.3
 
 // PRODUCTION STUFF
 nuget System.Text.Encoding.CodePages 4.5.1
-nuget NetTopologySuite 1.15.3
+nuget NetTopologySuite 2.0.0
 
 // TEST STUFF
 nuget Microsoft.NET.Test.Sdk 16.2.0
