@@ -1,3 +1,20 @@
+# [6.0.0](https://github.com/informatievlaanderen/shaperon/compare/v5.0.0...v6.0.0) (2019-09-18)
+
+
+### Bug Fixes
+
+* integrated with nts 2 dot 0 type system ([6e8672c](https://github.com/informatievlaanderen/shaperon/commit/6e8672c))
+
+
+### Features
+
+* force build for nts 2.x ([8676de7](https://github.com/informatievlaanderen/shaperon/commit/8676de7))
+
+
+### BREAKING CHANGES
+
+* removed pointm and pointsequence
+
 # [5.0.0](https://github.com/informatievlaanderen/shaperon/compare/v4.2.0...v5.0.0) (2019-08-26)
 
 
