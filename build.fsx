@@ -12,19 +12,17 @@ let pack = packSolution nugetVersionNumber
 
 // Library ------------------------------------------------------------------------
 
-Target "Lib_Build" (fun _ ->
-  build "Be.Vlaanderen.Basisregisters.Shaperon"
+Target "Lib_Build" (fun _ -> build "Be.Vlaanderen.Basisregisters.Shaperon")
+
+Target "Lib_Test" (fun _ ->
+  [
+    "test" @@ "Be.Vlaanderen.Basisregisters.Shaperon.Tests" ]
+  |> List.iter testWithDotNet
 )
 
-Target "Lib_Test" (fun _ -> [ "test" @@ "Be.Vlaanderen.Basisregisters.Shaperon.Tests" ] |> List.iter testWithDotNet)
+Target "Lib_Publish" (fun _ -> publish "Be.Vlaanderen.Basisregisters.Shaperon")
 
-Target "Lib_Publish" (fun _ ->
-  publish "Be.Vlaanderen.Basisregisters.Shaperon"
-)
-
-Target "Lib_Pack" (fun _ ->
-  pack "Be.Vlaanderen.Basisregisters.Shaperon"
-)
+Target "Lib_Pack" (fun _ -> pack "Be.Vlaanderen.Basisregisters.Shaperon")
 
 // --------------------------------------------------------------------------------
 
@@ -42,4 +40,4 @@ Target "PackageAll" DoNothing
 "PublishLibrary" ==> "Lib_Pack" ==> "PackageMyGet"
 "PackageMyGet" ==> "PackageAll"
 
-RunTargetOrDefault "Lib_Build"
+RunTargetOrDefault "Lib_Test"

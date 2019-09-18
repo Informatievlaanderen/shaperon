@@ -145,6 +145,10 @@
       },
       {
         "path": "@semantic-release/exec",
+        "cmd": "node packages/Be.Vlaanderen.Basisregisters.Build.Pipeline/Content/ci-nuget.js dist/Be.Vlaanderen.Basisregisters.Shaperon/Be.Vlaanderen.Basisregisters.Shaperon.Geometries.${nextRelease.version}.nupkg"
+      },
+      {
+        "path": "@semantic-release/exec",
         "cmd": "./packages/Be.Vlaanderen.Basisregisters.Build.Pipeline/Content/ci-confluence.sh"
       }
     ],

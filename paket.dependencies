@@ -17,6 +17,7 @@ nuget NETStandard.Library 2.0.3
 
 // PRODUCTION STUFF
 nuget System.Text.Encoding.CodePages 4.5.1
+
 nuget NetTopologySuite 2.0.0
 
 // TEST STUFF
@@ -33,8 +34,8 @@ nuget AutoFixture.Idioms 4.11.0
 nuget PublicApiGenerator 9.3.0
 
 // BUILD STUFF
-nuget Be.Vlaanderen.Basisregisters.Build.Pipeline ~> 1.7
+nuget Be.Vlaanderen.Basisregisters.Build.Pipeline ~> 1.11
 
-nuget FAKE 4.64.13 // Don't update to v5!
+nuget FAKE 4.64.17 // Don't update to v5!
 nuget SourceLink.Embed.AllSourceFiles 2.8.3 copy_local: true
 nuget SourceLink.Copy.PdbFiles 2.8.3 copy_local: true
