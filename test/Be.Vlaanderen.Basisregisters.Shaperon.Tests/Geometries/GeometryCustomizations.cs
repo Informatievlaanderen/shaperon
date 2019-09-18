@@ -22,7 +22,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                 customization.FromFactory(generator =>
                     new NetTopologySuite.Geometries.Point(
                         GeometryConfiguration.GeometryFactory.CoordinateSequenceFactory.Create(new [] {
-                            new GeoAPI.Geometries.Coordinate(fixture.Create<double>(), fixture.Create<double>())
+                            new NetTopologySuite.Geometries.Coordinate(fixture.Create<double>(), fixture.Create<double>())
                         }),
                         GeometryConfiguration.GeometryFactory
                     )
@@ -30,27 +30,27 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
             );
         }
 
-        public static void CustomizeGeometryPointM(this IFixture fixture)
-        {
-            fixture.Customize<PointM>(customization =>
-                customization.FromFactory(generator =>
-                    new PointM(
-                        fixture.Create<double>(),
-                        fixture.Create<double>(),
-                        fixture.Create<double>(),
-                        fixture.Create<double>()
-                    )
-                ).OmitAutoProperties()
-            );
-        }
+//        public static void CustomizeGeometryPointM(this IFixture fixture)
+//        {
+//            fixture.Customize<PointM>(customization =>
+//                customization.FromFactory(generator =>
+//                    new PointM(
+//                        fixture.Create<double>(),
+//                        fixture.Create<double>(),
+//                        fixture.Create<double>(),
+//                        fixture.Create<double>()
+//                    )
+//                ).OmitAutoProperties()
+//            );
+//        }
 
         public static void CustomizeGeometryPolygon(this IFixture fixture)
         {
             const int polygonExteriorBufferCoordinate = 50;
-            var pointFixture = new Fixture();
-            pointFixture.Customize<NetTopologySuite.Geometries.Point>(customization =>
+            var coordinateFixture = new Fixture();
+            coordinateFixture.Customize<NetTopologySuite.Geometries.Coordinate>(customization =>
                 customization.FromFactory(generator =>
-                    new NetTopologySuite.Geometries.Point(
+                    new NetTopologySuite.Geometries.Coordinate(
                         generator.Next(polygonExteriorBufferCoordinate - 1),
                         generator.Next(polygonExteriorBufferCoordinate - 1)
                     )
@@ -58,24 +58,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
             );
 
             var ringFixture = new Fixture();
-            ringFixture.Customize<GeoAPI.Geometries.ILinearRing>(customization =>
+            ringFixture.Customize<NetTopologySuite.Geometries.LinearRing>(customization =>
                 customization.FromFactory(generator =>
                 {
                     NetTopologySuite.Geometries.LinearRing ring;
                     do
                     {
-                        var coordinates = pointFixture.CreateMany<NetTopologySuite.Geometries.Point>(3)
-                            .Select(point => new GeoAPI.Geometries.Coordinate(point.X, point.Y))
+                        var coordinates = coordinateFixture
+                            .CreateMany<NetTopologySuite.Geometries.Coordinate>(3)
                             .ToList();
 
-                        var coordinate = coordinates.First();
-                        coordinates.Add(
-                            new GeoAPI.Geometries.Coordinate(coordinate.X,
-                                coordinate.Y)); //first coordinate must be last
+                        var coordinate = coordinates[0];
+                        coordinates.Add(coordinate.Copy()); //first coordinate must be last
 
                         ring = new NetTopologySuite.Geometries.LinearRing(
-                            new NetTopologySuite.Geometries.Implementation.CoordinateArraySequence(
-                                coordinates.ToArray()),
+                            GeometryConfiguration.GeometryFactory.CoordinateSequenceFactory.Create(coordinates.ToArray()),
                             GeometryConfiguration.GeometryFactory
                         );
                     } while (!ring.IsRing || !ring.IsValid || !ring.IsClosed);
@@ -90,15 +87,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                     NetTopologySuite.Geometries.LinearRing exteriorRing;
                     do
                     {
-                        var exteriorCoordinates = pointFixture.CreateMany<Point>(3)
-                            .Select(point => new GeoAPI.Geometries.Coordinate(point.X + polygonExteriorBufferCoordinate,
+                        var exteriorCoordinates = coordinateFixture.CreateMany<NetTopologySuite.Geometries.Coordinate>(3)
+                            .Select(point => new NetTopologySuite.Geometries.Coordinate(point.X + polygonExteriorBufferCoordinate,
                                 point.Y + polygonExteriorBufferCoordinate))
                             .ToList();
 
-                        var coordinate = exteriorCoordinates.First();
-                        exteriorCoordinates.Add(
-                            new GeoAPI.Geometries.Coordinate(coordinate.X,
-                                coordinate.Y)); //first coordinate must be last
+                        var coordinate = exteriorCoordinates[0];
+                        exteriorCoordinates.Add(coordinate.Copy()); //first coordinate must be last
 
                         exteriorRing = new NetTopologySuite.Geometries.LinearRing(
                             new NetTopologySuite.Geometries.Implementation.CoordinateArraySequence(exteriorCoordinates
@@ -108,7 +103,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                     } while (!exteriorRing.IsRing || !exteriorRing.IsValid || !exteriorRing.IsClosed);
 
                     return new NetTopologySuite.Geometries.Polygon(exteriorRing,
-                        ringFixture.CreateMany<GeoAPI.Geometries.ILinearRing>(generator.Next(0, 1)).ToArray(),
+                        ringFixture.CreateMany<NetTopologySuite.Geometries.LinearRing>(generator.Next(0, 1)).ToArray(),
                         GeometryConfiguration.GeometryFactory);
                 }).OmitAutoProperties()
             );
@@ -164,9 +159,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
 
         public static void CustomizeGeometryMultiLineString(this IFixture fixture)
         {
-            fixture.Customize<PointM>(customization =>
+            fixture.Customize<NetTopologySuite.Geometries.CoordinateZM>(customization =>
                 customization.FromFactory(generator =>
-                    new PointM(
+                    new NetTopologySuite.Geometries.CoordinateZM(
                         fixture.Create<double>(),
                         fixture.Create<double>(),
                         fixture.Create<double>(),
@@ -174,17 +169,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                     )
                 ).OmitAutoProperties()
             );
-            fixture.Customize<GeoAPI.Geometries.ILineString>(customization =>
+            fixture.Customize<NetTopologySuite.Geometries.LineString>(customization =>
                 customization.FromFactory(generator =>
                     new NetTopologySuite.Geometries.LineString(
-                        new PointSequence(fixture.CreateMany<PointM>(generator.Next(2, 10))),
+                        GeometryConfiguration.GeometryFactory.CoordinateSequenceFactory.Create(
+                            fixture.CreateMany<NetTopologySuite.Geometries.CoordinateZM>(generator.Next(2, 10))
+                                .Cast<NetTopologySuite.Geometries.Coordinate>()
+                                .ToArray()
+                        ),
                         GeometryConfiguration.GeometryFactory)
                 ).OmitAutoProperties()
             );
             fixture.Customize<NetTopologySuite.Geometries.MultiLineString>(customization =>
                 customization.FromFactory(generator =>
                     new NetTopologySuite.Geometries.MultiLineString(fixture
-                            .CreateMany<GeoAPI.Geometries.ILineString>(generator.Next(1, 10)).ToArray(),
+                            .CreateMany<NetTopologySuite.Geometries.LineString>(generator.Next(1, 10)).ToArray(),
                         GeometryConfiguration.GeometryFactory)
                 ).OmitAutoProperties()
             );

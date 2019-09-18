@@ -2,7 +2,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
 {
     using System.Linq;
     using AutoFixture;
-    using GeoAPI.Geometries;
     using NetTopologySuite.Geometries;
     using Xunit;
 
@@ -13,30 +12,38 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
         public WkbReaderWriterAssumptions()
         {
             _fixture = new Fixture();
-            _fixture.Customize<Coordinate>(customization =>
+            _fixture.Customize<CoordinateZM>(customization =>
                 customization
                     .FromFactory<int>(value =>
-                        new Coordinate(
+                        new CoordinateZM(
+                            _fixture.Create<double>(),
                             _fixture.Create<double>(),
                             _fixture.Create<double>(),
                             _fixture.Create<double>()
                         )
                     )
                     .OmitAutoProperties());
-            _fixture.Customize<PointM>(customization =>
+            _fixture.Customize<Point>(customization =>
                 customization.FromFactory(generator =>
-                    new PointM(
+                    new Point(
+                        new CoordinateZM(
                         _fixture.Create<double>(),
                         _fixture.Create<double>(),
                         _fixture.Create<double>(),
                         _fixture.Create<double>()
+                        )
                     )
                 ).OmitAutoProperties()
             );
-            _fixture.Customize<ILineString>(customization =>
+            _fixture.Customize<LineString>(customization =>
                 customization.FromFactory(generator =>
                     new LineString(
-                        new PointSequence(_fixture.CreateMany<PointM>(generator.Next(2, 10))),
+                        GeometryConfiguration.GeometryFactory.CoordinateSequenceFactory.Create(
+                            _fixture
+                                .CreateMany<CoordinateZM>(generator.Next(2, 10))
+                                .Cast<Coordinate>()
+                                .ToArray()
+                            ),
                         GeometryConfiguration.GeometryFactory
                     )
                 ).OmitAutoProperties()
@@ -44,7 +51,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
             _fixture.Customize<MultiLineString>(customization =>
                 customization.FromFactory(generator =>
                     new MultiLineString(
-                        _fixture.CreateMany<ILineString>(generator.Next(0, 100)).ToArray(),
+                        _fixture.CreateMany<LineString>(generator.Next(0, 100)).ToArray(),
                         GeometryConfiguration.GeometryFactory
                     )
                 ).OmitAutoProperties());
@@ -53,7 +60,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
         [Fact]
         public void PointAsExtendedWellKnownBinaryCanBeWrittenAndRead()
         {
-            var sut = _fixture.Create<PointM>();
+            var sut = _fixture.Create<Point>();
 
             var writer = new WellKnownBinaryWriter();
 
@@ -64,9 +71,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
             var result = reader.Read(extendedWellKnownBinary);
 
             Assert.NotNull(result);
-            Assert.Equal(sut, Assert.IsType<PointM>(result));
-            Assert.Equal(sut.SRID, ((PointM) result).SRID);
-            Assert.Equal(sut.M, ((PointM) result).M);
+            Assert.Equal(sut, Assert.IsType<Point>(result));
+            Assert.Equal(sut.SRID, ((Point) result).SRID);
+            Assert.Equal(sut.M, ((Point) result).M);
         }
 
         [Fact]
