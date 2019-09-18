@@ -15,11 +15,13 @@ let pack = packSolution nugetVersionNumber
 Target "Lib_Build" (fun _ ->
   build "Be.Vlaanderen.Basisregisters.Shaperon"
 )
+
 Target "Lib_Test" (fun _ -> [ "test" @@ "Be.Vlaanderen.Basisregisters.Shaperon.Tests" ] |> List.iter testWithDotNet)
 
 Target "Lib_Publish" (fun _ ->
   publish "Be.Vlaanderen.Basisregisters.Shaperon"
 )
+
 Target "Lib_Pack" (fun _ ->
   pack "Be.Vlaanderen.Basisregisters.Shaperon"
 )
