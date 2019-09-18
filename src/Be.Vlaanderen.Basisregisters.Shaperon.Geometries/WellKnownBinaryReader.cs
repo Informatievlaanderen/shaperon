@@ -1,7 +1,7 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
 {
-    using GeoAPI.Geometries;
     using NetTopologySuite;
+    using NetTopologySuite.Geometries;
     using NetTopologySuite.IO;
 
     public class WellKnownBinaryReader
@@ -14,20 +14,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                 GeometryConfiguration.GeometryFactory.PrecisionModel,
                 GeometryConfiguration.GeometryFactory.SRID));
 
-        public IGeometry Read(byte[] data)
+        public Geometry Read(byte[] data)
         {
-            var geometry = _wkbReader.Read(data);
-            if (geometry is NetTopologySuite.Geometries.Point point)
-                return new PointM(point.X, point.Y, point.Z, point.M);
-
-            return geometry;
+            return _wkbReader.Read(data);
         }
 
         public TGeometry ReadAs<TGeometry>(byte[] value)
-            where TGeometry : IGeometry => (TGeometry) Read(value);
+            where TGeometry : Geometry => (TGeometry) Read(value);
 
         public bool TryReadAs<TGeometry>(byte[] value, out TGeometry geometry)
-            where TGeometry : IGeometry
+            where TGeometry : Geometry
         {
             var parsed = Read(value);
             if (parsed is TGeometry parsedGeometry)
@@ -41,6 +37,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
         }
 
         public bool CanBeReadAs<TGeometry>(byte[] value)
-            where TGeometry : IGeometry => Read(value) is TGeometry;
+            where TGeometry : Geometry => Read(value) is TGeometry;
     }
 }

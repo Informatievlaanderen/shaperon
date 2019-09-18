@@ -17,16 +17,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
             return new NetTopologySuite.Geometries.Point(point.X, point.Y);
         }
 
-        public static Point FromGeometryPointM(PointM point)
-        {
-            if (point == null) throw new ArgumentNullException(nameof(point));
-            return new Point(point.X, point.Y);
-        }
-
-        public static PointM ToGeometryPointM(Point point)
-        {
-            return new PointM(point.X, point.Y);
-        }
+//        public static Point FromGeometryPointM(PointM point)
+//        {
+//            if (point == null) throw new ArgumentNullException(nameof(point));
+//            return new Point(point.X, point.Y);
+//        }
+//
+//        public static PointM ToGeometryPointM(Point point)
+//        {
+//            return new PointM(point.X, point.Y);
+//        }
 
         public static Polygon FromGeometryPolygon(NetTopologySuite.Geometries.Polygon polygon)
         {
@@ -41,13 +41,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
 
             var lineStrings = new List<NetTopologySuite.Geometries.LineString>
             {
-                (NetTopologySuite.Geometries.LineString) polygon.ExteriorRing
+                polygon.ExteriorRing
             };
 
-            lineStrings.AddRange(
-                polygon
-                .InteriorRings
-                .Cast<NetTopologySuite.Geometries.LineString>());
+            lineStrings.AddRange(polygon.InteriorRings);
 
             var offset = 0;
             var parts = new int[lineStrings.Count];
@@ -69,7 +66,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
         public static NetTopologySuite.Geometries.Polygon ToGeometryPolygon(Polygon polygon)
         {
             if (polygon == null) throw new ArgumentNullException(nameof(polygon));
-            var linearRings = new GeoAPI.Geometries.ILinearRing[polygon.NumberOfParts];
+            var linearRings = new NetTopologySuite.Geometries.LinearRing[polygon.NumberOfParts];
             var toPointIndex = polygon.NumberOfPoints;
 
             for (var partIndex = polygon.NumberOfParts - 1; partIndex >= 0; partIndex--)
@@ -81,7 +78,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                         polygon.Points
                             .Skip(fromPointIndex)
                             .Take(toPointIndex - fromPointIndex)
-                            .Select(point => new GeoAPI.Geometries.Coordinate(point.X, point.Y))
+                            .Select(point => new NetTopologySuite.Geometries.Coordinate(point.X, point.Y))
                             .ToArray()),
                     GeometryConfiguration.GeometryFactory);
 
@@ -92,7 +89,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                 linearRings[0],
                 linearRings.Length > 1
                     ? linearRings.Skip(1).ToArray()
-                    : Array.Empty<GeoAPI.Geometries.ILinearRing>());
+                    : Array.Empty<NetTopologySuite.Geometries.LinearRing>());
         }
 
         public static PolyLineM FromGeometryMultiLineString(NetTopologySuite.Geometries.MultiLineString multiLineString)
@@ -125,7 +122,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                 .Select(coordinate => new Point(coordinate.X, coordinate.Y))
                 .ToArray();
 
-            var measures = multiLineString.GetOrdinates(GeoAPI.Geometries.Ordinate.M).ToArray();
+            var measures = multiLineString.GetOrdinates(NetTopologySuite.Geometries.Ordinate.M).ToArray();
 
             return new PolyLineM(boundingBox, parts, points, measures);
         }
@@ -134,27 +131,32 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
         {
             if (polyLineM == null) throw new ArgumentNullException(nameof(polyLineM));
 
-            var points = Array.ConvertAll(polyLineM.Points, point => new PointM(point.X, point.Y));
+            var coordinates = Array.ConvertAll(polyLineM.Points, point => new NetTopologySuite.Geometries.Coordinate(point.X, point.Y));
             if (polyLineM.Measures != null)
             {
                 for (var measureIndex = 0; measureIndex < polyLineM.Measures.Length; measureIndex++)
                 {
-                    points[measureIndex].ChangeMeasurement(polyLineM.Measures[measureIndex]);
+                    coordinates[measureIndex] = new NetTopologySuite.Geometries.CoordinateM(coordinates[measureIndex].X, coordinates[measureIndex].Y, polyLineM.Measures[measureIndex]);
                 }
             }
 
-            var lines = new GeoAPI.Geometries.ILineString[polyLineM.NumberOfParts];
-            var toPointIndex = points.Length;
+            var lines = new NetTopologySuite.Geometries.LineString[polyLineM.NumberOfParts];
+            var toCoordinateIndex = coordinates.Length;
 
             for (var partIndex = polyLineM.NumberOfParts - 1; partIndex >= 0; partIndex--)
             {
-                var fromPointIndex = polyLineM.Parts[partIndex];
+                var fromCoordinateIndex = polyLineM.Parts[partIndex];
 
                 lines[partIndex] = new NetTopologySuite.Geometries.LineString(
-                    new PointSequence(new ArraySegment<PointM>(points, fromPointIndex, toPointIndex - fromPointIndex)),
+                    GeometryConfiguration.GeometryFactory.CoordinateSequenceFactory.Create(
+                        new ArraySegment<NetTopologySuite.Geometries.Coordinate>(
+                                coordinates,
+                                fromCoordinateIndex,
+                                toCoordinateIndex - fromCoordinateIndex).ToArray()
+                    ),
                     GeometryConfiguration.GeometryFactory);
 
-                toPointIndex = fromPointIndex;
+                toCoordinateIndex = fromCoordinateIndex;
             }
 
             return new NetTopologySuite.Geometries.MultiLineString(lines);

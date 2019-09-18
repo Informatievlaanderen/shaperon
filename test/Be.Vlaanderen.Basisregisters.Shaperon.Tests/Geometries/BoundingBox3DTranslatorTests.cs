@@ -3,15 +3,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
     using System.Collections.Generic;
     using System.Linq;
     using AutoFixture;
-    using GeoAPI.Geometries;
     using NetTopologySuite.Geometries;
+    using NetTopologySuite.Geometries.Implementation;
     using Xunit;
 
     public class BoundingBox3DTranslatorTests
     {
         [Theory]
         [MemberData(nameof(FromGeometryCases))]
-        public void FromGeometryReturnsExpectedResult(IGeometry geometry, BoundingBox3D expected)
+        public void FromGeometryReturnsExpectedResult(Geometry geometry, BoundingBox3D expected)
         {
             var result = BoundingBox3DTranslator.FromGeometry(geometry);
 
@@ -23,9 +23,18 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
             get
             {
                 var fixture = new Fixture();
-                fixture.Customize<PointM>(customization =>
+                fixture.Customize<Coordinate>(customization =>
                     customization.FromFactory(generator =>
-                        new PointM(
+                        new Coordinate(
+                            fixture.Create<double>(),
+                            fixture.Create<double>()
+                        )
+                    ).OmitAutoProperties()
+                );
+
+                fixture.Customize<CoordinateZM>(customization =>
+                    customization.FromFactory(generator =>
+                        new CoordinateZM(
                             fixture.Create<double>(),
                             fixture.Create<double>(),
                             fixture.Create<double>(),
@@ -34,24 +43,32 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                     ).OmitAutoProperties()
                 );
 
-                fixture.Customize<ILineString>(customization =>
+                fixture.Customize<Point>(customization =>
+                    customization.FromFactory(generator =>
+                        new Point(
+                            new CoordinateZM(
+                            fixture.Create<double>(),
+                            fixture.Create<double>(),
+                            fixture.Create<double>(),
+                            fixture.Create<double>()
+                            )
+                        )
+                    ).OmitAutoProperties()
+                );
+
+                fixture.Customize<LineString>(customization =>
                     customization.FromFactory(generator =>
                         new LineString(
-                            new PointSequence(fixture.CreateMany<PointM>()),
+                            new CoordinateArraySequence(fixture.CreateMany<CoordinateZM>().Cast<Coordinate>().ToArray()),
                             GeometryConfiguration.GeometryFactory)
                     ).OmitAutoProperties()
                 );
                 fixture.Customize<MultiLineString>(customization =>
                     customization.FromFactory(generator =>
-                        new MultiLineString(fixture.CreateMany<ILineString>(generator.Next(1, 10)).ToArray())
+                        new MultiLineString(fixture.CreateMany<LineString>(generator.Next(1, 10)).ToArray())
                     ).OmitAutoProperties()
                 );
-                var point1 = new PointM(
-                    fixture.Create<double>(),
-                    fixture.Create<double>(),
-                    fixture.Create<double>(),
-                    fixture.Create<double>()
-                );
+                var point1 = fixture.Create<Point>();
 
                 yield return new object[]
                 {
@@ -68,11 +85,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                     )
                 };
 
-                var point2 = new PointM(
+                var point2 = new Point(
+                    new CoordinateZM(
                     fixture.Create<double>(),
                     fixture.Create<double>(),
                     double.NaN,
                     double.NaN
+                    )
                 );
 
                 yield return new object[]
@@ -108,13 +127,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                     )
                 };
 
-                fixture.Customize<ILineString>(customization =>
+                fixture.Customize<LineString>(customization =>
                     customization.FromFactory(generator =>
                         new LineString(
-                            new PointSequence(
+                            new CoordinateArraySequence(
                                 fixture
-                                    .CreateMany<PointM>(generator.Next(2, 10))
-                                    .Select(point => new PointM(point.X, point.Y, double.NaN, double.NaN))
+                                    .CreateMany<Coordinate>(generator.Next(2, 10))
+                                    .ToArray()
                             ),
                             GeometryConfiguration.GeometryFactory
                         )

@@ -1,6 +1,6 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
 {
-    using GeoAPI.Geometries;
+    using NetTopologySuite.Geometries;
     using Xunit;
 
     public class GeometryConfigurationTests

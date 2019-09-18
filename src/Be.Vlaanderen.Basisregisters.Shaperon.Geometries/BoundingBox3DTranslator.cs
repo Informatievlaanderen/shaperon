@@ -1,11 +1,11 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
 {
     using System.Linq;
-    using GeoAPI.Geometries;
+    using NetTopologySuite.Geometries;
 
     public static class BoundingBox3DTranslator
     {
-        public static BoundingBox3D FromGeometry(IGeometry geometry)
+        public static BoundingBox3D FromGeometry(Geometry geometry)
         {
             var z = geometry.GetOrdinates(Ordinate.Z);
             var m = geometry.GetOrdinates(Ordinate.M);
