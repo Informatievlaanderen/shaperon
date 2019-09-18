@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{10E7BFBD-2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Be.Vlaanderen.Basisregisters.Shaperon.Tests", "test\Be.Vlaanderen.Basisregisters.Shaperon.Tests\Be.Vlaanderen.Basisregisters.Shaperon.Tests.csproj", "{A0DD05D4-BCD3-435E-BAA0-7C44E6567E60}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Be.Vlaanderen.Basisregisters.Shaperon.Geometries", "src\Be.Vlaanderen.Basisregisters.Shaperon.Geometries\Be.Vlaanderen.Basisregisters.Shaperon.Geometries.csproj", "{D23A2307-A462-4F8B-9572-562FD4F02B2F}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A11E5C11-0727-43C6-8943-9800F40D50BE}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -22,8 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		paket.dependencies = paket.dependencies
 		README.md = README.md
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Be.Vlaanderen.Basisregisters.Shaperon.Geometries", "src\Be.Vlaanderen.Basisregisters.Shaperon.Geometries\Be.Vlaanderen.Basisregisters.Shaperon.Geometries.csproj", "{D23A2307-A462-4F8B-9572-562FD4F02B2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
