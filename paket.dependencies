@@ -15,6 +15,9 @@ nuget Microsoft.NETCore.DotNetHostResolver 2.2.6
 nuget Microsoft.NETCore.DotNetHostPolicy 2.2.6
 nuget NETStandard.Library 2.0.3
 
+// VBR STUFF
+nuget Be.Vlaanderen.Basisregisters.Build.Pipeline ~> 2.0
+
 // PRODUCTION STUFF
 nuget System.Text.Encoding.CodePages 4.5.1
 
@@ -34,8 +37,5 @@ nuget AutoFixture.Idioms 4.11.0
 nuget PublicApiGenerator 9.3.0
 
 // BUILD STUFF
-nuget Be.Vlaanderen.Basisregisters.Build.Pipeline ~> 1.11
-
-nuget FAKE 4.64.17 // Don't update to v5!
 nuget SourceLink.Embed.AllSourceFiles 2.8.3 copy_local: true
 nuget SourceLink.Copy.PdbFiles 2.8.3 copy_local: true
