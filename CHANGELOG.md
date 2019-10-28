@@ -1,3 +1,10 @@
+## [6.0.1](https://github.com/informatievlaanderen/shaperon/compare/v6.0.0...v6.0.1) (2019-10-28)
+
+
+### Bug Fixes
+
+* upgrade build tools, move to fake 5 ([564df97](https://github.com/informatievlaanderen/shaperon/commit/564df97))
+
 # [6.0.0](https://github.com/informatievlaanderen/shaperon/compare/v5.0.0...v6.0.0) (2019-09-18)
 
 
