@@ -3,6 +3,7 @@
 .idea/
 .vscode/
 .ionide/
+.paket/
 
 [Pp]ackages/
 [Pp]aket-files/

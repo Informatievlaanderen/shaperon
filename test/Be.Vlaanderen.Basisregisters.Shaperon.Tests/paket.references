@@ -1,5 +1,3 @@
-Microsoft.NETCore.App
-
 Microsoft.NET.Test.Sdk
 System.Text.Encoding.CodePages
 xunit

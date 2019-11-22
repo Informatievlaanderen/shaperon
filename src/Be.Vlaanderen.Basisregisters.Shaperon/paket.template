@@ -14,6 +14,9 @@ licenseUrl https://opensource.org/licenses/MIT
 
 description Lightweight dbase and shape record handling.
 
+dependencies:
+  framework: netcoreapp30
+
 files
-  bin\Release\netstandard2.0\Be.Vlaanderen.Basisregisters.Shaperon.dll => lib\netstandard2.0
-  bin\Release\netstandard2.0\Be.Vlaanderen.Basisregisters.Shaperon.pdb => lib\netstandard2.0
+  bin\Release\netcoreapp3.0\Be.Vlaanderen.Basisregisters.Shaperon.dll => lib\netcoreapp3.0
+  bin\Release\netcoreapp3.0\Be.Vlaanderen.Basisregisters.Shaperon.pdb => lib\netcoreapp3.0
