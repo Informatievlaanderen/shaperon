@@ -1,3 +1,15 @@
+# [7.0.0](https://github.com/informatievlaanderen/shaperon/compare/v6.0.1...v7.0.0) (2019-11-22)
+
+
+### Code Refactoring
+
+* upgrade to netcoreapp30 ([80f1220](https://github.com/informatievlaanderen/shaperon/commit/80f1220))
+
+
+### BREAKING CHANGES
+
+* Upgrade to .NET Core 3
+
 ## [6.0.1](https://github.com/informatievlaanderen/shaperon/compare/v6.0.0...v6.0.1) (2019-10-28)
 
 
