@@ -2,8 +2,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.Collections;
-    using System.Collections.Generic;
     using System.IO;
+    using System.Linq.Expressions;
 
     public class DbaseFileHeader
     {
@@ -50,8 +50,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public static DbaseFileHeader Read(BinaryReader reader)
         {
+            return Read(reader, DbaseFileHeaderReadBehavior.Default);
+        }
+
+        public static DbaseFileHeader Read(BinaryReader reader, DbaseFileHeaderReadBehavior behavior)
+        {
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
+            if (behavior == null)
+                throw new ArgumentNullException(nameof(behavior));
 
             if (reader.ReadByte() != ExpectedDbaseFormat)
                 throw new DbaseFileHeaderException("The database file type must be 3 (dBase III).");
@@ -85,15 +92,18 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             for (var recordFieldIndex = 0; recordFieldIndex < fieldCount; recordFieldIndex++)
                 fields[recordFieldIndex] = DbaseField.Read(reader);
 
-            // verify field offsets are aligned
-            var offset = ByteOffset.Initial;
-            foreach (var field in fields)
+            if (!behavior.IgnoreFieldOffset)
             {
-                if (field.Offset != offset)
-                    throw new DbaseFileHeaderException(
-                        $"The field {field.Name} does not have the expected offset {offset} but instead {field.Offset}. Please ensure the offset has been properly set for each field and that the order in which they appear in the record field layout matches their offset.");
+                // verify field offsets are aligned
+                var offset = ByteOffset.Initial;
+                foreach (var field in fields)
+                {
+                    if (field.Offset != offset)
+                        throw new DbaseFileHeaderException(
+                            $"The field {field.Name} does not have the expected offset {offset} but instead {field.Offset}. Please ensure the offset has been properly set for each field and that the order in which they appear in the record field layout matches their offset.");
 
-                offset = field.Offset.Plus(field.Length);
+                    offset = field.Offset.Plus(field.Length);
+                }
             }
 
             var schema = new AnonymousDbaseSchema(fields);

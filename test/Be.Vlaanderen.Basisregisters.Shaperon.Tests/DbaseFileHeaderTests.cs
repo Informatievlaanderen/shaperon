@@ -282,7 +282,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     writer.Write(Convert.ToByte(lastUpdated.Day));
                     writer.Write(recordCount.ToInt32());
                     var headerLength = DbaseFileHeader.HeaderMetaDataSize +
-                                       (DbaseFileHeader.FieldMetaDataSize * fields.Length);
+                                       DbaseFileHeader.FieldMetaDataSize * fields.Length;
                     writer.Write(Convert.ToInt16(headerLength));
                     writer.Write(length.ToInt16());
                     writer.Write(new byte[17]);
@@ -307,6 +307,50 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 }
             }
         }
+
+        [Theory]
+        [MemberData(nameof(FieldOffsetMismatchCases))]
+        public void ReadIgnoresFieldsOffsetMismatches(DbaseField[] fields)
+        {
+            var lastUpdated = _fixture.Create<DateTime>();
+            var codePage = _fixture.Create<DbaseCodePage>();
+            var recordCount = _fixture.Create<DbaseRecordCount>();
+            var length = fields.Aggregate(DbaseRecordLength.Initial, (current, field) => current.Plus(field.Length));
+
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
+                {
+                    writer.Write(Convert.ToByte(3));
+                    writer.Write(Convert.ToByte(lastUpdated.Year - 1900));
+                    writer.Write(Convert.ToByte(lastUpdated.Month));
+                    writer.Write(Convert.ToByte(lastUpdated.Day));
+                    writer.Write(recordCount.ToInt32());
+                    var headerLength = DbaseFileHeader.HeaderMetaDataSize +
+                                       DbaseFileHeader.FieldMetaDataSize * fields.Length;
+                    writer.Write(Convert.ToInt16(headerLength));
+                    writer.Write(length.ToInt16());
+                    writer.Write(new byte[17]);
+                    writer.Write(codePage.ToByte());
+                    writer.Write(new byte[2]);
+                    foreach (var field in fields)
+                    {
+                        field.Write(writer);
+                    }
+
+                    writer.Write(DbaseFileHeader.Terminator);
+                    writer.Flush();
+                }
+
+                stream.Position = 0;
+
+                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
+                {
+                    DbaseFileHeader.Read(reader, new DbaseFileHeaderReadBehavior(true));
+                }
+            }
+        }
+
 
         public static IEnumerable<object[]> FieldOffsetMismatchCases
         {
