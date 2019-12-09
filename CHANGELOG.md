@@ -1,3 +1,10 @@
+# [7.1.0](https://github.com/informatievlaanderen/shaperon/compare/v7.0.0...v7.1.0) (2019-12-09)
+
+
+### Features
+
+* relax dbase file header reading ([ae86572](https://github.com/informatievlaanderen/shaperon/commit/ae86572))
+
 # [7.0.0](https://github.com/informatievlaanderen/shaperon/compare/v6.0.1...v7.0.0) (2019-11-22)
 
 
