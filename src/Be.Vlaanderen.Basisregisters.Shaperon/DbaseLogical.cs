@@ -3,7 +3,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System;
     using System.IO;
 
-    public class DbaseBoolean : DbaseFieldValue
+    public class DbaseLogical : DbaseFieldValue
     {
         private const byte Bytet = (byte) 't';
         private const byte ByteT = (byte) 'T';
@@ -15,7 +15,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         private const byte ByteN = (byte) 'N';
         private const byte ByteUnknown = (byte) '?';
 
-        public DbaseBoolean(DbaseField field, bool? value = null) : base(field)
+        public DbaseLogical(DbaseField field, bool? value = null) : base(field)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));
@@ -84,6 +84,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     : ByteF
                 : ByteUnknown;
 
-        public override void Inspect(IDbaseFieldValueInspector writer) => writer.Inspect(this);
+        public override void Accept(IDbaseFieldValueVisitor writer) => writer.Visit(this);
     }
 }

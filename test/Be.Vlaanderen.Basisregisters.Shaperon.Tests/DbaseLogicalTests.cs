@@ -9,17 +9,17 @@ using Xunit;
 
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
-    public class DbaseBooleanTests
+    public class DbaseLogicalTests
     {
         private readonly Fixture _fixture;
 
-        public DbaseBooleanTests()
+        public DbaseLogicalTests()
         {
             _fixture = new Fixture();
             _fixture.CustomizeDbaseFieldName();
             _fixture.CustomizeDbaseFieldLength();
             _fixture.CustomizeDbaseDecimalCount();
-            _fixture.CustomizeDbaseBoolean();
+            _fixture.CustomizeDbaseLogical();
             _fixture.Register(() => new BinaryReader(new MemoryStream()));
             _fixture.Register(() => new BinaryWriter(new MemoryStream()));
         }
@@ -28,7 +28,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void CreateFailsIfFieldIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => new DbaseBoolean(null)
+                () => new DbaseLogical(null)
             );
         }
 
@@ -45,7 +45,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [InlineData(' ', null)]
         public void CanReadAllValidRepresentations(char representation, bool? value)
         {
-            var sut = _fixture.Create<DbaseBoolean>();
+            var sut = _fixture.Create<DbaseLogical>();
 
             using (var stream = new MemoryStream())
             {
@@ -59,7 +59,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseBoolean(sut.Field);
+                    var result = new DbaseLogical(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -71,7 +71,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanReadWrite()
         {
-            var sut = _fixture.Create<DbaseBoolean>();
+            var sut = _fixture.Create<DbaseLogical>();
 
             using (var stream = new MemoryStream())
             {
@@ -85,7 +85,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseBoolean(sut.Field);
+                    var result = new DbaseLogical(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -97,8 +97,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanReadWriteMultiple()
         {
-            var sut1 = _fixture.Create<DbaseBoolean>();
-            var sut2 = _fixture.Create<DbaseBoolean>();
+            var sut1 = _fixture.Create<DbaseLogical>();
+            var sut2 = _fixture.Create<DbaseLogical>();
 
             using (var stream = new MemoryStream())
             {
@@ -113,8 +113,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result1 = new DbaseBoolean(sut1.Field);
-                    var result2 = new DbaseBoolean(sut2.Field);
+                    var result1 = new DbaseLogical(sut1.Field);
+                    var result2 = new DbaseLogical(sut2.Field);
                     result1.Read(reader);
                     result2.Read(reader);
 
@@ -129,7 +129,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanReadWriteNull()
         {
-            var sut = _fixture.Create<DbaseBoolean>();
+            var sut = _fixture.Create<DbaseLogical>();
             sut.Value = null;
 
             using (var stream = new MemoryStream())
@@ -144,7 +144,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseBoolean(sut.Field);
+                    var result = new DbaseLogical(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -156,7 +156,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanNotReadPastEndOfStream()
         {
-            var sut = _fixture.Create<DbaseBoolean>();
+            var sut = _fixture.Create<DbaseLogical>();
 
             using (var stream = new MemoryStream())
             {
@@ -164,7 +164,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseBoolean(sut.Field);
+                    var result = new DbaseLogical(sut.Field);
                     Assert.Throws<EndOfStreamException>(() => result.Read(reader));
                 }
             }
@@ -178,7 +178,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             Assert.Throws<ArgumentException>(
                 () =>
-                    new DbaseBoolean(
+                    new DbaseLogical(
                         new DbaseField(
                             _fixture.Create<DbaseFieldName>(),
                             DbaseFieldType.Logical,
@@ -197,7 +197,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .First(specimen => specimen != DbaseFieldType.Logical);
             Assert.Throws<ArgumentException>(
                 () =>
-                    new DbaseBoolean(
+                    new DbaseLogical(
                         new DbaseField(
                             _fixture.Create<DbaseFieldName>(),
                             fieldType,
@@ -216,7 +216,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .First(specimen => specimen.ToInt32() != 1);
             Assert.Throws<ArgumentException>(
                 () =>
-                    new DbaseBoolean(
+                    new DbaseLogical(
                         new DbaseField(
                             _fixture.Create<DbaseFieldName>(),
                             DbaseFieldType.Logical,
@@ -232,21 +232,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void IsDbaseFieldValue()
         {
-            Assert.IsAssignableFrom<DbaseFieldValue>(_fixture.Create<DbaseBoolean>());
+            Assert.IsAssignableFrom<DbaseFieldValue>(_fixture.Create<DbaseLogical>());
         }
 
         [Fact]
         public void ReaderCanNotBeNull()
         {
             new GuardClauseAssertion(_fixture)
-                .Verify(new Methods<DbaseBoolean>().Select(instance => instance.Read(null)));
+                .Verify(new Methods<DbaseLogical>().Select(instance => instance.Read(null)));
         }
 
         [Fact]
         public void WriterCanNotBeNull()
         {
             new GuardClauseAssertion(_fixture)
-                .Verify(new Methods<DbaseBoolean>().Select(instance => instance.Write(null)));
+                .Verify(new Methods<DbaseLogical>().Select(instance => instance.Write(null)));
         }
     }
 }

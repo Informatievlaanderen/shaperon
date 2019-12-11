@@ -31,7 +31,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             _fixture.CustomizeDbaseRecordCount(100);
             _fixture.CustomizeDbaseSchema();
             _fixture.CustomizeDbaseDateTime();
-            _fixture.CustomizeDbaseBoolean();
+            _fixture.CustomizeDbaseLogical();
             _fixture.CustomizeDbaseSingle();
             _fixture.CustomizeDbaseString();
             _fixture.CustomizeDbaseDouble();

@@ -218,10 +218,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 if (fieldType == DbaseFieldType.Number)
                 {
-                    return new DbaseFieldLength(random.Next(1, DbaseDouble.MaximumLength.ToInt32()));
+                    return new DbaseFieldLength(random.Next(1, DbaseNumber.MaximumLength.ToInt32()));
                 }
 
-                return new DbaseFieldLength(random.Next(1, DbaseSingle.MaximumLength.ToInt32()));
+                return new DbaseFieldLength(random.Next(1, DbaseFloat.MaximumLength.ToInt32()));
             }
         }
 
@@ -231,10 +231,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 if (fieldType == DbaseFieldType.Number)
                 {
-                    return new DbaseFieldLength(random.Next(1, DbaseDouble.MaximumLength.ToInt32()));
+                    return new DbaseFieldLength(random.Next(1, DbaseNumber.MaximumLength.ToInt32()));
                 }
 
-                return new DbaseFieldLength(random.Next(1, DbaseSingle.MaximumLength.ToInt32()));
+                return new DbaseFieldLength(random.Next(1, DbaseFloat.MaximumLength.ToInt32()));
             }
         }
 
@@ -424,39 +424,39 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             using (var random = new PooledRandom())
             {
-                return new DbaseFieldLength(random.Next(DbaseDouble.MinimumLength.ToInt32(),
-                    DbaseDouble.MaximumLength.ToInt32() + 1));
+                return new DbaseFieldLength(random.Next(DbaseNumber.MinimumLength.ToInt32(),
+                    DbaseNumber.MaximumLength.ToInt32() + 1));
             }
         }
 
         public static DbaseFieldLength GenerateDbaseDoubleLengthLessThan(this IFixture fixture,
             DbaseFieldLength maxLength)
         {
-            if (maxLength < DbaseDouble.MinimumLength || maxLength > DbaseDouble.MaximumLength)
+            if (maxLength < DbaseNumber.MinimumLength || maxLength > DbaseNumber.MaximumLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(maxLength),
-                    $"The maximum length needs to be between {DbaseDouble.MinimumLength} and {DbaseDouble.MaximumLength}.");
+                    $"The maximum length needs to be between {DbaseNumber.MinimumLength} and {DbaseNumber.MaximumLength}.");
             }
 
             using (var random = new PooledRandom())
             {
-                return new DbaseFieldLength(random.Next(DbaseDouble.MinimumLength.ToInt32(), maxLength.ToInt32() + 1));
+                return new DbaseFieldLength(random.Next(DbaseNumber.MinimumLength.ToInt32(), maxLength.ToInt32() + 1));
             }
         }
 
         public static DbaseFieldLength GenerateDbaseDoubleLengthBetween(this IFixture fixture,
             DbaseFieldLength minLength, DbaseFieldLength maxLength)
         {
-            if (minLength < DbaseDouble.MinimumLength || minLength > DbaseDouble.MaximumLength)
+            if (minLength < DbaseNumber.MinimumLength || minLength > DbaseNumber.MaximumLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(minLength),
-                    $"The minimum length needs to be between {DbaseDouble.MinimumLength} and {DbaseDouble.MaximumLength}.");
+                    $"The minimum length needs to be between {DbaseNumber.MinimumLength} and {DbaseNumber.MaximumLength}.");
             }
 
-            if (maxLength < DbaseDouble.MinimumLength || maxLength > DbaseDouble.MaximumLength)
+            if (maxLength < DbaseNumber.MinimumLength || maxLength > DbaseNumber.MaximumLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(maxLength),
-                    $"The maximum length needs to be between {DbaseDouble.MinimumLength} and {DbaseDouble.MaximumLength}.");
+                    $"The maximum length needs to be between {DbaseNumber.MinimumLength} and {DbaseNumber.MaximumLength}.");
             }
 
             if (minLength > maxLength)
@@ -473,13 +473,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public static DbaseDecimalCount GenerateDbaseDoubleDecimalCount(this IFixture fixture, DbaseFieldLength length)
         {
-            if (length > DbaseDouble.MaximumLength)
+            if (length > DbaseNumber.MaximumLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(length),
-                    $"The length ({length}) can not exceed the maximum length ({DbaseDouble.MaximumLength}).");
+                    $"The length ({length}) can not exceed the maximum length ({DbaseNumber.MaximumLength}).");
             }
 
-            if (length < DbaseDouble.MinimumLength)
+            if (length < DbaseNumber.MinimumLength)
             {
                 return new DbaseDecimalCount(0);
             }
@@ -487,23 +487,23 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             using (var random = new PooledRandom())
             {
                 return new DbaseDecimalCount(random.Next(0,
-                    Math.Min(DbaseDouble.MaximumDecimalCount.ToInt32(), length.ToInt32()) - 2));
+                    Math.Min(DbaseNumber.MaximumDecimalCount.ToInt32(), length.ToInt32()) - 2));
             }
         }
 
         public static DbaseDecimalCount GenerateDbaseDoubleDecimalCount(this IFixture fixture,
             DbaseDecimalCount minimum, DbaseFieldLength length)
         {
-            if (length > DbaseDouble.MaximumLength)
+            if (length > DbaseNumber.MaximumLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(length),
-                    $"The length ({length}) can not exceed the maximum length ({DbaseDouble.MaximumLength}).");
+                    $"The length ({length}) can not exceed the maximum length ({DbaseNumber.MaximumLength}).");
             }
 
             using (var random = new PooledRandom())
             {
                 return new DbaseDecimalCount(random.Next(minimum.ToInt32(),
-                    Math.Min(DbaseDouble.MaximumDecimalCount.ToInt32() + 1, length.ToInt32()) - 2));
+                    Math.Min(DbaseNumber.MaximumDecimalCount.ToInt32() + 1, length.ToInt32()) - 2));
             }
         }
 
@@ -511,39 +511,39 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             using (var random = new PooledRandom())
             {
-                return new DbaseFieldLength(random.Next(DbaseSingle.MinimumLength.ToInt32(),
-                    DbaseSingle.MaximumLength.ToInt32()));
+                return new DbaseFieldLength(random.Next(DbaseFloat.MinimumLength.ToInt32(),
+                    DbaseFloat.MaximumLength.ToInt32()));
             }
         }
 
         public static DbaseFieldLength GenerateDbaseSingleLengthLessThan(this IFixture fixture,
             DbaseFieldLength maxLength)
         {
-            if (maxLength < DbaseSingle.MinimumLength || maxLength > DbaseSingle.MaximumLength)
+            if (maxLength < DbaseFloat.MinimumLength || maxLength > DbaseFloat.MaximumLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(maxLength),
-                    $"The maximum length needs to be between {DbaseSingle.MinimumLength} and {DbaseSingle.MaximumLength}.");
+                    $"The maximum length needs to be between {DbaseFloat.MinimumLength} and {DbaseFloat.MaximumLength}.");
             }
 
             using (var random = new PooledRandom())
             {
-                return new DbaseFieldLength(random.Next(DbaseSingle.MinimumLength.ToInt32(), maxLength.ToInt32()));
+                return new DbaseFieldLength(random.Next(DbaseFloat.MinimumLength.ToInt32(), maxLength.ToInt32()));
             }
         }
 
         public static DbaseFieldLength GenerateDbaseSingleLengthBetween(this IFixture fixture,
             DbaseFieldLength minLength, DbaseFieldLength maxLength)
         {
-            if (minLength < DbaseSingle.MinimumLength || minLength > DbaseSingle.MaximumLength)
+            if (minLength < DbaseFloat.MinimumLength || minLength > DbaseFloat.MaximumLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(minLength),
-                    $"The minimum length needs to be between {DbaseSingle.MinimumLength} and {DbaseSingle.MaximumLength}.");
+                    $"The minimum length needs to be between {DbaseFloat.MinimumLength} and {DbaseFloat.MaximumLength}.");
             }
 
-            if (maxLength < DbaseSingle.MinimumLength || maxLength > DbaseSingle.MaximumLength)
+            if (maxLength < DbaseFloat.MinimumLength || maxLength > DbaseFloat.MaximumLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(maxLength),
-                    $"The maximum length needs to be between {DbaseSingle.MinimumLength} and {DbaseSingle.MaximumLength}.");
+                    $"The maximum length needs to be between {DbaseFloat.MinimumLength} and {DbaseFloat.MaximumLength}.");
             }
 
             if (minLength > maxLength)
@@ -560,16 +560,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public static DbaseDecimalCount GenerateDbaseSingleDecimalCount(this IFixture fixture, DbaseFieldLength length)
         {
-            if (length < DbaseSingle.MinimumLength || length > DbaseSingle.MaximumLength)
+            if (length < DbaseFloat.MinimumLength || length > DbaseFloat.MaximumLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(length),
-                    $"The length needs to be between {DbaseSingle.MinimumLength} and {DbaseSingle.MaximumLength}.");
+                    $"The length needs to be between {DbaseFloat.MinimumLength} and {DbaseFloat.MaximumLength}.");
             }
 
             using (var random = new PooledRandom())
             {
                 return new DbaseDecimalCount(random.Next(1,
-                    Math.Min(DbaseSingle.MaximumDecimalCount.ToInt32(), length.ToInt32()) - 2));
+                    Math.Min(DbaseFloat.MaximumDecimalCount.ToInt32(), length.ToInt32()) - 2));
             }
         }
 
@@ -583,12 +583,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                             DbaseField field;
                             switch (value % 5)
                             {
-                                case 1: // datetime
+                                case 1: // date
                                     field = new DbaseField(
                                         fixture.Create<DbaseFieldName>(),
-                                        fixture.GenerateDbaseDateTimeFieldType(),
+                                        DbaseFieldType.Date,
                                         fixture.Create<ByteOffset>(),
-                                        new DbaseFieldLength(15),
+                                        new DbaseFieldLength(8),
                                         new DbaseDecimalCount(0)
                                     );
                                     break;
@@ -605,7 +605,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                     break;
                                 case 3: // float
                                     var singleLength =
-                                        fixture.GenerateDbaseSingleLengthLessThan(DbaseSingle.MaximumLength);
+                                        fixture.GenerateDbaseSingleLengthLessThan(DbaseFloat.MaximumLength);
                                     var singleDecimalCount = fixture.GenerateDbaseSingleDecimalCount(singleLength);
                                     field = new DbaseField(
                                         fixture.Create<DbaseFieldName>(),
@@ -644,7 +644,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public static void CustomizeDbaseString(this IFixture fixture)
         {
-            fixture.Customize<DbaseString>(
+            fixture.Customize<DbaseCharacter>(
                 customization =>
                     customization
                         .FromFactory<int>(
@@ -653,7 +653,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                 using (var random = new PooledRandom(value))
                                 {
                                     var length = new DbaseFieldLength(random.Next(1, 255));
-                                    return new DbaseString(
+                                    return new DbaseCharacter(
                                         new DbaseField(
                                             fixture.Create<DbaseFieldName>(),
                                             DbaseFieldType.Character,
@@ -718,13 +718,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         .OmitAutoProperties());
         }
 
-        public static void CustomizeDbaseBoolean(this IFixture fixture)
+        public static void CustomizeDbaseLogical(this IFixture fixture)
         {
-            fixture.Customize<DbaseBoolean>(
+            fixture.Customize<DbaseLogical>(
                 customization =>
                     customization
                         .FromFactory<bool?>(
-                            value => new DbaseBoolean(
+                            value => new DbaseLogical(
                                 new DbaseField(
                                     fixture.Create<DbaseFieldName>(),
                                     DbaseFieldType.Logical,
@@ -763,7 +763,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public static void CustomizeDbaseDouble(this IFixture fixture)
         {
-            fixture.Customize<DbaseDouble>(
+            fixture.Customize<DbaseNumber>(
                 customization =>
                     customization
                         .FromNumberGenerator(
@@ -778,7 +778,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                     length,
                                     decimalCount
                                 );
-                                var value = new DbaseDouble(field);
+                                var value = new DbaseNumber(field);
                                 value.Value = generator.GenerateAcceptableValue(value);
                                 return value;
                             }
@@ -788,7 +788,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public static void CustomizeDbaseSingle(this IFixture fixture)
         {
-            fixture.Customize<DbaseSingle>(
+            fixture.Customize<DbaseFloat>(
                 customization =>
                     customization
                         .FromNumberGenerator(
@@ -803,7 +803,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                     length,
                                     decimalCount
                                 );
-                                var value = new DbaseSingle(field);
+                                var value = new DbaseFloat(field);
                                 value.Value = generator.GenerateAcceptableValue(value);
                                 return value;
                             }
@@ -823,6 +823,24 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                     fixture.GenerateDbaseDateTimeFieldType(),
                                     fixture.Create<ByteOffset>(),
                                     new DbaseFieldLength(15),
+                                    new DbaseDecimalCount(0)
+                                ), value)
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseDate(this IFixture fixture)
+        {
+            fixture.Customize<DbaseDate>(
+                customization =>
+                    customization
+                        .FromFactory<DateTime?>(
+                            value => new DbaseDate(
+                                new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Date,
+                                    fixture.Create<ByteOffset>(),
+                                    new DbaseFieldLength(8),
                                     new DbaseDecimalCount(0)
                                 ), value)
                         )
@@ -861,13 +879,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             DbaseRecordCount count)
         {
             var records = new DbaseRecord[count.ToInt32()];
-            var inspector = new GenerateValueInspector(fixture);
+            var inspector = new GenerateValueVisitor(fixture);
             for (var index = 0; index < records.Length; index++)
             {
                 var record = new AnonymousDbaseRecord(fields);
                 foreach (var value in record.Values)
                 {
-                    value.Inspect(inspector);
+                    value.Accept(inspector);
                 }
 
                 records[index] = record;

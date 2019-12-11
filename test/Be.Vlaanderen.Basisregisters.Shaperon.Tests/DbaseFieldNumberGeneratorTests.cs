@@ -54,7 +54,7 @@
         [Fact]
         public void GenerateAcceptableNullableDoubleReturnsExpectedResult()
         {
-            var fieldValue = _fixture.Create<DbaseDouble>();
+            var fieldValue = _fixture.Create<DbaseNumber>();
 
             var value = _sut.GenerateAcceptableValue(fieldValue);
 
@@ -74,7 +74,7 @@
         [Fact]
         public void GenerateAcceptableNullableSingleReturnsExpectedResult()
         {
-            var fieldValue = _fixture.Create<DbaseSingle>();
+            var fieldValue = _fixture.Create<DbaseFloat>();
 
             var value = _sut.GenerateAcceptableValue(fieldValue);
 

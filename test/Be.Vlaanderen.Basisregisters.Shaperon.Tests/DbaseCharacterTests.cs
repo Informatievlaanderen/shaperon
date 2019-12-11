@@ -9,11 +9,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using AutoFixture.Idioms;
     using Xunit;
 
-    public class DbaseStringTests
+    public class DbaseCharacterTests
     {
         private readonly Fixture _fixture;
 
-        public DbaseStringTests()
+        public DbaseCharacterTests()
         {
             _fixture = new Fixture();
             _fixture.CustomizeDbaseFieldName();
@@ -28,7 +28,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void CreateFailsIfFieldIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => new DbaseString(null)
+                () => new DbaseCharacter(null)
             );
         }
 
@@ -39,7 +39,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .First(specimen => specimen != DbaseFieldType.Character);
             Assert.Throws<ArgumentException>(
                 () =>
-                    new DbaseString(
+                    new DbaseCharacter(
                         new DbaseField(
                             _fixture.Create<DbaseFieldName>(),
                             fieldType,
@@ -54,21 +54,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void IsDbaseFieldValue()
         {
-            Assert.IsAssignableFrom<DbaseFieldValue>(_fixture.Create<DbaseString>());
+            Assert.IsAssignableFrom<DbaseFieldValue>(_fixture.Create<DbaseCharacter>());
         }
 
         [Fact]
         public void ReaderCanNotBeNull()
         {
             new GuardClauseAssertion(_fixture)
-                .Verify(new Methods<DbaseString>().Select(instance => instance.Read(null)));
+                .Verify(new Methods<DbaseCharacter>().Select(instance => instance.Read(null)));
         }
 
         [Fact]
         public void WriterCanNotBeNull()
         {
             new GuardClauseAssertion(_fixture)
-                .Verify(new Methods<DbaseString>().Select(instance => instance.Write(null)));
+                .Verify(new Methods<DbaseCharacter>().Select(instance => instance.Write(null)));
         }
 
         [Theory]
@@ -76,7 +76,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [InlineData(null)]
         public void CanReadWriteNullOrEmptyString(string value)
         {
-            var sut = _fixture.Create<DbaseString>();
+            var sut = _fixture.Create<DbaseCharacter>();
             sut.Value = value;
 
             using (var stream = new MemoryStream())
@@ -91,7 +91,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseString(sut.Field);
+                    var result = new DbaseCharacter(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -103,7 +103,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanReadWrite()
         {
-            var sut = _fixture.Create<DbaseString>();
+            var sut = _fixture.Create<DbaseCharacter>();
 
             using (var stream = new MemoryStream())
             {
@@ -117,7 +117,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseString(sut.Field);
+                    var result = new DbaseCharacter(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -129,7 +129,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanReadWriteNullString()
         {
-            var sut = new DbaseString(
+            var sut = new DbaseCharacter(
                 new DbaseField(
                     _fixture.Create<DbaseFieldName>(),
                     DbaseFieldType.Character,
@@ -152,7 +152,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseString(sut.Field);
+                    var result = new DbaseCharacter(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -164,7 +164,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanNotReadPastEndOfStream()
         {
-            var sut = _fixture.Create<DbaseString>();
+            var sut = _fixture.Create<DbaseCharacter>();
 
             using (var stream = new MemoryStream())
             {
@@ -178,7 +178,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseString(sut.Field);
+                    var result = new DbaseCharacter(sut.Field);
                     Assert.Throws<EndOfStreamException>(() => result.Read(reader));
                 }
             }

@@ -5,7 +5,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.IO;
     using System.Linq;
 
-    public class DbaseSingle : DbaseFieldValue
+    public class DbaseFloat : DbaseFieldValue
     {
         // REMARK: Actual max single integer digits is 38, but float dbase type only supports 20.
         public static readonly DbaseIntegerDigits MaximumIntegerDigits = new DbaseIntegerDigits(20);
@@ -25,7 +25,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private float? _value;
 
-        public DbaseSingle(DbaseField field, float? value = null) : base(field)
+        public DbaseFloat(DbaseField field, float? value = null) : base(field)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));
@@ -59,6 +59,32 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var digits = DbaseDecimalCount.Min(MaximumDecimalCount, Field.DecimalCount).ToInt32();
             var rounded = (float) Math.Round(value.Value, digits);
             return rounded.ToString("F", Provider).Length <= Field.Length.ToInt32();
+        }
+
+        public bool AcceptsValue(int? value)
+        {
+            if (Field.DecimalCount.ToInt32() == 0)
+            {
+                if (value.HasValue)
+                    return FormatAsString(value.Value).Length <= Field.Length.ToInt32();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool AcceptsValue(short? value)
+        {
+            if (Field.DecimalCount.ToInt32() == 0)
+            {
+                if (value.HasValue)
+                    return FormatAsString(value.Value).Length <= Field.Length.ToInt32();
+
+                return true;
+            }
+
+            return false;
         }
 
         public float? Value
@@ -98,6 +124,124 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 }
             }
         }
+
+        public bool TryGetValueAsInt32(out int? value)
+        {
+            if (Field.DecimalCount.ToInt32() == 0)
+            {
+                if (_value.HasValue)
+                {
+                    value = Convert.ToInt32(Math.Truncate(_value.Value));
+                    return true;
+                }
+
+                value = null;
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+
+        public bool TrySetValueAsInt32(int? value)
+        {
+            if (Field.DecimalCount.ToInt32() == 0)
+            {
+                if (value.HasValue)
+                {
+                    var length = FormatAsString(value.Value).Length;
+
+                    if (length > Field.Length.ToInt32())
+                        return false;
+                }
+
+                _value = value;
+                return true;
+            }
+
+            return false;
+        }
+
+        public int? ValueAsInt32
+        {
+            get
+            {
+                if (!TryGetValueAsInt32(out var parsed))
+                {
+                    throw new FormatException($"The field {Field.Name} needs to have 0 as decimal count.");
+                }
+
+                return parsed;
+            }
+            set
+            {
+                if (!TrySetValueAsInt32(value))
+                {
+                    throw new FormatException($"The field {Field.Name} needs to have 0 as decimal count and its value needs to be null or not longer than {Field.Length}.");
+                }
+            }
+        }
+
+        public bool TryGetValueAsInt16(out short? value)
+        {
+            if (Field.DecimalCount.ToInt32() == 0)
+            {
+                if (_value.HasValue)
+                {
+                    value = Convert.ToInt16(Math.Truncate(_value.Value));
+                    return true;
+                }
+
+                value = null;
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+
+        public bool TrySetValueAsInt16(short? value)
+        {
+            if (Field.DecimalCount.ToInt32() == 0)
+            {
+                if (value.HasValue)
+                {
+                    var length = FormatAsString(value.Value).Length;
+
+                    if (length > Field.Length.ToInt32())
+                        return false;
+                }
+
+                _value = value;
+                return true;
+            }
+
+            return false;
+        }
+
+        public short? ValueAsInt16
+        {
+            get
+            {
+                if (!TryGetValueAsInt16(out var parsed))
+                {
+                    throw new FormatException($"The field {Field.Name} needs to have 0 as decimal count.");
+                }
+
+                return parsed;
+            }
+            set
+            {
+                if (!TrySetValueAsInt16(value))
+                {
+                    throw new FormatException($"The field {Field.Name} needs to have 0 as decimal count and its value needs to be null or not longer than {Field.Length}.");
+                }
+            }
+        }
+
+        private static string FormatAsString(int value) => value.ToString(CultureInfo.InvariantCulture);
+
+        private static string FormatAsString(short value) => value.ToString(CultureInfo.InvariantCulture);
 
         public override void Read(BinaryReader reader)
         {
@@ -155,6 +299,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        public override void Inspect(IDbaseFieldValueInspector writer) => writer.Inspect(this);
+        public override void Accept(IDbaseFieldValueVisitor writer) => writer.Visit(this);
     }
 }

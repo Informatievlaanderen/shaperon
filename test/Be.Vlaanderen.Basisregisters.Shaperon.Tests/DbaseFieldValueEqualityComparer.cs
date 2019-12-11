@@ -9,43 +9,43 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (left == null && right == null) return true;
             if (left == null || right == null) return false;
-            var leftInspector = new ValueInspector();
-            var rightInspector = new ValueInspector();
-            left.Inspect(leftInspector);
-            right.Inspect(rightInspector);
-            if (left.Field.Length.Equals(new DbaseFieldLength(15)) &&
-                left.Field.DecimalCount.Equals(new DbaseDecimalCount(0)) &&
-                right.Field.Length.Equals(new DbaseFieldLength(15)) &&
-                right.Field.DecimalCount.Equals(new DbaseDecimalCount(0)) && (
-                    left.Field.FieldType == DbaseFieldType.Character
-                    ||
-                    left.Field.FieldType == DbaseFieldType.DateTime
-                ) && (
-                    right.Field.FieldType == DbaseFieldType.Character
-                    ||
-                    right.Field.FieldType == DbaseFieldType.DateTime
-                ) && (
-                    leftInspector.Value == null
-                    ||
-                    leftInspector.Value is string leftString && leftString == ""
-                ) && (
-                    rightInspector.Value == null
-                    ||
-                    rightInspector.Value is string rightString && rightString == ""
-                )
-            )
-            {
-                return left.Field.Equals(right.Field);
-            }
-            var selector = new ComparerSelectingInspector(left.Field.DecimalCount);
-            left.Inspect(selector);
+            var leftInspector = new ValueVisitor();
+            var rightInspector = new ValueVisitor();
+            left.Accept(leftInspector);
+            right.Accept(rightInspector);
+            // if (left.Field.Length.Equals(new DbaseFieldLength(15)) &&
+            //     left.Field.DecimalCount.Equals(new DbaseDecimalCount(0)) &&
+            //     right.Field.Length.Equals(new DbaseFieldLength(15)) &&
+            //     right.Field.DecimalCount.Equals(new DbaseDecimalCount(0)) && (
+            //         left.Field.FieldType == DbaseFieldType.Character
+            //         ||
+            //         left.Field.FieldType == DbaseFieldType.DateTime
+            //     ) && (
+            //         right.Field.FieldType == DbaseFieldType.Character
+            //         ||
+            //         right.Field.FieldType == DbaseFieldType.DateTime
+            //     ) && (
+            //         leftInspector.Value == null
+            //         ||
+            //         leftInspector.Value is string leftString && leftString == ""
+            //     ) && (
+            //         rightInspector.Value == null
+            //         ||
+            //         rightInspector.Value is string rightString && rightString == ""
+            //     )
+            // )
+            // {
+            //     return left.Field.Equals(right.Field);
+            // }
+            var selector = new ComparerSelectingVisitor(left.Field.DecimalCount);
+            left.Accept(selector);
             return selector.Comparer.Equals(left, right);
         }
 
         public int GetHashCode(DbaseFieldValue instance)
         {
-            var inspector = new HashCodeInspector();
-            instance.Inspect(inspector);
+            var inspector = new HashCodeVisitor();
+            instance.Accept(inspector);
             return instance.Field.GetHashCode() ^ inspector.HashCode;
         }
 
@@ -103,9 +103,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        public class DbaseStringEqualityComparer : IEqualityComparer<DbaseString>
+        public class DbaseStringEqualityComparer : IEqualityComparer<DbaseCharacter>
         {
-            public bool Equals(DbaseString left, DbaseString right)
+            public bool Equals(DbaseCharacter left, DbaseCharacter right)
             {
                 if (left == null && right == null) return true;
                 if (left == null || right == null) return false;
@@ -113,22 +113,37 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                        Equals(left.Value, right.Value);
             }
 
-            public int GetHashCode(DbaseString obj)
+            public int GetHashCode(DbaseCharacter obj)
             {
                 return obj.Field.GetHashCode() ^ obj.Value?.GetHashCode() ?? 0;
             }
         }
 
-        private class DbaseBooleanEqualityComparer : IEqualityComparer<DbaseBoolean>
+        private class DbaseLogicalEqualityComparer : IEqualityComparer<DbaseLogical>
         {
-            public bool Equals(DbaseBoolean left, DbaseBoolean right)
+            public bool Equals(DbaseLogical left, DbaseLogical right)
             {
                 if (left == null && right == null) return true;
                 if (left == null || right == null) return false;
                 return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
             }
 
-            public int GetHashCode(DbaseBoolean obj)
+            public int GetHashCode(DbaseLogical obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseDateEqualityComparer : IEqualityComparer<DbaseDate>
+        {
+            public bool Equals(DbaseDate left, DbaseDate right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
+            }
+
+            public int GetHashCode(DbaseDate obj)
             {
                 return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
             }
@@ -149,7 +164,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        private class DbaseSingleEqualityComparer : IEqualityComparer<DbaseSingle>
+        private class DbaseSingleEqualityComparer : IEqualityComparer<DbaseFloat>
         {
             private readonly DbaseDecimalCount _precision;
 
@@ -158,7 +173,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 _precision = precision;
             }
 
-            public bool Equals(DbaseSingle left, DbaseSingle right)
+            public bool Equals(DbaseFloat left, DbaseFloat right)
             {
                 if (left == null && right == null) return true;
                 if (left == null || right == null) return false;
@@ -168,13 +183,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                        Math.Abs(left.Value.Value - right.Value.Value) < Convert.ToSingle(Math.Pow(10, -_precision.ToInt32()));
             }
 
-            public int GetHashCode(DbaseSingle obj)
+            public int GetHashCode(DbaseFloat obj)
             {
                 return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
             }
         }
 
-        private class DbaseDoubleEqualityComparer : IEqualityComparer<DbaseDouble>
+        private class DbaseDoubleEqualityComparer : IEqualityComparer<DbaseNumber>
         {
             private readonly DbaseDecimalCount _precision;
 
@@ -183,7 +198,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 _precision = precision;
             }
 
-            public bool Equals(DbaseDouble left, DbaseDouble right)
+            public bool Equals(DbaseNumber left, DbaseNumber right)
             {
                 if (left == null && right == null) return true;
                 if (left == null || right == null) return false;
@@ -193,7 +208,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                        Math.Abs(left.Value.Value - right.Value.Value) < Math.Pow(10, -_precision.ToInt32());
             }
 
-            public int GetHashCode(DbaseDouble obj)
+            public int GetHashCode(DbaseNumber obj)
             {
                 return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
             }
@@ -224,164 +239,182 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        private class ComparerSelectingInspector : IDbaseFieldValueInspector
+        private class ComparerSelectingVisitor : IDbaseFieldValueVisitor
         {
             private readonly DbaseDecimalCount _precision;
             public IEqualityComparer<object> Comparer { get; private set; }
 
-            public ComparerSelectingInspector(DbaseDecimalCount precision)
+            public ComparerSelectingVisitor(DbaseDecimalCount precision)
             {
                 _precision = precision;
             }
 
-            public void Inspect(DbaseDateTime value)
+            public void Visit(DbaseDate value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseDate>(
+                    new DbaseDateEqualityComparer());
+            }
+
+            public void Visit(DbaseDateTime value)
             {
                 Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseDateTime>(
                     new DbaseDateTimeEqualityComparer());
             }
 
-            public void Inspect(DbaseDecimal value)
+            public void Visit(DbaseDecimal value)
             {
                 Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseDecimal>(
                     new DbaseDecimalEqualityComparer(_precision));
             }
 
-            public void Inspect(DbaseDouble value)
+            public void Visit(DbaseNumber value)
             {
-                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseDouble>(
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseNumber>(
                     new DbaseDoubleEqualityComparer(_precision));
             }
 
-            public void Inspect(DbaseSingle value)
+            public void Visit(DbaseFloat value)
             {
-                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseSingle>(
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseFloat>(
                     new DbaseSingleEqualityComparer(_precision));
             }
 
-            public void Inspect(DbaseInt16 value)
+            public void Visit(DbaseInt16 value)
             {
                 Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseInt16>(
                     new DbaseInt16EqualityComparer());
             }
 
-            public void Inspect(DbaseInt32 value)
+            public void Visit(DbaseInt32 value)
             {
                 Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseInt32>(
                     new DbaseInt32EqualityComparer());
             }
 
-            public void Inspect(DbaseString value)
+            public void Visit(DbaseCharacter value)
             {
-                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseString>(
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseCharacter>(
                     new DbaseStringEqualityComparer());
             }
 
-            public void Inspect(DbaseBoolean value)
+            public void Visit(DbaseLogical value)
             {
-                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseBoolean>(
-                    new DbaseBooleanEqualityComparer());
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseLogical>(
+                    new DbaseLogicalEqualityComparer());
             }
         }
 
-        private class ValueInspector : IDbaseFieldValueInspector
+        private class ValueVisitor : IDbaseFieldValueVisitor
         {
             public object Value { get; private set; }
 
-            public void Inspect(DbaseDateTime value)
+            public void Visit(DbaseDate value)
             {
                 Value = value.Value;
             }
 
-            public void Inspect(DbaseDecimal value)
+            public void Visit(DbaseDateTime value)
             {
                 Value = value.Value;
             }
 
-            public void Inspect(DbaseDouble value)
+            public void Visit(DbaseDecimal value)
             {
                 Value = value.Value;
             }
 
-            public void Inspect(DbaseSingle value)
+            public void Visit(DbaseNumber value)
             {
                 Value = value.Value;
             }
 
-            public void Inspect(DbaseInt16 value)
+            public void Visit(DbaseFloat value)
             {
                 Value = value.Value;
             }
 
-            public void Inspect(DbaseInt32 value)
+            public void Visit(DbaseInt16 value)
             {
                 Value = value.Value;
             }
 
-            public void Inspect(DbaseString value)
+            public void Visit(DbaseInt32 value)
             {
                 Value = value.Value;
             }
 
-            public void Inspect(DbaseBoolean value)
+            public void Visit(DbaseCharacter value)
+            {
+                Value = value.Value;
+            }
+
+            public void Visit(DbaseLogical value)
             {
                 Value = value.Value;
             }
         }
 
-        private class HashCodeInspector : IDbaseFieldValueInspector
+        private class HashCodeVisitor : IDbaseFieldValueVisitor
         {
             public int HashCode { get; private set; }
 
-            public void Inspect(DbaseDateTime value)
+            public void Visit(DbaseDate value)
             {
                 HashCode = value.Value.HasValue
                     ? value.Value.Value.GetHashCode()
                     : 0;
             }
 
-            public void Inspect(DbaseDecimal value)
+            public void Visit(DbaseDateTime value)
             {
                 HashCode = value.Value.HasValue
                     ? value.Value.Value.GetHashCode()
                     : 0;
             }
 
-            public void Inspect(DbaseDouble value)
+            public void Visit(DbaseDecimal value)
             {
                 HashCode = value.Value.HasValue
                     ? value.Value.Value.GetHashCode()
                     : 0;
             }
 
-            public void Inspect(DbaseSingle value)
+            public void Visit(DbaseNumber value)
             {
                 HashCode = value.Value.HasValue
                     ? value.Value.Value.GetHashCode()
                     : 0;
             }
 
-            public void Inspect(DbaseInt16 value)
+            public void Visit(DbaseFloat value)
             {
                 HashCode = value.Value.HasValue
                     ? value.Value.Value.GetHashCode()
                     : 0;
             }
 
-            public void Inspect(DbaseInt32 value)
+            public void Visit(DbaseInt16 value)
             {
                 HashCode = value.Value.HasValue
                     ? value.Value.Value.GetHashCode()
                     : 0;
             }
 
-            public void Inspect(DbaseString value)
+            public void Visit(DbaseInt32 value)
+            {
+                HashCode = value.Value.HasValue
+                    ? value.Value.Value.GetHashCode()
+                    : 0;
+            }
+
+            public void Visit(DbaseCharacter value)
             {
                 HashCode = value.Value != null
                     ? value.Value.GetHashCode()
                     : 0;
             }
 
-            public void Inspect(DbaseBoolean value)
+            public void Visit(DbaseLogical value)
             {
                 HashCode = value.Value != null
                     ? value.Value.GetHashCode()
