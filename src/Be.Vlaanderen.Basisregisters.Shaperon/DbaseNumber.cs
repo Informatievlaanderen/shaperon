@@ -4,7 +4,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.Globalization;
     using System.IO;
     using System.Linq;
-    using System.Reflection.Metadata.Ecma335;
 
     public class DbaseNumber : DbaseFieldValue
     {

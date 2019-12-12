@@ -2,9 +2,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.IO;
-    using System.Text;
 
-    public abstract partial class DbaseRecord
+    public abstract class DbaseRecord
     {
         public const byte EndOfFile = 0x1a;
 

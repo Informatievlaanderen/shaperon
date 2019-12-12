@@ -5,6 +5,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
     public class DbaseCodePage : IEquatable<DbaseCodePage>
     {
+        // ReSharper disable InconsistentNaming
         public static readonly DbaseCodePage None = new DbaseCodePage(0x0, Encoding.UTF8.CodePage);
         public static readonly DbaseCodePage USA_MSDOS = new DbaseCodePage(0x1, 437);
         public static readonly DbaseCodePage Multilingual_MSDOS = new DbaseCodePage(0x2, 850);
@@ -137,6 +138,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Greek_Windows,
             Baltic_Windows
         };
+        // ReSharper enable InconsistentNaming
 
         public static readonly DbaseCodePage[] AllWithCodePage =
             Array.FindAll(All, item => item._codePage.HasValue);

@@ -24,7 +24,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (!Enum.IsDefined(typeof(ShapeType), shapeType))
                 throw new ShapeRecordContentException("The Shape Type field does not contain a known type of shape.");
 
-            if (((ShapeType) shapeType) != ShapeType.NullShape)
+            if ((ShapeType) shapeType != ShapeType.NullShape)
                 throw new ShapeRecordContentException("The Shape Type field does not indicate a Null shape.");
 
             return Instance;

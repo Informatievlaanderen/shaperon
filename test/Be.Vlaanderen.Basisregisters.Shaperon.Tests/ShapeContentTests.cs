@@ -31,7 +31,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             var shapeType = _fixture.Create<ShapeType>();
             var contentLength = _fixture.Create<WordLength>();
-            var boundingBox = _fixture.Create<BoundingBox3D>();
             var sut = new ShapeContentUnderTest(
                 shapeType,
                 contentLength

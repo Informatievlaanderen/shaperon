@@ -2,7 +2,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.Collections;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -131,7 +130,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 Fields = new[]
                 {
-                    DbaseField.CreateInt32Field(new DbaseFieldName(nameof(Id)), new DbaseFieldLength(4))
+                    DbaseField.CreateNumberField(new DbaseFieldName(nameof(Id)), new DbaseFieldLength(4), new DbaseDecimalCount(0))
                 };
             }
 
@@ -144,12 +143,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             public FakeDbaseRecord()
             {
-                Id = new DbaseInt32(Schema.Id);
+                Id = new DbaseNumber(Schema.Id);
 
                 Values = new DbaseFieldValue[] {Id};
             }
 
-            public DbaseInt32 Id { get; }
+            public DbaseNumber Id { get; }
         }
     }
 }

@@ -45,40 +45,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Fact]
-        public void ToBytesReturnsExpectedResult()
-        {
-            var fields = _fixture.CreateMany<DbaseField>().ToArray();
-            var values = Array.ConvertAll(fields, field => field.CreateFieldValue());
-
-            var sut = new AnonymousDbaseRecord(values);
-
-            var result = sut.ToBytes(Encoding.UTF8);
-
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8))
-            {
-                sut.Write(writer);
-                writer.Flush();
-
-                Assert.Equal(stream.ToArray(), result);
-            }
-        }
-
-        [Fact]
-        public void FromBytesReturnsExpectedResult()
-        {
-            var fields = _fixture.CreateMany<DbaseField>().ToArray();
-
-            var record = new AnonymousDbaseRecord(fields);
-            var bytes = record.ToBytes(Encoding.UTF8);
-            var sut = new AnonymousDbaseRecord(fields);
-            sut.FromBytes(bytes, Encoding.UTF8);
-
-            Assert.False(sut.IsDeleted);
-            Assert.Equal(record.Values, sut.Values, new DbaseFieldValueEqualityComparer());
-        }
-
-        [Fact]
         public void ReadingEndOfFileHasExpectedResult()
         {
             using (var stream = new MemoryStream())

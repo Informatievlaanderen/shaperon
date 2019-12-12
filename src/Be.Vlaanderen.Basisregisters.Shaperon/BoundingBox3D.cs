@@ -40,14 +40,14 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private bool Equals(BoundingBox3D other) =>
             other != null &&
-            ((double.IsNaN(XMin) && double.IsNaN(other.XMin)) || Math.Abs(XMin - other.XMin) < double.Epsilon) &&
-            ((double.IsNaN(YMin) && double.IsNaN(other.YMin)) || Math.Abs(YMin - other.YMin) < double.Epsilon) &&
-            ((double.IsNaN(XMax) && double.IsNaN(other.XMax)) || Math.Abs(XMax - other.XMax) < double.Epsilon) &&
-            ((double.IsNaN(YMax) && double.IsNaN(other.YMax)) || Math.Abs(YMax - other.YMax) < double.Epsilon) &&
-            ((double.IsNaN(ZMin) && double.IsNaN(other.ZMin)) || Math.Abs(ZMin - other.ZMin) < double.Epsilon) &&
-            ((double.IsNaN(ZMax) && double.IsNaN(other.ZMax)) || Math.Abs(ZMax - other.ZMax) < double.Epsilon) &&
-            ((double.IsNaN(MMin) && double.IsNaN(other.MMin)) || Math.Abs(MMin - other.MMin) < double.Epsilon) &&
-            ((double.IsNaN(MMax) && double.IsNaN(other.MMax)) || Math.Abs(MMax - other.MMax) < double.Epsilon);
+            (double.IsNaN(XMin) && double.IsNaN(other.XMin) || Math.Abs(XMin - other.XMin) < double.Epsilon) &&
+            (double.IsNaN(YMin) && double.IsNaN(other.YMin) || Math.Abs(YMin - other.YMin) < double.Epsilon) &&
+            (double.IsNaN(XMax) && double.IsNaN(other.XMax) || Math.Abs(XMax - other.XMax) < double.Epsilon) &&
+            (double.IsNaN(YMax) && double.IsNaN(other.YMax) || Math.Abs(YMax - other.YMax) < double.Epsilon) &&
+            (double.IsNaN(ZMin) && double.IsNaN(other.ZMin) || Math.Abs(ZMin - other.ZMin) < double.Epsilon) &&
+            (double.IsNaN(ZMax) && double.IsNaN(other.ZMax) || Math.Abs(ZMax - other.ZMax) < double.Epsilon) &&
+            (double.IsNaN(MMin) && double.IsNaN(other.MMin) || Math.Abs(MMin - other.MMin) < double.Epsilon) &&
+            (double.IsNaN(MMax) && double.IsNaN(other.MMax) || Math.Abs(MMax - other.MMax) < double.Epsilon);
 
         public override int GetHashCode() =>
             XMin.GetHashCode() ^

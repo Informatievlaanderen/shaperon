@@ -9,34 +9,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (left == null && right == null) return true;
             if (left == null || right == null) return false;
-            var leftInspector = new ValueVisitor();
-            var rightInspector = new ValueVisitor();
-            left.Accept(leftInspector);
-            right.Accept(rightInspector);
-            // if (left.Field.Length.Equals(new DbaseFieldLength(15)) &&
-            //     left.Field.DecimalCount.Equals(new DbaseDecimalCount(0)) &&
-            //     right.Field.Length.Equals(new DbaseFieldLength(15)) &&
-            //     right.Field.DecimalCount.Equals(new DbaseDecimalCount(0)) && (
-            //         left.Field.FieldType == DbaseFieldType.Character
-            //         ||
-            //         left.Field.FieldType == DbaseFieldType.DateTime
-            //     ) && (
-            //         right.Field.FieldType == DbaseFieldType.Character
-            //         ||
-            //         right.Field.FieldType == DbaseFieldType.DateTime
-            //     ) && (
-            //         leftInspector.Value == null
-            //         ||
-            //         leftInspector.Value is string leftString && leftString == ""
-            //     ) && (
-            //         rightInspector.Value == null
-            //         ||
-            //         rightInspector.Value is string rightString && rightString == ""
-            //     )
-            // )
-            // {
-            //     return left.Field.Equals(right.Field);
-            // }
             var selector = new ComparerSelectingVisitor(left.Field.DecimalCount);
             left.Accept(selector);
             return selector.Comparer.Equals(left, right);
@@ -44,9 +16,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public int GetHashCode(DbaseFieldValue instance)
         {
-            var inspector = new HashCodeVisitor();
-            instance.Accept(inspector);
-            return instance.Field.GetHashCode() ^ inspector.HashCode;
+            var visitor = new HashCodeVisitor();
+            instance.Accept(visitor);
+            return instance.Field.GetHashCode() ^ visitor.HashCode;
         }
 
         private class DelegatingDbaseFieldValueEqualityComparer<TDbaseFieldValue> : IEqualityComparer<object>
@@ -301,56 +273,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseLogical>(
                     new DbaseLogicalEqualityComparer());
-            }
-        }
-
-        private class ValueVisitor : IDbaseFieldValueVisitor
-        {
-            public object Value { get; private set; }
-
-            public void Visit(DbaseDate value)
-            {
-                Value = value.Value;
-            }
-
-            public void Visit(DbaseDateTime value)
-            {
-                Value = value.Value;
-            }
-
-            public void Visit(DbaseDecimal value)
-            {
-                Value = value.Value;
-            }
-
-            public void Visit(DbaseNumber value)
-            {
-                Value = value.Value;
-            }
-
-            public void Visit(DbaseFloat value)
-            {
-                Value = value.Value;
-            }
-
-            public void Visit(DbaseInt16 value)
-            {
-                Value = value.Value;
-            }
-
-            public void Visit(DbaseInt32 value)
-            {
-                Value = value.Value;
-            }
-
-            public void Visit(DbaseCharacter value)
-            {
-                Value = value.Value;
-            }
-
-            public void Visit(DbaseLogical value)
-            {
-                Value = value.Value;
             }
         }
 

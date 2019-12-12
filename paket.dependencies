@@ -27,7 +27,7 @@ nuget Albedo 2.0.0
 nuget AutoFixture 4.11.0
 nuget AutoFixture.Idioms 4.11.0
 
-nuget PublicApiGenerator 9.3.0
+nuget PublicApiGenerator 10.0.1
 
 // BUILD STUFF
 nuget SourceLink.Embed.AllSourceFiles 2.8.3 copy_local: true

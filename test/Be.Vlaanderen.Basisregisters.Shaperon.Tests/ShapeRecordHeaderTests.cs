@@ -6,7 +6,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using Xunit;
     using System.IO;
     using System.Text;
-    using Be.Vlaanderen.Basisregisters.Shaperon.Framework;
+    using Framework;
 
     public class ShapeRecordHeaderTests
     {

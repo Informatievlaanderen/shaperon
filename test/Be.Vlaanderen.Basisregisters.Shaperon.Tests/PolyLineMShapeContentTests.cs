@@ -6,9 +6,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using Xunit;
     using System.IO;
     using System.Text;
-    using System.Linq;
 
-    public partial class PolyLineMShapeContentTests
+    public class PolyLineMShapeContentTests
     {
         private readonly Fixture _fixture;
 

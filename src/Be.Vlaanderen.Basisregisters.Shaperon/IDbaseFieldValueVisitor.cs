@@ -1,7 +1,5 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
-    using System;
-
     public partial interface IDbaseFieldValueVisitor
     {
         void Visit(DbaseDate value);

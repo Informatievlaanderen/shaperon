@@ -15,7 +15,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public decimal? GenerateAcceptableValue(DbaseDecimal value)
         {
-            var result = default(decimal?);
+            decimal? result = default;
             // null only
             if (value.Field.Length < DbaseNumber.MinimumLength)
             {
@@ -94,7 +94,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public double? GenerateAcceptableValue(DbaseNumber value)
         {
-            var result = default(double?);
+            double? result = default;
             // null only
             if (value.Field.Length < DbaseNumber.MinimumLength)
             {
@@ -174,7 +174,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public float? GenerateAcceptableValue(DbaseFloat value)
         {
-            var result = default(float?);
+            float? result = default;
             // null only
             if (value.Field.Length < DbaseFloat.MinimumLength)
             {

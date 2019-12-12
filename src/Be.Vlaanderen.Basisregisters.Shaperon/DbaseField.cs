@@ -19,27 +19,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 },
                 {
                     DbaseFieldType.Number,
-                    field =>
-                    {
-                        if (field.DecimalCount.ToInt32() == 0)
-                        {
-                            return new DbaseInt32(field);
-                        }
-
-                        return new DbaseNumber(field);
-                    }
+                    field => new DbaseNumber(field)
                 },
                 {
                     DbaseFieldType.Float,
-                    field =>
-                    {
-                        if (field.DecimalCount.ToInt32() == 0)
-                        {
-                            return new DbaseInt32(field);
-                        }
-
-                        return new DbaseFloat(field);
-                    }
+                    field => new DbaseFloat(field)
                 },
                 {
                     DbaseFieldType.Date,
@@ -214,16 +198,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         private bool Equals(DbaseField other) =>
             other != null &&
             Name.Equals(other.Name) &&
-            // HACK: Because legacy represents date times as characters - so why bother with DateTime support?
-            (
-                (
-                    (FieldType == DbaseFieldType.Character || FieldType == DbaseFieldType.DateTime)
-                    &&
-                    (other.FieldType == DbaseFieldType.Character || other.FieldType == DbaseFieldType.DateTime)
-                )
-                ||
-                FieldType == other.FieldType
-            ) &&
+            FieldType.Equals(other.FieldType) &&
             Offset.Equals(other.Offset) &&
             Length.Equals(other.Length) &&
             DecimalCount.Equals(other.DecimalCount);
@@ -233,8 +208,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public override int GetHashCode() =>
             Name.GetHashCode() ^
-            // HACK: Because legacy represents date times as characters - so why bother with DateTime support?
-            (FieldType == DbaseFieldType.DateTime ? DbaseFieldType.Character : FieldType).GetHashCode() ^
+            FieldType.GetHashCode() ^
             Offset.GetHashCode() ^
             Length.GetHashCode() ^
             DecimalCount.GetHashCode();

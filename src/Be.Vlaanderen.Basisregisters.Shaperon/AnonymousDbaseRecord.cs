@@ -1,7 +1,6 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
-    using System.IO;
 
     public class AnonymousDbaseRecord : DbaseRecord
     {

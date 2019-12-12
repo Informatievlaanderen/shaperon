@@ -2,9 +2,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.IO;
-    using System.Linq;
 
-    public partial class PolyLineMShapeContent : ShapeContent
+    public class PolyLineMShapeContent : ShapeContent
     {
         private static readonly ByteLength MeasureRangeByteLength = ByteLength.Double.Times(2); // Min, Max
         private static readonly ByteLength BoundingBoxByteLength = ByteLength.Double.Times(4); // MinX, MinY, MaxX, MaxY

@@ -7,7 +7,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.IO;
     using System.Text;
 
-    public partial class PointShapeContentTests
+    public class PointShapeContentTests
     {
         private readonly Fixture _fixture;
 

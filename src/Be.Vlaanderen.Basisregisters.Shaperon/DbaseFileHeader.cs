@@ -3,7 +3,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System;
     using System.Collections;
     using System.IO;
-    using System.Linq.Expressions;
 
     public class DbaseFileHeader
     {
