@@ -42,6 +42,51 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .Verify(new Methods<DbaseRecord>().Select(instance => instance.Write(null)));
         }
 
+        [Fact]
+        public void TryReadReturnsExpectedResultWhenEndOfFile()
+        {
+            var sut = _fixture.Create<DbaseRecord>();
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
+                {
+                    writer.Write(DbaseRecord.EndOfFile);
+                    writer.Flush();
+                }
+
+                stream.Position = 0;
+
+                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
+                {
+                    var result = sut.TryRead(reader);
+
+                    Assert.False(result);
+                }
+            }
+        }
+
+        [Fact]
+        public void TryReadReturnsExpectedResultWhenNotEndOfFile()
+        {
+            var sut = _fixture.Create<DbaseRecord>();
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
+                {
+                    sut.Write(writer);
+                    writer.Flush();
+                }
+
+                stream.Position = 0;
+
+                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
+                {
+                    var result = sut.TryRead(reader);
+
+                    Assert.True(result);
+                }
+            }
+        }
 
         [Fact]
         public void CanReadWrite()

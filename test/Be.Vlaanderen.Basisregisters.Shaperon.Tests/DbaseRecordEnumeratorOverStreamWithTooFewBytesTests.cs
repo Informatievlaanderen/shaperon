@@ -8,13 +8,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using AutoFixture;
     using Xunit;
 
-    public class DbaseRecordEnumeratorWithLongerStreamTests
+    public class DbaseRecordEnumeratorOverStreamWithTooFewBytesTests
     {
         private readonly IDbaseRecordEnumerator<FakeDbaseRecord> _sut;
         private readonly DisposableBinaryReader _reader;
         private readonly DbaseRecord _record;
 
-        public DbaseRecordEnumeratorWithLongerStreamTests()
+        public DbaseRecordEnumeratorOverStreamWithTooFewBytesTests()
         {
             var fixture = new Fixture();
             fixture.CustomizeWordLength();
@@ -30,7 +30,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var header = new DbaseFileHeader(
                 fixture.Create<DateTime>(),
                 DbaseCodePage.Western_European_ANSI,
-                new DbaseRecordCount(1),
+                new DbaseRecordCount(2),
                 new FakeDbaseSchema());
             var stream = new MemoryStream();
             long position;
@@ -40,8 +40,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 writer.Flush();
                 position = stream.Position;
                 _record.Write(writer);
+                writer.Write(fixture.CreateMany<byte>(2).ToArray());
                 writer.Write(DbaseRecord.EndOfFile);
-                writer.Write(fixture.CreateMany<byte>(10).ToArray());
                 writer.Flush();
             }
 
@@ -55,14 +55,14 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void MoveNextReturnsExpectedResult()
         {
             Assert.True(_sut.MoveNext());
-            Assert.False(_sut.MoveNext());
+            Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
         }
 
         [Fact]
         public void MoveNextRepeatedlyReturnsExpectedResult()
         {
             _sut.MoveNext();
-            _sut.MoveNext();
+            Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
 
             Assert.False(_sut.MoveNext());
         }
@@ -76,23 +76,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             Assert.Equal(_record, _sut.Current, new DbaseRecordEqualityComparer());
 
-            _sut.MoveNext();
+            Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
 
             Assert.Throws<InvalidOperationException>(() => _sut.Current);
-        }
-
-        [Fact]
-        public void CurrentRecordNumberReturnsExpectedResult()
-        {
-            Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
-
-            _sut.MoveNext();
-
-            Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
-
-            _sut.MoveNext();
-
-            Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
         }
 
         [Fact]
@@ -104,11 +90,24 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             Assert.Equal(_record, (DbaseRecord) ((IEnumerator)_sut).Current, new DbaseRecordEqualityComparer());
 
-            _sut.MoveNext();
+            Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
 
             Assert.Throws<InvalidOperationException>(() => ((IEnumerator)_sut).Current);
         }
 
+        [Fact]
+        public void CurrentRecordNumberReturnsExpectedResult()
+        {
+            Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
+
+            _sut.MoveNext();
+
+            Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
+
+            Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
+
+            Assert.Equal(RecordNumber.Initial.Next(), _sut.CurrentRecordNumber);
+        }
 
         [Fact]
         public void ResetReturnsExpectedResult()

@@ -137,8 +137,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 if (_value.HasValue)
                 {
-                    value = Convert.ToInt32(Math.Truncate(_value.Value));
-                    return true;
+                    var truncated = Math.Truncate(_value.Value);
+                    if (truncated <= int.MaxValue && truncated >= int.MinValue)
+                    {
+                        value = Convert.ToInt32(truncated);
+                        return true;
+                    }
+
+                    value = default;
+                    return false;
                 }
 
                 value = null;
@@ -194,8 +201,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 if (_value.HasValue)
                 {
-                    value = Convert.ToInt16(Math.Truncate(_value.Value));
-                    return true;
+                    var truncated = Math.Truncate(_value.Value);
+                    if (truncated <= short.MaxValue && truncated >= short.MinValue)
+                    {
+                        value = Convert.ToInt16(truncated);
+                        return true;
+                    }
+
+                    value = default;
+                    return false;
                 }
 
                 value = null;
@@ -308,6 +322,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        public override void Accept(IDbaseFieldValueVisitor writer) => writer.Visit(this);
+        public override void Accept(IDbaseFieldValueVisitor visitor) => visitor.Visit(this);
     }
 }

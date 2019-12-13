@@ -115,7 +115,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                             throw new ArgumentException(
                                 $"The length ({length}) of the value ({roundedFormatted}) of field {Field.Name} is greater than its field length {Field.Length}, which would result in loss of precision.");
 
-                        _value = float.Parse(roundedFormatted, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, Provider);
+                        _value = float.Parse(roundedFormatted,
+                            NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, Provider);
                     }
                 }
                 else
@@ -131,8 +132,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 if (_value.HasValue)
                 {
-                    value = Convert.ToInt32(Math.Truncate(_value.Value));
-                    return true;
+                    var truncated = Math.Truncate(_value.Value);
+                    if (truncated <= int.MaxValue && truncated >= int.MinValue)
+                    {
+                        value = Convert.ToInt32(truncated);
+                        return true;
+                    }
+
+                    value = default;
+                    return false;
                 }
 
                 value = null;
@@ -177,7 +185,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 if (!TrySetValueAsInt32(value))
                 {
-                    throw new FormatException($"The field {Field.Name} needs to have 0 as decimal count and its value needs to be null or not longer than {Field.Length}.");
+                    throw new FormatException(
+                        $"The field {Field.Name} needs to have 0 as decimal count and its value needs to be null or not longer than {Field.Length}.");
                 }
             }
         }
@@ -188,8 +197,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 if (_value.HasValue)
                 {
-                    value = Convert.ToInt16(Math.Truncate(_value.Value));
-                    return true;
+                    var truncated = Math.Truncate(_value.Value);
+                    if (truncated <= short.MaxValue && truncated >= short.MinValue)
+                    {
+                        value = Convert.ToInt16(truncated);
+                        return true;
+                    }
+
+                    value = default;
+                    return false;
                 }
 
                 value = null;
@@ -234,7 +250,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 if (!TrySetValueAsInt16(value))
                 {
-                    throw new FormatException($"The field {Field.Name} needs to have 0 as decimal count and its value needs to be null or not longer than {Field.Length}.");
+                    throw new FormatException(
+                        $"The field {Field.Name} needs to have 0 as decimal count and its value needs to be null or not longer than {Field.Length}.");
                 }
             }
         }
@@ -257,6 +274,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
                     );
                 }
+
                 Value = null;
             }
             else

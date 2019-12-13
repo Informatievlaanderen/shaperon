@@ -7,12 +7,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using AutoFixture;
     using Xunit;
 
-    public class AnonymousDbaseRecordEnumeratorWithEmptyStreamTests
+    public class AnonymousDbaseRecordEnumeratorOverStreamWithoutBytesTests
     {
         private readonly IDbaseRecordEnumerator _sut;
         private readonly DisposableBinaryReader _reader;
 
-        public AnonymousDbaseRecordEnumeratorWithEmptyStreamTests()
+        public AnonymousDbaseRecordEnumeratorOverStreamWithoutBytesTests()
         {
             var fixture = new Fixture();
             fixture.CustomizeWordLength();
@@ -32,13 +32,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void MoveNextReturnsExpectedResult()
         {
-            Assert.False(_sut.MoveNext());
+            Assert.Throws<EndOfStreamException>(() => _sut.MoveNext());
         }
 
         [Fact]
         public void MoveNextRepeatedlyReturnsExpectedResult()
         {
-            _sut.MoveNext();
+            Assert.Throws<EndOfStreamException>(() => _sut.MoveNext());
 
             Assert.False(_sut.MoveNext());
         }
@@ -48,7 +48,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             Assert.Throws<InvalidOperationException>(() => _sut.Current);
 
-            _sut.MoveNext();
+            Assert.Throws<EndOfStreamException>(() => _sut.MoveNext());
 
             Assert.Throws<InvalidOperationException>(() => _sut.Current);
         }
@@ -58,7 +58,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             Assert.Throws<InvalidOperationException>(() => ((IEnumerator)_sut).Current);
 
-            _sut.MoveNext();
+            Assert.Throws<EndOfStreamException>(() => _sut.MoveNext());
 
             Assert.Throws<InvalidOperationException>(() => ((IEnumerator)_sut).Current);
         }
@@ -68,7 +68,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
 
-            _sut.MoveNext();
+            Assert.Throws<EndOfStreamException>(() => _sut.MoveNext());
 
             Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
         }

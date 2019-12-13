@@ -1,9 +1,11 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Transactions;
     using Albedo;
     using AutoFixture;
     using AutoFixture.Idioms;
@@ -365,6 +367,493 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         Encoding.ASCII.GetString(stream.ToArray())
                     );
                 }
+            }
+        }
+
+        // [Theory]
+        // [InlineData(10, "01234567890", false)]
+        // [InlineData(10, null, true)]
+        // [InlineData(10, "", true)]
+        // [InlineData(10, "0", true)]
+        // [InlineData(10, "012345678", true)]
+        // [InlineData(10, "0123456789", true)]
+        // public void AcceptsStringValueReturnsExpectedResult(int length, string value, bool accepted)
+        // {
+        //     var sut = new DbaseCharacter(
+        //         DbaseField.CreateCharacterField(
+        //             _fixture.Create<DbaseFieldName>(),
+        //             new DbaseFieldLength(length)
+        //         ));
+        //
+        //     var result = sut.AcceptsValue(value);
+        //
+        //     Assert.Equal(accepted, result);
+        // }
+
+        [Theory]
+        [MemberData(nameof(AcceptsInt32ValueCases))]
+        public void AcceptsInt32ValueReturnsExpectedResult(int length, int? value, bool accepted)
+        {
+            var sut = new DbaseNumber(
+                DbaseField.CreateNumberField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ));
+
+            var result = sut.AcceptsValue(value);
+
+            Assert.Equal(accepted, result);
+        }
+
+        public static IEnumerable<object[]> AcceptsInt32ValueCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    3,
+                    null,
+                    true
+                };
+
+                yield return new object[]
+                {
+                    3,
+                    1000,
+                    false
+                };
+
+                yield return new object[]
+                {
+                    4,
+                    1000,
+                    true
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    1000,
+                    true
+                };
+
+                yield return new object[]
+                {
+                    4,
+                    -1000,
+                    false
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    -1000,
+                    true
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(AcceptsInt16ValueCases))]
+        public void AcceptsInt16ValueReturnsExpectedResult(int length, short? value, bool accepted)
+        {
+            var sut = new DbaseNumber(
+                DbaseField.CreateNumberField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ));
+
+            var result = sut.AcceptsValue(value);
+
+            Assert.Equal(accepted, result);
+        }
+
+        public static IEnumerable<object[]> AcceptsInt16ValueCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    3,
+                    null,
+                    true
+                };
+
+                yield return new object[]
+                {
+                    3,
+                    new short?(1000),
+                    false
+                };
+
+                yield return new object[]
+                {
+                    4,
+                    new short?(1000),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    new short?(1000),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    4,
+                    new short?(-1000),
+                    false
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    new short?(-1000),
+                    true
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TryGetValueAsInt32Cases))]
+        public void TryGetValueAsInt32ReturnsExpectedResult(int length, double? value, bool gotten, int? gottenValueAsInt32)
+        {
+            var sut = new DbaseNumber(
+                DbaseField.CreateNumberField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ), value);
+
+            var result = sut.TryGetValueAsInt32(out var valueAsInt32);
+
+            Assert.Equal(gotten, result);
+            Assert.Equal(gottenValueAsInt32, valueAsInt32);
+        }
+
+        public static IEnumerable<object[]> TryGetValueAsInt32Cases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    5,
+                    22.0,
+                    true,
+                    new int?(22)
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    null,
+                    true,
+                    new int?()
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    -22.0,
+                    true,
+                    new int?(-22)
+                };
+
+                yield return new object[]
+                {
+                    DbaseNumber.MaximumLength.ToInt32(),
+                    Convert.ToDouble(int.MaxValue + 1.0),
+                    false,
+                    new int?()
+                };
+
+                yield return new object[]
+                {
+                    DbaseNumber.MaximumLength.ToInt32(),
+                    Convert.ToDouble(int.MinValue - 1.0),
+                    false,
+                    new int?()
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TryGetValueAsInt16Cases))]
+        public void TryGetValueAsInt16ReturnsExpectedResult(int length, double? value, bool gotten, short? gottenValueAsInt16)
+        {
+            var sut = new DbaseNumber(
+                DbaseField.CreateNumberField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ), value);
+
+            var result = sut.TryGetValueAsInt16(out var valueAsInt16);
+
+            Assert.Equal(gotten, result);
+            Assert.Equal(gottenValueAsInt16, valueAsInt16);
+        }
+
+        public static IEnumerable<object[]> TryGetValueAsInt16Cases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    5,
+                    22.0,
+                    true,
+                    new short?(22)
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    null,
+                    true,
+                    new short?()
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    -22.0,
+                    true,
+                    new short?(-22)
+                };
+
+                yield return new object[]
+                {
+                    DbaseNumber.MaximumLength.ToInt32(),
+                    Convert.ToDouble(short.MaxValue + 1.0),
+                    false,
+                    new short?()
+                };
+
+                yield return new object[]
+                {
+                    DbaseNumber.MaximumLength.ToInt32(),
+                    Convert.ToDouble(short.MinValue - 1.0),
+                    false,
+                    new short?()
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TrySetValueAsInt32Cases))]
+        public void TrySetValueAsInt32ReturnsExpectedResult(int length, int? value, bool expected)
+        {
+            var sut = new DbaseNumber(
+                DbaseField.CreateNumberField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ));
+
+            var result = sut.TrySetValueAsInt32(value);
+
+            Assert.Equal(expected, result);
+        }
+
+        public static IEnumerable<object[]> TrySetValueAsInt32Cases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    5,
+                    new int?(22),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    new int?(),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    new int?(-22),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    new int?(int.MaxValue),
+                    false
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    new int?(int.MinValue),
+                    false
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TrySetValueAsInt16Cases))]
+        public void TrySetValueAsInt16ReturnsExpectedResult(int length, short? value, bool expected)
+        {
+            var sut = new DbaseNumber(
+                DbaseField.CreateNumberField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ));
+
+            var result = sut.TrySetValueAsInt16(value);
+
+            Assert.Equal(expected, result);
+        }
+
+        public static IEnumerable<object[]> TrySetValueAsInt16Cases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    3,
+                    new short?(22),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    3,
+                    new short?(),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    3,
+                    new short?(-22),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    3,
+                    new short?(short.MaxValue),
+                    false
+                };
+
+                yield return new object[]
+                {
+                    3,
+                    new short?(short.MinValue),
+                    false
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TryGetValueAsInt32Cases))]
+        public void GetValueAsInt32ReturnsExpectedResult(int length, double? value,
+            bool gotten, int? gottenValueAsInt32)
+        {
+            var sut = new DbaseNumber(
+                DbaseField.CreateNumberField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ), value);
+
+            if (!gotten)
+            {
+                Assert.Throws<FormatException>(() =>
+                {
+                    var _ = sut.ValueAsInt32;
+                });
+            }
+            else
+            {
+                var result = sut.ValueAsInt32;
+                Assert.Equal(gottenValueAsInt32, result);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TrySetValueAsInt32Cases))]
+        public void SetValueAsInt32ReturnsExpectedResult(int length, int? value, bool expected)
+        {
+            var sut = new DbaseNumber(
+                DbaseField.CreateNumberField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ));
+
+            if (!expected)
+            {
+                Assert.Throws<FormatException>(() =>
+                {
+                    sut.ValueAsInt32 = value;
+                });
+            }
+            else
+            {
+                sut.ValueAsInt32 = value;
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TryGetValueAsInt16Cases))]
+        public void GetValueAsInt16ReturnsExpectedResult(int length, double? value, bool gotten, short? gottenValueAsInt16)
+        {
+            var sut = new DbaseNumber(
+                DbaseField.CreateNumberField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ), value);
+
+            if (!gotten)
+            {
+                Assert.Throws<FormatException>(() =>
+                {
+                    var _ = sut.ValueAsInt16;
+                });
+            }
+            else
+            {
+                var result = sut.ValueAsInt16;
+                Assert.Equal(gottenValueAsInt16, result);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TrySetValueAsInt16Cases))]
+        public void SetValueAsInt16ReturnsExpectedResult(int length, short? value, bool expected)
+        {
+            var sut = new DbaseNumber(
+                DbaseField.CreateNumberField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ));
+
+            if (!expected)
+            {
+                Assert.Throws<FormatException>(() =>
+                {
+                    sut.ValueAsInt16 = value;
+                });
+            }
+            else
+            {
+                sut.ValueAsInt16 = value;
             }
         }
     }

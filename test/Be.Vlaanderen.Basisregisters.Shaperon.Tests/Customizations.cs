@@ -879,13 +879,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             DbaseRecordCount count)
         {
             var records = new DbaseRecord[count.ToInt32()];
-            var inspector = new GenerateValueVisitor(fixture);
+            var visitor = new GenerateValueVisitor(fixture);
             for (var index = 0; index < records.Length; index++)
             {
                 var record = new AnonymousDbaseRecord(fields);
                 foreach (var value in record.Values)
                 {
-                    value.Accept(inspector);
+                    value.Accept(visitor);
                 }
 
                 records[index] = record;

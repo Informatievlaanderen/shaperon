@@ -11,6 +11,24 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public DbaseFieldValue[] Values { get; protected set; }
 
+        public bool TryRead(BinaryReader reader)
+        {
+            if (reader == null)
+                throw new ArgumentNullException(nameof(reader));
+
+            var flag = reader.ReadByte();
+            if (flag == EndOfFile)
+                return false;
+
+            if (flag != 0x20 && flag != 0x2A)
+                throw new DbaseRecordException(
+                    $"The record deleted flag must be either deleted (0x2A) or valid (0x20) but is 0x{flag:X2}");
+
+            IsDeleted = flag == 0x2A;
+            ReadValues(reader);
+            return true;
+        }
+
         public void Read(BinaryReader reader)
         {
             if (reader == null)
