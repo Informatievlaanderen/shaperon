@@ -15,11 +15,11 @@ licenseUrl https://opensource.org/licenses/MIT
 description Lightweight dbase and shape record handling (net topology suite integration).
 
 dependencies:
-  framework: netcoreapp30
+  framework: netcoreapp31
     NetTopologySuite >= LOCKEDVERSION
 
 include-referenced-projects true
 
 files
-  bin\Release\netcoreapp3.0\Be.Vlaanderen.Basisregisters.Shaperon.Geometries.dll => lib\netcoreapp3.0
-  bin\Release\netcoreapp3.0\Be.Vlaanderen.Basisregisters.Shaperon.Geometries.pdb => lib\netcoreapp3.0
+  bin\Release\netcoreapp3.1\Be.Vlaanderen.Basisregisters.Shaperon.Geometries.dll => lib\netcoreapp3.1
+  bin\Release\netcoreapp3.1\Be.Vlaanderen.Basisregisters.Shaperon.Geometries.pdb => lib\netcoreapp3.1
