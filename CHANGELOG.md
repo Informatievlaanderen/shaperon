@@ -1,3 +1,13 @@
+# [7.2.0](https://github.com/informatievlaanderen/shaperon/compare/v7.1.0...v7.2.0) (2019-12-16)
+
+
+### Features
+
+* improve dbase float and number functions ([2cc2378](https://github.com/informatievlaanderen/shaperon/commit/2cc2378f768834c40c29890d84edd619adb4e9e4))
+* move back to dbase primitives ([86a7e43](https://github.com/informatievlaanderen/shaperon/commit/86a7e433878b31884a72865e471fb7ccb3a37343))
+* remove legacy and improve dbasecharacter ([bf5ea9d](https://github.com/informatievlaanderen/shaperon/commit/bf5ea9da92841afcc5e813cf4281aa56d450170a))
+* upgrade to netcoreapp31 ([77affc7](https://github.com/informatievlaanderen/shaperon/commit/77affc7ebc99be97577f1088448d7d80d36b4f8d))
+
 # [7.1.0](https://github.com/informatievlaanderen/shaperon/compare/v7.0.0...v7.1.0) (2019-12-09)
 
 
