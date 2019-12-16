@@ -4,51 +4,56 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.Linq;
     using AutoFixture;
 
-    public class GenerateValueInspector : IDbaseFieldValueInspector
+    public class GenerateValueVisitor : IDbaseFieldValueVisitor
     {
         private readonly IFixture _fixture;
         private readonly Random _random;
         private readonly DbaseFieldNumberGenerator _generator;
 
 
-        public GenerateValueInspector(IFixture fixture)
+        public GenerateValueVisitor(IFixture fixture)
         {
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
             _random = new Random();
             _generator = new DbaseFieldNumberGenerator(_random);
         }
 
-        public void Inspect(DbaseDateTime value)
+        public void Visit(DbaseDate value)
         {
             value.Value = _fixture.Create<DateTime?>();
         }
 
-        public void Inspect(DbaseDecimal value)
+        public void Visit(DbaseDateTime value)
+        {
+            value.Value = _fixture.Create<DateTime?>();
+        }
+
+        public void Visit(DbaseDecimal value)
         {
             value.Value = _generator.GenerateAcceptableValue(value);
         }
 
-        public void Inspect(DbaseDouble value)
+        public void Visit(DbaseNumber value)
         {
             value.Value = _generator.GenerateAcceptableValue(value);
         }
 
-        public void Inspect(DbaseSingle value)
+        public void Visit(DbaseFloat value)
         {
             value.Value = _generator.GenerateAcceptableValue(value);
         }
 
-        public void Inspect(DbaseInt16 value)
+        public void Visit(DbaseInt16 value)
         {
             value.Value = _generator.GenerateAcceptableValue(value);
         }
 
-        public void Inspect(DbaseInt32 value)
+        public void Visit(DbaseInt32 value)
         {
             value.Value = _generator.GenerateAcceptableValue(value);
         }
 
-        public void Inspect(DbaseString value)
+        public void Visit(DbaseCharacter value)
         {
             var length = new Generator<DbaseFieldLength>(_fixture)
                 .First(specimen => specimen <= value.Field.Length);
@@ -68,7 +73,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        public void Inspect(DbaseBoolean value)
+        public void Visit(DbaseLogical value)
         {
             value.Value = _fixture.Create<bool?>();
         }

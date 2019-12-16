@@ -10,7 +10,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void WriteLatestVersion()
         {
             var assembly = typeof(AnonymousDbaseRecord).Assembly;
-            var report = ApiGenerator.GeneratePublicApi(assembly);
+            var report = assembly.GeneratePublicApi();
             var path =
                 ".." + Path.DirectorySeparatorChar +
                 ".." + Path.DirectorySeparatorChar +

@@ -5,8 +5,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
     public static class EndianBinaryWriterExtensions
     {
-        private const string NoDescription = "";
-
         public static void WriteInt32BigEndian(this BinaryWriter writer, int value)
         {
             var bytes = BitConverter.GetBytes(value);

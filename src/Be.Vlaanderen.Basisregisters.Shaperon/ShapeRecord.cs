@@ -3,7 +3,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System;
     using System.IO;
 
-    public partial class ShapeRecord
+    public class ShapeRecord
     {
         //Rationale: 100 byte file header means first record appears at offset 50 (16-bit word) of the mainfile.
         public static readonly WordOffset InitialOffset = new WordOffset(50);

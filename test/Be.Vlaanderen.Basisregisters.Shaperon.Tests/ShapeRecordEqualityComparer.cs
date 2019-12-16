@@ -1,7 +1,6 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System.Collections.Generic;
-    using System.Linq;
 
     public class ShapeRecordEqualityComparer : IEqualityComparer<ShapeRecord>
     {

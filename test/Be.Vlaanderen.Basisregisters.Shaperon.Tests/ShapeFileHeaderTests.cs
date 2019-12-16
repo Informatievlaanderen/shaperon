@@ -9,7 +9,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Be.Vlaanderen.Basisregisters.Shaperon.Framework;
+    using Framework;
 
     public class ShapeFileHeaderTests
     {

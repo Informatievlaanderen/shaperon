@@ -1,7 +1,6 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
-    using System.IO;
 
     public class AnonymousDbaseRecord : DbaseRecord
     {
@@ -18,21 +17,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             IsDeleted = false;
             Values = values ?? throw new ArgumentNullException(nameof(values));
-        }
-
-        protected override void ReadValues(BinaryReader reader)
-        {
-            if (reader == null)
-                throw new ArgumentNullException(nameof(reader));
-
-            for (var index = 0; index < Values.Length; index++)
-            {
-                var value = Values[index];
-                value.Read(reader);
-
-                if (value is DbaseString candidate)
-                    Values[index] = candidate.TryInferDateTime();
-            }
         }
     }
 }

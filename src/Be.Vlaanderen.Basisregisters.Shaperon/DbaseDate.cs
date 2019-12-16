@@ -4,18 +4,18 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.Globalization;
     using System.IO;
 
-    public class DbaseDateTime : DbaseFieldValue
+    public class DbaseDate : DbaseFieldValue
     {
         private DateTime? _value;
 
-        public DbaseDateTime(DbaseField field, DateTime? value = null) : base(field)
+        public DbaseDate(DbaseField field, DateTime? value = null) : base(field)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));
 
-            if (field.FieldType != DbaseFieldType.DateTime && field.FieldType != DbaseFieldType.Character)
+            if (field.FieldType != DbaseFieldType.Date)
                 throw new ArgumentException(
-                    $"The field {field.Name}'s type must be either datetime or character to use it as a datetime field.",
+                    $"The field {field.Name}'s type must be date to use it as a date field.",
                     nameof(field));
 
             Value = value;
@@ -24,7 +24,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public DateTime? Value
         {
             get => _value;
-            set => _value = value.RoundToSeconds(); // Reason: due to serialization, precision is only guaranteed up to the second.
+            set => _value = value.RoundToDay(); // Reason: due to serialization, precision is only guaranteed up to the day.
         }
 
         public override void Read(BinaryReader reader)
@@ -46,16 +46,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             else
             {
                 var unpadded = reader.ReadRightPaddedString(Field.Name.ToString(), Field.Length.ToInt32(), ' ');
-                if (DateTime.TryParseExact(unpadded, "yyyyMMdd\\THHmmss", CultureInfo.InvariantCulture,
+                if (DateTime.TryParseExact(unpadded, "yyyyMMdd", CultureInfo.InvariantCulture,
                     DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite, out var parsed))
                 {
                     Value = new DateTime(
                         parsed.Year,
                         parsed.Month,
                         parsed.Day,
-                        parsed.Hour,
-                        parsed.Minute,
-                        parsed.Second,
+                        0,
+                        0,
+                        0,
                         DateTimeKind.Unspecified);
                 }
                 else
@@ -72,7 +72,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             if (Value.HasValue)
             {
-                var unpadded = Value.Value.ToString("yyyyMMddTHHmmss", CultureInfo.InvariantCulture);
+                var unpadded = Value.Value.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
                 writer.WriteRightPaddedString(unpadded, Field.Length.ToInt32(), ' ');
             }
             else
@@ -82,6 +82,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        public override void Inspect(IDbaseFieldValueInspector writer) => writer.Inspect(this);
+        public override void Accept(IDbaseFieldValueVisitor writer) => writer.Visit(this);
     }
 }

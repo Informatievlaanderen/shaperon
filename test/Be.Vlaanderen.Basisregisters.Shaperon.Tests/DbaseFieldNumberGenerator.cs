@@ -15,16 +15,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public decimal? GenerateAcceptableValue(DbaseDecimal value)
         {
-            var result = default(decimal?);
+            decimal? result = default;
             // null only
-            if (value.Field.Length < DbaseDouble.MinimumLength)
+            if (value.Field.Length < DbaseNumber.MinimumLength)
             {
 
                 return result;
             }
 
             // null or positive only
-            if (value.Field.Length < DbaseDouble.NegativeValueMinimumLength)
+            if (value.Field.Length < DbaseNumber.NegativeValueMinimumLength)
             {
                 switch (_random.Next() % 2)
                 {
@@ -92,18 +92,18 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 );
         }
 
-        public double? GenerateAcceptableValue(DbaseDouble value)
+        public double? GenerateAcceptableValue(DbaseNumber value)
         {
-            var result = default(double?);
+            double? result = default;
             // null only
-            if (value.Field.Length < DbaseDouble.MinimumLength)
+            if (value.Field.Length < DbaseNumber.MinimumLength)
             {
 
                 return result;
             }
 
             // null or positive only
-            if (value.Field.Length < DbaseDouble.NegativeValueMinimumLength)
+            if (value.Field.Length < DbaseNumber.NegativeValueMinimumLength)
             {
                 switch (_random.Next() % 2)
                 {
@@ -135,12 +135,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private double? GeneratePositiveDoubleValue(DbaseField field)
         {
-            if (field.Length < DbaseDouble.PositiveValueMinimumLength || !DoubleSupportedFieldTypes.Contains(field.FieldType))
+            if (field.Length < DbaseNumber.PositiveValueMinimumLength || !DoubleSupportedFieldTypes.Contains(field.FieldType))
             {
                 return null;
             }
 
-            var digits = DbaseIntegerDigits.Min(field.PositiveIntegerDigits, DbaseDouble.MaximumIntegerDigits);
+            var digits = DbaseIntegerDigits.Min(field.PositiveIntegerDigits, DbaseNumber.MaximumIntegerDigits);
             var number = GeneratePositiveNumber(digits, field.DecimalCount);
             return Double.Parse(
                 number,
@@ -154,12 +154,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private double? GenerateNegativeDoubleValue(DbaseField field)
         {
-            if (field.Length < DbaseDouble.NegativeValueMinimumLength || !DoubleSupportedFieldTypes.Contains(field.FieldType))
+            if (field.Length < DbaseNumber.NegativeValueMinimumLength || !DoubleSupportedFieldTypes.Contains(field.FieldType))
             {
                 return null;
             }
 
-            var digits = DbaseIntegerDigits.Min(field.NegativeIntegerDigits, DbaseDouble.MaximumIntegerDigits);
+            var digits = DbaseIntegerDigits.Min(field.NegativeIntegerDigits, DbaseNumber.MaximumIntegerDigits);
             var number = GenerateNegativeNumber(digits, field.DecimalCount);
             return Double.Parse(
                 number,
@@ -172,18 +172,18 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 });
         }
 
-        public float? GenerateAcceptableValue(DbaseSingle value)
+        public float? GenerateAcceptableValue(DbaseFloat value)
         {
-            var result = default(float?);
+            float? result = default;
             // null only
-            if (value.Field.Length < DbaseSingle.MinimumLength)
+            if (value.Field.Length < DbaseFloat.MinimumLength)
             {
 
                 return result;
             }
 
             // null or positive only
-            if (value.Field.Length < DbaseSingle.NegativeValueMinimumLength)
+            if (value.Field.Length < DbaseFloat.NegativeValueMinimumLength)
             {
                 switch (_random.Next() % 2)
                 {
@@ -215,12 +215,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private float? GeneratePositiveSingleValue(DbaseField field)
         {
-            if (field.Length < DbaseSingle.PositiveValueMinimumLength || !SingleSupportedFieldTypes.Contains(field.FieldType))
+            if (field.Length < DbaseFloat.PositiveValueMinimumLength || !SingleSupportedFieldTypes.Contains(field.FieldType))
             {
                 return null;
             }
 
-            var digits = DbaseIntegerDigits.Min(field.PositiveIntegerDigits, DbaseSingle.MaximumIntegerDigits);
+            var digits = DbaseIntegerDigits.Min(field.PositiveIntegerDigits, DbaseFloat.MaximumIntegerDigits);
             var number = GeneratePositiveNumber(digits, field.DecimalCount);
             return Single.Parse(
                 number,
@@ -234,12 +234,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private float? GenerateNegativeSingleValue(DbaseField field)
         {
-            if (field.Length < DbaseSingle.NegativeValueMinimumLength || !SingleSupportedFieldTypes.Contains(field.FieldType))
+            if (field.Length < DbaseFloat.NegativeValueMinimumLength || !SingleSupportedFieldTypes.Contains(field.FieldType))
             {
                 return null;
             }
 
-            var digits = DbaseIntegerDigits.Min(field.NegativeIntegerDigits, DbaseSingle.MaximumIntegerDigits);
+            var digits = DbaseIntegerDigits.Min(field.NegativeIntegerDigits, DbaseFloat.MaximumIntegerDigits);
             var number = GenerateNegativeNumber(digits, field.DecimalCount);
             return Single.Parse(
                 number,

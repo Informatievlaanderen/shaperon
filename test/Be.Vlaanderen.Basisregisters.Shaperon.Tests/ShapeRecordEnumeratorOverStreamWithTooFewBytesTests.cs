@@ -4,18 +4,18 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.Collections;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Text;
     using AutoFixture;
     using Xunit;
 
-    public class ShapeRecordEnumeratorWithExactStreamTests
+    public class ShapeRecordEnumeratorOverStreamWithTooFewBytesTests
     {
         private readonly IEnumerator<ShapeRecord> _sut;
         private readonly DisposableBinaryReader _reader;
-        private readonly ShapeRecord _record1;
-        private readonly ShapeRecord _record2;
+        private readonly ShapeRecord _record;
 
-        public ShapeRecordEnumeratorWithExactStreamTests()
+        public ShapeRecordEnumeratorOverStreamWithTooFewBytesTests()
         {
             var fixture = new Fixture();
             fixture.CustomizeShapeRecordCount();
@@ -23,18 +23,17 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             var content = new PointShapeContent(new Point(1.0, 1.0));
             var number = RecordNumber.Initial;
-            _record1 = content.RecordAs(number);
-            _record2 = content.RecordAs(number.Next());
+            _record = content.RecordAs(number);
             var header = new ShapeFileHeader(
-                ShapeFileHeader.Length.Plus(_record1.Length).Plus(_record2.Length),
+                ShapeFileHeader.Length.Plus(_record.Length.Times(2)),
                 ShapeType.Point,
                 fixture.Create<BoundingBox3D>());
             var stream = new MemoryStream();
             using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
             {
                 header.Write(writer);
-                _record1.Write(writer);
-                _record2.Write(writer);
+                _record.Write(writer);
+                writer.Write(fixture.CreateMany<byte>(_record.Length.ToByteLength().ToInt32() / 2).ToArray());
                 writer.Flush();
             }
 
@@ -48,16 +47,14 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void MoveNextReturnsExpectedResult()
         {
             Assert.True(_sut.MoveNext());
-            Assert.True(_sut.MoveNext());
-            Assert.False(_sut.MoveNext());
+            Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
         }
 
         [Fact]
         public void MoveNextRepeatedlyReturnsExpectedResult()
         {
             _sut.MoveNext();
-            _sut.MoveNext();
-            _sut.MoveNext();
+            Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
 
             Assert.False(_sut.MoveNext());
         }
@@ -69,13 +66,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             _sut.MoveNext();
 
-            Assert.Equal(_record1, _sut.Current, new ShapeRecordEqualityComparer());
+            Assert.Equal(_record, _sut.Current, new ShapeRecordEqualityComparer());
 
-            _sut.MoveNext();
-
-            Assert.Equal(_record2, _sut.Current, new ShapeRecordEqualityComparer());
-
-            _sut.MoveNext();
+            Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
 
             Assert.Throws<InvalidOperationException>(() => _sut.Current);
         }
@@ -83,18 +76,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void EnumeratorCurrentReturnsExpectedResult()
         {
-
             Assert.Throws<InvalidOperationException>(() => ((IEnumerator)_sut).Current);
 
             _sut.MoveNext();
 
-            Assert.Equal(_record1, (ShapeRecord) ((IEnumerator)_sut).Current, new ShapeRecordEqualityComparer());
+            Assert.Equal(_record, (ShapeRecord) ((IEnumerator)_sut).Current, new ShapeRecordEqualityComparer());
 
-            _sut.MoveNext();
-
-            Assert.Equal(_record2, (ShapeRecord) ((IEnumerator)_sut).Current, new ShapeRecordEqualityComparer());
-
-            _sut.MoveNext();
+            Assert.ThrowsAny<Exception>(() => _sut.MoveNext());
 
             Assert.Throws<InvalidOperationException>(() => ((IEnumerator)_sut).Current);
         }

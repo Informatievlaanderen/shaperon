@@ -2,9 +2,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.IO;
-    using System.Linq;
 
-    public partial class PointShapeContent : ShapeContent
+    public class PointShapeContent : ShapeContent
     {
         public static readonly WordLength Length = new WordLength(10);
 

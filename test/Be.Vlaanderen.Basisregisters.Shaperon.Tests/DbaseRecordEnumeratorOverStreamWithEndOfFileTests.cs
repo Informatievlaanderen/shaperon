@@ -2,18 +2,17 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.Collections;
-    using System.Collections.Generic;
     using System.IO;
     using System.Text;
     using AutoFixture;
     using Xunit;
 
-    public class AnonymousDbaseRecordEnumeratorWithEmptyStreamTests
+    public class DbaseRecordEnumeratorOverStreamWithEndOfFileTests
     {
-        private readonly IDbaseRecordEnumerator _sut;
+        private readonly IDbaseRecordEnumerator<FakeDbaseRecord> _sut;
         private readonly DisposableBinaryReader _reader;
 
-        public AnonymousDbaseRecordEnumeratorWithEmptyStreamTests()
+        public DbaseRecordEnumeratorOverStreamWithEndOfFileTests()
         {
             var fixture = new Fixture();
             fixture.CustomizeWordLength();
@@ -26,8 +25,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             fixture.CustomizeDbaseSchema();
 
             var header = fixture.Create<DbaseFileHeader>();
-            _reader = new DisposableBinaryReader(new MemoryStream(), Encoding.UTF8, false);
-            _sut = header.CreateAnonymousDbaseRecordEnumerator(_reader);
+            var stream = new MemoryStream();
+            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
+            {
+                writer.Write(DbaseRecord.EndOfFile);
+                writer.Flush();
+            }
+            stream.Position = 0;
+            _reader = new DisposableBinaryReader(stream, Encoding.UTF8, false);
+            _sut = header.CreateDbaseRecordEnumerator<FakeDbaseRecord>(_reader);
         }
 
         [Fact]
@@ -86,6 +92,33 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Assert.False(_reader.Disposed);
             _sut.Dispose();
             Assert.True(_reader.Disposed);
+        }
+
+        private class FakeDbaseSchema : DbaseSchema
+        {
+            public FakeDbaseSchema()
+            {
+                Fields = new[]
+                {
+                    DbaseField.CreateNumberField(new DbaseFieldName(nameof(Id)), new DbaseFieldLength(4), new DbaseDecimalCount(0))
+                };
+            }
+
+            public DbaseField Id => Fields[0];
+        }
+
+        private class FakeDbaseRecord : DbaseRecord
+        {
+            private static readonly FakeDbaseSchema Schema = new FakeDbaseSchema();
+
+            public FakeDbaseRecord()
+            {
+                Id = new DbaseNumber(Schema.Id);
+
+                Values = new DbaseFieldValue[] {Id};
+            }
+
+            public DbaseNumber Id { get; }
         }
     }
 }

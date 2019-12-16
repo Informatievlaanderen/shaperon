@@ -1,7 +1,6 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
-    using System.Data.Common;
     using System.Diagnostics.Contracts;
 
     public readonly struct DbaseRecordCount :

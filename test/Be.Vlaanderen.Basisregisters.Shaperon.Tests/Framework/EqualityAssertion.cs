@@ -118,7 +118,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Framework
             {
                 Fixture.Customize(new CompositeCustomization(
                     new IndexedReplacement<ICustomization>(i, customizations).Expand(new EmptyCustomization())));
-                var actual = CompareSpecimens(constructorInfo, Fixture);
+                var actual = CompareSpecimens(constructorInfo);
                 if (actual)
                 {
                     throw new EqualsOverrideException(
@@ -138,7 +138,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Framework
             using (new FixtureCustomizationsDisposable(Fixture))
             {
                 Fixture.Customize(new CompositeCustomization(customizations));
-                var actual = CompareSpecimens(constructorInfo, Fixture);
+                var actual = CompareSpecimens(constructorInfo);
                 if (!actual)
                 {
                     throw new EqualsOverrideException(
@@ -171,7 +171,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Framework
             {
                 Fixture.Customizations.Add(constructorInfoSpecimenBuilder);
                 Fixture.Customize(new CompositeCustomization(customizations));
-                var actual = CompareSpecimens(constructor, Fixture);
+                var actual = CompareSpecimens(constructor);
                 if (actual)
                 {
                     throw new EqualsOverrideException(
@@ -186,7 +186,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Framework
             }
         }
 
-        private bool CompareSpecimens(object request, IFixture fixture)
+        private bool CompareSpecimens(object request)
         {
             var specimen = new Tuple<object, object>(
                 Fixture.Create(request, new SpecimenContext(Fixture)),

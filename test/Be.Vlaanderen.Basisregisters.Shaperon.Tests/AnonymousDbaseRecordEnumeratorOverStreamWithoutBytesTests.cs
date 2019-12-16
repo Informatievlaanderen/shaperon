@@ -2,41 +2,43 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.Collections;
-    using System.Collections.Generic;
     using System.IO;
     using System.Text;
     using AutoFixture;
     using Xunit;
 
-    public class ShapeRecordEnumeratorWithEmptyStreamTests
+    public class AnonymousDbaseRecordEnumeratorOverStreamWithoutBytesTests
     {
-        private readonly IEnumerator<ShapeRecord> _sut;
+        private readonly IDbaseRecordEnumerator _sut;
         private readonly DisposableBinaryReader _reader;
 
-        public ShapeRecordEnumeratorWithEmptyStreamTests()
+        public AnonymousDbaseRecordEnumeratorOverStreamWithoutBytesTests()
         {
             var fixture = new Fixture();
-            fixture.CustomizeShapeRecordCount();
             fixture.CustomizeWordLength();
+            fixture.CustomizeDbaseFieldName();
+            fixture.CustomizeDbaseFieldLength();
+            fixture.CustomizeDbaseDecimalCount();
+            fixture.CustomizeDbaseField();
+            fixture.CustomizeDbaseCodePage();
+            fixture.CustomizeDbaseRecordCount();
+            fixture.CustomizeDbaseSchema();
 
-            var header = new ShapeFileHeader(
-                fixture.Create<WordLength>(),
-                fixture.Create<ShapeType>(),
-                fixture.Create<BoundingBox3D>());
+            var header = fixture.Create<DbaseFileHeader>();
             _reader = new DisposableBinaryReader(new MemoryStream(), Encoding.UTF8, false);
-            _sut = header.CreateShapeRecordEnumerator(_reader);
+            _sut = header.CreateAnonymousDbaseRecordEnumerator(_reader);
         }
 
         [Fact]
         public void MoveNextReturnsExpectedResult()
         {
-            Assert.False(_sut.MoveNext());
+            Assert.Throws<EndOfStreamException>(() => _sut.MoveNext());
         }
 
         [Fact]
         public void MoveNextRepeatedlyReturnsExpectedResult()
         {
-            _sut.MoveNext();
+            Assert.Throws<EndOfStreamException>(() => _sut.MoveNext());
 
             Assert.False(_sut.MoveNext());
         }
@@ -46,7 +48,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             Assert.Throws<InvalidOperationException>(() => _sut.Current);
 
-            _sut.MoveNext();
+            Assert.Throws<EndOfStreamException>(() => _sut.MoveNext());
 
             Assert.Throws<InvalidOperationException>(() => _sut.Current);
         }
@@ -56,9 +58,19 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             Assert.Throws<InvalidOperationException>(() => ((IEnumerator)_sut).Current);
 
-            _sut.MoveNext();
+            Assert.Throws<EndOfStreamException>(() => _sut.MoveNext());
 
             Assert.Throws<InvalidOperationException>(() => ((IEnumerator)_sut).Current);
+        }
+
+        [Fact]
+        public void CurrentRecordNumberReturnsExpectedResult()
+        {
+            Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
+
+            Assert.Throws<EndOfStreamException>(() => _sut.MoveNext());
+
+            Assert.Equal(RecordNumber.Initial, _sut.CurrentRecordNumber);
         }
 
         [Fact]

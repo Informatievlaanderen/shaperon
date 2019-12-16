@@ -18,8 +18,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             _fixture = new Fixture();
             _fixture.CustomizeDbaseFieldName();
             _fixture.CustomizeByteOffset();
-            _fixture.CustomizeDbaseFieldLength(DbaseDouble.MaximumLength);
-            _fixture.CustomizeDbaseDecimalCount(DbaseDouble.MaximumDecimalCount);
+            _fixture.CustomizeDbaseFieldLength(DbaseNumber.MaximumLength);
+            _fixture.CustomizeDbaseDecimalCount(DbaseNumber.MaximumDecimalCount);
             _fixture.CustomizeDbaseField();
             _fixture.Register(() => new BinaryReader(new MemoryStream()));
             _fixture.Register(() => new BinaryWriter(new MemoryStream()));
@@ -257,7 +257,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             var name = _fixture.Create<DbaseFieldName>();
             var offset = _fixture.Create<ByteOffset>();
-            var length = _fixture.GenerateDbaseSingleLengthLessThan(DbaseSingle.MaximumLength);
+            var length = _fixture.GenerateDbaseSingleLengthLessThan(DbaseFloat.MaximumLength);
             var decimalCount = _fixture.GenerateDbaseSingleDecimalCount(length);
             var positiveIntegerDigits = decimalCount != new DbaseDecimalCount(0)
                 ? new DbaseIntegerDigits(length.ToInt32() - 1 - decimalCount.ToInt32())
@@ -284,50 +284,50 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
 
         [Fact]
-        public void CreateDateTimeFieldFailsWhenLengthIsNot15()
+        public void CreateDateFieldFailsWhenLengthIsNot8()
         {
             var length = new Generator<DbaseFieldLength>(_fixture)
-                .First(specimen => specimen.ToInt32() != 15);
+                .First(specimen => specimen.ToInt32() != 8);
             Assert.Throws<ArgumentException>(() =>
                 new DbaseField(
                     _fixture.Create<DbaseFieldName>(),
-                    DbaseFieldType.DateTime,
+                    DbaseFieldType.Date,
                     _fixture.Create<ByteOffset>(),
                     length,
                     new DbaseDecimalCount(0)));
         }
 
         [Fact]
-        public void CreateDateTimeFieldFailsWhenDecimalCountIsNot0()
+        public void CreateDateFieldFailsWhenDecimalCountIsNot0()
         {
             var decimalCount = new Generator<DbaseDecimalCount>(_fixture)
                 .First(specimen => specimen.ToInt32() != 0);
             Assert.Throws<ArgumentException>(() =>
                 new DbaseField(
                     _fixture.Create<DbaseFieldName>(),
-                    DbaseFieldType.DateTime,
+                    DbaseFieldType.Date,
                     _fixture.Create<ByteOffset>(),
-                    new DbaseFieldLength(15),
+                    new DbaseFieldLength(8),
                     decimalCount));
         }
 
         [Fact]
-        public void CreateDateTimeFieldReturnsExpectedResultWhenLengthIs15AndDecimalCountIs0()
+        public void CreateDateFieldReturnsExpectedResultWhenLengthIs8AndDecimalCountIs0()
         {
             var name = _fixture.Create<DbaseFieldName>();
             var offset = _fixture.Create<ByteOffset>();
-            var length = new DbaseFieldLength(15);
+            var length = new DbaseFieldLength(8);
             var decimalCount = new DbaseDecimalCount(0);
             var result =
                 new DbaseField(
                     name,
-                    DbaseFieldType.DateTime,
+                    DbaseFieldType.Date,
                     offset,
                     length,
                     decimalCount);
 
             Assert.Equal(name, result.Name);
-            Assert.Equal(DbaseFieldType.DateTime, result.FieldType);
+            Assert.Equal(DbaseFieldType.Date, result.FieldType);
             Assert.Equal(offset, result.Offset);
             Assert.Equal(length, result.Length);
             Assert.Equal(decimalCount, result.DecimalCount);
@@ -395,7 +395,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var name = _fixture.Create<DbaseFieldName>();
             var length = _fixture.Create<DbaseFieldLength>();
 
-            var result = DbaseField.CreateStringField(
+            var result = DbaseField.CreateCharacterField(
                 name,
                 length);
 
@@ -454,16 +454,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Fact]
-        public void CreateDateTimeFieldReturnsExpectedResult()
+        public void CreateDateFieldReturnsExpectedResult()
         {
             var name = _fixture.Create<DbaseFieldName>();
 
-            var result = DbaseField.CreateDateTimeField(name);
+            var result = DbaseField.CreateDateField(name);
 
             Assert.Equal(name, result.Name);
-            Assert.Equal(DbaseFieldType.DateTime, result.FieldType);
+            Assert.Equal(DbaseFieldType.Date, result.FieldType);
             Assert.Equal(ByteOffset.Initial, result.Offset);
-            Assert.Equal(new DbaseFieldLength(15), result.Length);
+            Assert.Equal(new DbaseFieldLength(8), result.Length);
             Assert.Equal(new DbaseDecimalCount(0), result.DecimalCount);
             Assert.Equal(new DbaseIntegerDigits(0), result.PositiveIntegerDigits);
             Assert.Equal(new DbaseIntegerDigits(0), result.NegativeIntegerDigits);
@@ -482,7 +482,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 ? positiveIntegerDigits.Minus(new DbaseIntegerDigits(1))
                 : new DbaseIntegerDigits(0);
 
-            var result = DbaseField.CreateDoubleField(
+            var result = DbaseField.CreateNumberField(
                 name,
                 length,
                 decimalCount);
@@ -505,7 +505,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var length = _fixture.GenerateDbaseDoubleLength();
             var decimalCount = new DbaseDecimalCount(length.ToInt32()).Plus(new DbaseDecimalCount(plus));
 
-            Assert.Throws<ArgumentException>(() => DbaseField.CreateDoubleField(
+            Assert.Throws<ArgumentException>(() => DbaseField.CreateNumberField(
                 name,
                 length,
                 decimalCount));
@@ -520,7 +520,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var length = new DbaseFieldLength(smallerThan3);
             var decimalCount = new DbaseDecimalCount(1);
 
-            Assert.Throws<ArgumentException>(() => DbaseField.CreateDoubleField(
+            Assert.Throws<ArgumentException>(() => DbaseField.CreateNumberField(
                 name,
                 length,
                 decimalCount));
@@ -539,7 +539,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 ? positiveIntegerDigits.Minus(new DbaseIntegerDigits(1))
                 : new DbaseIntegerDigits(0);
 
-            var result = DbaseField.CreateSingleField(
+            var result = DbaseField.CreateFloatField(
                 name,
                 length,
                 decimalCount);
@@ -562,7 +562,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var length = _fixture.GenerateDbaseSingleLength();
             var decimalCount = new DbaseDecimalCount(length.ToInt32()).Plus(new DbaseDecimalCount(plus));
 
-            Assert.Throws<ArgumentException>(() => DbaseField.CreateSingleField(
+            Assert.Throws<ArgumentException>(() => DbaseField.CreateFloatField(
                 name,
                 length,
                 decimalCount));
@@ -577,7 +577,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var length = new DbaseFieldLength(smallerThan3);
             var decimalCount = new DbaseDecimalCount(1);
 
-            Assert.Throws<ArgumentException>(() => DbaseField.CreateSingleField(
+            Assert.Throws<ArgumentException>(() => DbaseField.CreateFloatField(
                 name,
                 length,
                 decimalCount));
@@ -598,7 +598,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var result = sut.CreateFieldValue();
 
             Assert.Equal(sut, result.Field);
-            Assert.IsType<DbaseString>(result);
+            Assert.IsType<DbaseCharacter>(result);
         }
 
         [Fact]
@@ -622,7 +622,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
             else
             {
-                Assert.IsType<DbaseDouble>(result);
+                Assert.IsType<DbaseNumber>(result);
             }
         }
 
@@ -647,24 +647,24 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
             else
             {
-                Assert.IsType<DbaseSingle>(result);
+                Assert.IsType<DbaseFloat>(result);
             }
         }
 
         [Fact]
-        public void CreateDateTimeFieldValueReturnsExpectedResult()
+        public void CreateDateFieldValueReturnsExpectedResult()
         {
             var sut = new DbaseField(
                 _fixture.Create<DbaseFieldName>(),
-                DbaseFieldType.DateTime,
+                DbaseFieldType.Date,
                 _fixture.Create<ByteOffset>(),
-                new DbaseFieldLength(15),
+                new DbaseFieldLength(8),
                 new DbaseDecimalCount(0));
 
             var result = sut.CreateFieldValue();
 
             Assert.Equal(sut, result.Field);
-            Assert.IsType<DbaseDateTime>(result);
+            Assert.IsType<DbaseDate>(result);
         }
 
         [Fact]
@@ -675,7 +675,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var result = sut.CreateFieldValue();
 
             Assert.Equal(sut, result.Field);
-            Assert.IsType<DbaseBoolean>(result);
+            Assert.IsType<DbaseLogical>(result);
         }
 
         [Fact]

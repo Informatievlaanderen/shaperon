@@ -13,6 +13,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public DbaseField Field { get; }
         public abstract void Read(BinaryReader reader);
         public abstract void Write(BinaryWriter writer);
-        public abstract void Inspect(IDbaseFieldValueInspector inspector);
+        public abstract void Accept(IDbaseFieldValueVisitor visitor);
     }
 }

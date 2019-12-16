@@ -2,25 +2,20 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.IO;
-    using System.Linq;
     using System.Text;
     using Albedo;
     using AutoFixture;
     using AutoFixture.Idioms;
-    using Newtonsoft.Json;
     using Xunit;
     using Xunit.Abstractions;
 
     public class DbaseBinaryWriterTests
     {
-        private readonly ITestOutputHelper _helper;
         private readonly Fixture _fixture;
 
-        public DbaseBinaryWriterTests(ITestOutputHelper helper)
+        public DbaseBinaryWriterTests()
         {
-            _helper = helper ?? throw new ArgumentNullException(nameof(helper));
             _fixture = new Fixture();
             _fixture.CustomizeWordLength();
             _fixture.CustomizeDbaseFieldName();
@@ -31,7 +26,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             _fixture.CustomizeDbaseRecordCount(100);
             _fixture.CustomizeDbaseSchema();
             _fixture.CustomizeDbaseDateTime();
-            _fixture.CustomizeDbaseBoolean();
+            _fixture.CustomizeDbaseLogical();
             _fixture.CustomizeDbaseSingle();
             _fixture.CustomizeDbaseString();
             _fixture.CustomizeDbaseDouble();

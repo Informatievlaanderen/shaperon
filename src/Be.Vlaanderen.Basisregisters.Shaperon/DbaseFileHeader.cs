@@ -3,7 +3,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System;
     using System.Collections;
     using System.IO;
-    using System.Linq.Expressions;
 
     public class DbaseFileHeader
     {
@@ -201,13 +200,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 try
                 {
                     var record = _header.CreateDbaseRecord();
-                    record.Read(_reader);
-                    _current = record;
-                }
-                catch (EndOfStreamException)
-                {
-                    _current = null;
-                    _state = State.Ended;
+                    if (record.TryRead(_reader))
+                    {
+                        _current = record;
+                    }
+                    else
+                    {
+                        _current = null;
+                        _state = State.Ended;
+                    }
                 }
                 catch (Exception)
                 {
@@ -297,13 +298,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 try
                 {
                     var record = new TDbaseRecord();
-                    record.Read(_reader);
-                    _current = record;
-                }
-                catch (EndOfStreamException)
-                {
-                    _current = null;
-                    _state = State.Ended;
+                    if (record.TryRead(_reader))
+                    {
+                        _current = record;
+                    }
+                    else
+                    {
+                        _current = null;
+                        _state = State.Ended;
+                    }
                 }
                 catch (Exception)
                 {
