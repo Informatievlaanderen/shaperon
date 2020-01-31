@@ -1,3 +1,10 @@
+# [7.3.0](https://github.com/informatievlaanderen/shaperon/compare/v7.2.0...v7.3.0) (2020-01-31)
+
+
+### Features
+
+* upgrade netcoreapp31 and dependencies ([f3ababc](https://github.com/informatievlaanderen/shaperon/commit/f3ababcd2f3cf657991d923f67d09a760a2aeee3))
+
 # [7.2.0](https://github.com/informatievlaanderen/shaperon/compare/v7.1.0...v7.2.0) (2019-12-16)
 
 
