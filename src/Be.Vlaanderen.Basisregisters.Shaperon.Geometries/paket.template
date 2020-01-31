@@ -16,9 +16,9 @@ description Lightweight dbase and shape record handling (net topology suite inte
 
 dependencies:
   framework: netcoreapp31
-    NetTopologySuite >= LOCKEDVERSION
+    Be.Vlaanderen.Basisregisters.Shaperon CURRENTVERSION
 
-include-referenced-projects true
+    NetTopologySuite >= LOCKEDVERSION
 
 files
   bin\Release\netcoreapp3.1\Be.Vlaanderen.Basisregisters.Shaperon.Geometries.dll => lib\netcoreapp3.1
