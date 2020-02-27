@@ -616,14 +616,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var result = sut.CreateFieldValue();
 
             Assert.Equal(sut, result.Field);
-            if (sut.DecimalCount.ToInt32() == 0)
-            {
-                Assert.IsType<DbaseInt32>(result);
-            }
-            else
-            {
-                Assert.IsType<DbaseNumber>(result);
-            }
+            Assert.IsType<DbaseNumber>(result);
         }
 
         [Fact]
@@ -641,14 +634,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var result = sut.CreateFieldValue();
 
             Assert.Equal(sut, result.Field);
-            if (sut.DecimalCount.ToInt32() == 0)
-            {
-                Assert.IsType<DbaseInt32>(result);
-            }
-            else
-            {
-                Assert.IsType<DbaseFloat>(result);
-            }
+            Assert.IsType<DbaseFloat>(result);
         }
 
         [Fact]

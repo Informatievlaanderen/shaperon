@@ -87,6 +87,26 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return false;
         }
 
+        public bool AcceptsValue(int value)
+        {
+            if (Field.DecimalCount.ToInt32() == 0)
+            {
+                return FormatAsString(value).Length <= Field.Length.ToInt32();
+            }
+
+            return false;
+        }
+
+        public bool AcceptsValue(short value)
+        {
+            if (Field.DecimalCount.ToInt32() == 0)
+            {
+                return FormatAsString(value).Length <= Field.Length.ToInt32();
+            }
+
+            return false;
+        }
+
         public float? Value
         {
             get => _value;
@@ -126,7 +146,68 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        public bool TryGetValueAsInt32(out int? value)
+        public bool TryGetValueAsInt32(out int value)
+        {
+            if (Field.DecimalCount.ToInt32() == 0)
+            {
+                if (_value.HasValue)
+                {
+                    var truncated = Math.Truncate(_value.Value);
+                    if (truncated <= int.MaxValue && truncated >= int.MinValue)
+                    {
+                        value = Convert.ToInt32(truncated);
+                        return true;
+                    }
+                }
+            }
+
+            value = default;
+            return false;
+        }
+
+        public bool TrySetValueAsInt32(int value)
+        {
+            if (Field.DecimalCount.ToInt32() == 0)
+            {
+                var length = FormatAsString(value).Length;
+
+                if (length > Field.Length.ToInt32())
+                    return false;
+
+                _value = value;
+                return true;
+            }
+
+            return false;
+        }
+
+        public int ValueAsInt32
+        {
+            get
+            {
+                if (!TryGetValueAsNullableInt32(out var parsed))
+                {
+                    throw new FormatException($"The field {Field.Name} needs to have 0 as decimal count.");
+                }
+
+                if (!parsed.HasValue)
+                {
+                    throw new FormatException($"The field {Field.Name} can not be null when read as non nullable datatype.");
+                }
+
+                return parsed.Value;
+            }
+            set
+            {
+                if (!TrySetValueAsInt32(value))
+                {
+                    throw new FormatException(
+                        $"The field {Field.Name} needs to have 0 as decimal count and its value can not be longer than {Field.Length}.");
+                }
+            }
+        }
+
+        public bool TryGetValueAsNullableInt32(out int? value)
         {
             if (Field.DecimalCount.ToInt32() == 0)
             {
@@ -151,7 +232,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return false;
         }
 
-        public bool TrySetValueAsInt32(int? value)
+        public bool TrySetValueAsNullableInt32(int? value)
         {
             if (Field.DecimalCount.ToInt32() == 0)
             {
@@ -170,11 +251,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return false;
         }
 
-        public int? ValueAsInt32
+        public int? ValueAsNullableInt32
         {
             get
             {
-                if (!TryGetValueAsInt32(out var parsed))
+                if (!TryGetValueAsNullableInt32(out var parsed))
                 {
                     throw new FormatException($"The field {Field.Name} needs to have 0 as decimal count.");
                 }
@@ -183,7 +264,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
             set
             {
-                if (!TrySetValueAsInt32(value))
+                if (!TrySetValueAsNullableInt32(value))
                 {
                     throw new FormatException(
                         $"The field {Field.Name} needs to have 0 as decimal count and its value needs to be null or not longer than {Field.Length}.");
@@ -191,7 +272,68 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        public bool TryGetValueAsInt16(out short? value)
+        public bool TryGetValueAsInt16(out short value)
+        {
+            if (Field.DecimalCount.ToInt32() == 0)
+            {
+                if (_value.HasValue)
+                {
+                    var truncated = Math.Truncate(_value.Value);
+                    if (truncated <= short.MaxValue && truncated >= short.MinValue)
+                    {
+                        value = Convert.ToInt16(truncated);
+                        return true;
+                    }
+                }
+            }
+
+            value = default;
+            return false;
+        }
+
+        public bool TrySetValueAsInt16(short value)
+        {
+            if (Field.DecimalCount.ToInt32() == 0)
+            {
+                var length = FormatAsString(value).Length;
+
+                if (length > Field.Length.ToInt32())
+                    return false;
+
+                _value = value;
+                return true;
+            }
+
+            return false;
+        }
+
+        public short ValueAsInt16
+        {
+            get
+            {
+                if (!TryGetValueAsNullableInt16(out var parsed))
+                {
+                    throw new FormatException($"The field {Field.Name} needs to have 0 as decimal count.");
+                }
+
+                if (!parsed.HasValue)
+                {
+                    throw new FormatException($"The field {Field.Name} can not be null when read as non nullable datatype.");
+                }
+
+                return parsed.Value;
+            }
+            set
+            {
+                if (!TrySetValueAsInt16(value))
+                {
+                    throw new FormatException(
+                        $"The field {Field.Name} needs to have 0 as decimal count and its value can not be longer than {Field.Length}.");
+                }
+            }
+        }
+
+        public bool TryGetValueAsNullableInt16(out short? value)
         {
             if (Field.DecimalCount.ToInt32() == 0)
             {
@@ -216,7 +358,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return false;
         }
 
-        public bool TrySetValueAsInt16(short? value)
+        public bool TrySetValueAsNullableInt16(short? value)
         {
             if (Field.DecimalCount.ToInt32() == 0)
             {
@@ -235,11 +377,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return false;
         }
 
-        public short? ValueAsInt16
+        public short? ValueAsNullableInt16
         {
             get
             {
-                if (!TryGetValueAsInt16(out var parsed))
+                if (!TryGetValueAsNullableInt16(out var parsed))
                 {
                     throw new FormatException($"The field {Field.Name} needs to have 0 as decimal count.");
                 }
@@ -248,7 +390,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
             set
             {
-                if (!TrySetValueAsInt16(value))
+                if (!TrySetValueAsNullableInt16(value))
                 {
                     throw new FormatException(
                         $"The field {Field.Name} needs to have 0 as decimal count and its value needs to be null or not longer than {Field.Length}.");

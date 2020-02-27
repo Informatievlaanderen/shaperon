@@ -207,8 +207,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [MemberData(nameof(AcceptsDateTimeValueCases))]
-        public void AcceptsDateTimeValueReturnsExpectedResult(int length, DbaseCharacterOptions options, DateTime? value, bool accepted)
+        [MemberData(nameof(AcceptsNullableDateTimeValueCases))]
+        public void AcceptsNullableDateTimeValueReturnsExpectedResult(int length, DbaseCharacterOptions options, DateTime? value, bool accepted)
         {
             var sut = new DbaseCharacter(
                 DbaseField.CreateCharacterField(
@@ -221,7 +221,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Assert.Equal(accepted, result);
         }
 
-        public static IEnumerable<object[]> AcceptsDateTimeValueCases
+        public static IEnumerable<object[]> AcceptsNullableDateTimeValueCases
         {
             get
             {
@@ -284,8 +284,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [MemberData(nameof(AcceptsDateTimeOffsetValueCases))]
-        public void AcceptsDateTimeOffsetValueReturnsExpectedResult(int length, DbaseCharacterOptions options, DateTimeOffset? value, bool accepted)
+        [MemberData(nameof(AcceptsNullableDateTimeOffsetValueCases))]
+        public void AcceptsNullableDateTimeOffsetValueReturnsExpectedResult(int length, DbaseCharacterOptions options, DateTimeOffset? value, bool accepted)
         {
             var sut = new DbaseCharacter(
                 DbaseField.CreateCharacterField(
@@ -298,7 +298,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Assert.Equal(accepted, result);
         }
 
-        public static IEnumerable<object[]> AcceptsDateTimeOffsetValueCases
+        public static IEnumerable<object[]> AcceptsNullableDateTimeOffsetValueCases
         {
             get
             {
@@ -361,8 +361,162 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [MemberData(nameof(TryGetValueAsDateTimeCases))]
-        public void TryGetValueAsDateTimeReturnsExpectedResult(int length, DbaseCharacterOptions options, string value, bool gotten, DateTime? gottenValueAsDateTime)
+        [MemberData(nameof(AcceptsDateTimeValueCases))]
+        public void AcceptsDateTimeValueReturnsExpectedResult(int length, DbaseCharacterOptions options, DateTime value, bool accepted)
+        {
+            var sut = new DbaseCharacter(
+                DbaseField.CreateCharacterField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length)
+                ), options: options);
+
+            var result = sut.AcceptsValue(value);
+
+            Assert.Equal(accepted, result);
+        }
+
+        public static IEnumerable<object[]> AcceptsDateTimeValueCases
+        {
+            get
+            {
+                var fixture = new Fixture();
+
+                // default options
+
+                yield return new object[]
+                {
+                    15,
+                    null,
+                    fixture.Create<DateTime>(),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    14,
+                    null,
+                    fixture.Create<DateTime>(),
+                    false
+                };
+
+                yield return new object[]
+                {
+                    16,
+                    null,
+                    fixture.Create<DateTime>(),
+                    true
+                };
+
+                // custom options
+
+                var custom = new DbaseCharacterOptions("yyyyMMdd", DbaseCharacterOptions.DefaultDateTimeOffsetFormat);
+
+                yield return new object[]
+                {
+                    8,
+                    custom,
+                    fixture.Create<DateTime>(),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    7,
+                    custom,
+                    fixture.Create<DateTime>(),
+                    false
+                };
+
+                yield return new object[]
+                {
+                    9,
+                    custom,
+                    fixture.Create<DateTime>(),
+                    true
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(AcceptsDateTimeOffsetValueCases))]
+        public void AcceptsDateTimeOffsetValueReturnsExpectedResult(int length, DbaseCharacterOptions options, DateTimeOffset value, bool accepted)
+        {
+            var sut = new DbaseCharacter(
+                DbaseField.CreateCharacterField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length)
+                ), options: options);
+
+            var result = sut.AcceptsValue(value);
+
+            Assert.Equal(accepted, result);
+        }
+
+        public static IEnumerable<object[]> AcceptsDateTimeOffsetValueCases
+        {
+            get
+            {
+                var fixture = new Fixture();
+
+                // default options
+
+                yield return new object[]
+                {
+                    25,
+                    null,
+                    fixture.Create<DateTimeOffset>(),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    24,
+                    null,
+                    fixture.Create<DateTimeOffset>(),
+                    false
+                };
+
+                yield return new object[]
+                {
+                    26,
+                    null,
+                    fixture.Create<DateTimeOffset>(),
+                    true
+                };
+
+                // custom options
+
+                var custom = new DbaseCharacterOptions(DbaseCharacterOptions.DefaultDateTimeFormat, "yyyyMMdd");
+
+                yield return new object[]
+                {
+                    8,
+                    custom,
+                    fixture.Create<DateTimeOffset>(),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    7,
+                    custom,
+                    fixture.Create<DateTimeOffset>(),
+                    false
+                };
+
+                yield return new object[]
+                {
+                    9,
+                    custom,
+                    fixture.Create<DateTimeOffset>(),
+                    true
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TryGetValueAsNullableDateTimeCases))]
+        public void TryGetValueAsNullableDateTimeReturnsExpectedResult(int length, DbaseCharacterOptions options, string value, bool gotten, DateTime? gottenValueAsDateTime)
         {
             var sut = new DbaseCharacter(
                 DbaseField.CreateCharacterField(
@@ -370,13 +524,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new DbaseFieldLength(length)
                 ), value, options);
 
-            var result = sut.TryGetValueAsDateTime(out var valueAsDateTime);
+            var result = sut.TryGetValueAsNullableDateTime(out var valueAsDateTime);
 
             Assert.Equal(gotten, result);
             Assert.Equal(gottenValueAsDateTime, valueAsDateTime);
         }
 
-        public static IEnumerable<object[]> TryGetValueAsDateTimeCases
+        public static IEnumerable<object[]> TryGetValueAsNullableDateTimeCases
         {
             get
             {
@@ -441,8 +595,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [MemberData(nameof(TryGetValueAsDateTimeOffsetCases))]
-        public void TryGetValueAsDateTimeOffsetReturnsExpectedResult(int length, DbaseCharacterOptions options, string value, bool gotten, DateTimeOffset? gottenValueAsDateTimeOffset)
+        [MemberData(nameof(TryGetValueAsNullableDateTimeOffsetCases))]
+        public void TryGetValueAsNullableDateTimeOffsetReturnsExpectedResult(int length, DbaseCharacterOptions options, string value, bool gotten, DateTimeOffset? gottenValueAsDateTimeOffset)
         {
             var sut = new DbaseCharacter(
                 DbaseField.CreateCharacterField(
@@ -450,13 +604,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new DbaseFieldLength(length)
                 ), value, options);
 
-            var result = sut.TryGetValueAsDateTimeOffset(out var valueAsDateTime);
+            var result = sut.TryGetValueAsNullableDateTimeOffset(out var valueAsDateTime);
 
             Assert.Equal(gotten, result);
             Assert.Equal(gottenValueAsDateTimeOffset, valueAsDateTime);
         }
 
-        public static IEnumerable<object[]> TryGetValueAsDateTimeOffsetCases
+        public static IEnumerable<object[]> TryGetValueAsNullableDateTimeOffsetCases
         {
             get
             {
@@ -521,8 +675,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [MemberData(nameof(TrySetValueAsDateTimeCases))]
-        public void TrySetValueAsDateTimeReturnsExpectedResult(int length, DbaseCharacterOptions options,
+        [MemberData(nameof(TrySetValueAsNullableDateTimeCases))]
+        public void TrySetValueAsNullableDateTimeReturnsExpectedResult(int length, DbaseCharacterOptions options,
             DateTime? value, bool expected)
         {
             var sut = new DbaseCharacter(
@@ -531,12 +685,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new DbaseFieldLength(length)
                 ), options: options);
 
-            var result = sut.TrySetValueAsDateTime(value);
+            var result = sut.TrySetValueAsNullableDateTime(value);
 
             Assert.Equal(expected, result);
         }
 
-        public static IEnumerable<object[]> TrySetValueAsDateTimeCases
+        public static IEnumerable<object[]> TrySetValueAsNullableDateTimeCases
         {
             get
             {
@@ -571,8 +725,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [MemberData(nameof(TrySetValueAsDateTimeOffsetCases))]
-        public void TrySetValueAsDateTimeOffsetReturnsExpectedResult(int length, DbaseCharacterOptions options,
+        [MemberData(nameof(TrySetValueAsNullableDateTimeOffsetCases))]
+        public void TrySetValueAsNullableDateTimeOffsetReturnsExpectedResult(int length, DbaseCharacterOptions options,
             DateTimeOffset? value, bool expected)
         {
             var sut = new DbaseCharacter(
@@ -581,12 +735,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new DbaseFieldLength(length)
                 ), options: options);
 
-            var result = sut.TrySetValueAsDateTimeOffset(value);
+            var result = sut.TrySetValueAsNullableDateTimeOffset(value);
 
             Assert.Equal(expected, result);
         }
 
-        public static IEnumerable<object[]> TrySetValueAsDateTimeOffsetCases
+        public static IEnumerable<object[]> TrySetValueAsNullableDateTimeOffsetCases
         {
             get
             {
@@ -621,9 +775,363 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
+        [MemberData(nameof(TryGetValueAsNullableDateTimeCases))]
+        public void GetValueAsNullableDateTimeReturnsExpectedResult(int length, DbaseCharacterOptions options, string value,
+            bool gotten, DateTime? gottenValueAsDateTime)
+        {
+            var sut = new DbaseCharacter(
+                DbaseField.CreateCharacterField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length)
+                ), value, options);
+
+            if (!gotten)
+            {
+                Assert.Throws<FormatException>(() =>
+                {
+                    var _ = sut.ValueAsNullableDateTime;
+                });
+            }
+            else
+            {
+                var result = sut.ValueAsNullableDateTime;
+                Assert.Equal(gottenValueAsDateTime, result);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TrySetValueAsNullableDateTimeCases))]
+        public void SetValueAsNullableDateTimeReturnsExpectedResult(int length, DbaseCharacterOptions options,
+            DateTime? value, bool expected)
+        {
+            var sut = new DbaseCharacter(
+                DbaseField.CreateCharacterField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length)
+                ), options: options);
+
+            if (!expected)
+            {
+                Assert.Throws<FormatException>(() =>
+                {
+                    sut.ValueAsNullableDateTime = value;
+                });
+            }
+            else
+            {
+                sut.ValueAsNullableDateTime = value;
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TryGetValueAsNullableDateTimeOffsetCases))]
+        public void GetValueAsNullableDateTimeOffsetReturnsExpectedResult(int length, DbaseCharacterOptions options,
+            string value, bool gotten, DateTimeOffset? gottenValueAsDateTimeOffset)
+        {
+            var sut = new DbaseCharacter(
+                DbaseField.CreateCharacterField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length)
+                ), value, options);
+
+            if (!gotten)
+            {
+                Assert.Throws<FormatException>(() =>
+                {
+                    var _ = sut.ValueAsNullableDateTimeOffset;
+                });
+            }
+            else
+            {
+                var result = sut.ValueAsNullableDateTimeOffset;
+                Assert.Equal(gottenValueAsDateTimeOffset, result);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TrySetValueAsNullableDateTimeOffsetCases))]
+        public void SetValueAsNullableDateTimeOffsetReturnsExpectedResult(int length, DbaseCharacterOptions options,
+            DateTimeOffset? value, bool expected)
+        {
+            var sut = new DbaseCharacter(
+                DbaseField.CreateCharacterField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length)
+                ), options: options);
+
+            if (!expected)
+            {
+                Assert.Throws<FormatException>(() =>
+                {
+                    sut.ValueAsNullableDateTimeOffset = value;
+                });
+            }
+            else
+            {
+                sut.ValueAsNullableDateTimeOffset = value;
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TryGetValueAsDateTimeCases))]
+        public void TryGetValueAsDateTimeReturnsExpectedResult(int length, DbaseCharacterOptions options, string value, bool gotten, DateTime gottenValueAsDateTime)
+        {
+            var sut = new DbaseCharacter(
+                DbaseField.CreateCharacterField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length)
+                ), value, options);
+
+            var result = sut.TryGetValueAsDateTime(out var valueAsDateTime);
+
+            Assert.Equal(gotten, result);
+            Assert.Equal(gottenValueAsDateTime, valueAsDateTime);
+        }
+
+        public static IEnumerable<object[]> TryGetValueAsDateTimeCases
+        {
+            get
+            {
+                // default options
+
+                yield return new object[]
+                {
+                    15,
+                    null,
+                    "20170101T010203",
+                    true,
+                    new DateTime(2017, 1, 1, 1, 2, 3, DateTimeKind.Unspecified)
+                };
+
+                yield return new object[]
+                {
+                    15,
+                    null,
+                    null,
+                    false,
+                    default(DateTime)
+                };
+
+                yield return new object[]
+                {
+                    16,
+                    null,
+                    " 20170101T010203",
+                    true,
+                    new DateTime(2017, 1, 1, 1, 2, 3, DateTimeKind.Unspecified)
+                };
+
+                yield return new object[]
+                {
+                    15,
+                    null,
+                    "",
+                    false,
+                    new DateTime()
+                };
+
+                yield return new object[]
+                {
+                    15,
+                    null,
+                    "not-a-date-time",
+                    false,
+                    new DateTime()
+                };
+
+                yield return new object[]
+                {
+                    15,
+                    null,
+                    "20170101",
+                    false,
+                    new DateTime()
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TryGetValueAsDateTimeOffsetCases))]
+        public void TryGetValueAsDateTimeOffsetReturnsExpectedResult(int length, DbaseCharacterOptions options, string value, bool gotten, DateTimeOffset gottenValueAsDateTimeOffset)
+        {
+            var sut = new DbaseCharacter(
+                DbaseField.CreateCharacterField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length)
+                ), value, options);
+
+            var result = sut.TryGetValueAsDateTimeOffset(out var valueAsDateTime);
+
+            Assert.Equal(gotten, result);
+            Assert.Equal(gottenValueAsDateTimeOffset, valueAsDateTime);
+        }
+
+        public static IEnumerable<object[]> TryGetValueAsDateTimeOffsetCases
+        {
+            get
+            {
+                // default options
+
+                yield return new object[]
+                {
+                    25,
+                    null,
+                    "2017-01-01T01:02:03+00:00",
+                    true,
+                    new DateTimeOffset(2017, 1, 1, 1, 2, 3, TimeSpan.Zero)
+                };
+
+                yield return new object[]
+                {
+                    25,
+                    null,
+                    null,
+                    false,
+                    default(DateTimeOffset)
+                };
+
+                yield return new object[]
+                {
+                    26,
+                    null,
+                    " 2017-01-01T01:02:03+00:00",
+                    true,
+                    new DateTimeOffset(2017, 1, 1, 1, 2, 3, TimeSpan.Zero)
+                };
+
+                yield return new object[]
+                {
+                    25,
+                    null,
+                    "",
+                    false,
+                    new DateTimeOffset()
+                };
+
+                yield return new object[]
+                {
+                    25,
+                    null,
+                    "not-a-date-time",
+                    false,
+                    new DateTimeOffset()
+                };
+
+                yield return new object[]
+                {
+                    25,
+                    null,
+                    "20170101",
+                    false,
+                    new DateTimeOffset()
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TrySetValueAsDateTimeCases))]
+        public void TrySetValueAsDateTimeReturnsExpectedResult(int length, DbaseCharacterOptions options,
+            DateTime value, bool expected)
+        {
+            var sut = new DbaseCharacter(
+                DbaseField.CreateCharacterField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length)
+                ), options: options);
+
+            var result = sut.TrySetValueAsDateTime(value);
+
+            Assert.Equal(expected, result);
+        }
+
+        public static IEnumerable<object[]> TrySetValueAsDateTimeCases
+        {
+            get
+            {
+                var fixture = new Fixture();
+
+                // default options
+
+                yield return new object[]
+                {
+                    15,
+                    null,
+                    fixture.Create<DateTime>(),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    15,
+                    null,
+                    new DateTime(),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    16,
+                    null,
+                    fixture.Create<DateTime>(),
+                    true
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TrySetValueAsDateTimeOffsetCases))]
+        public void TrySetValueAsDateTimeOffsetReturnsExpectedResult(int length, DbaseCharacterOptions options,
+            DateTimeOffset value, bool expected)
+        {
+            var sut = new DbaseCharacter(
+                DbaseField.CreateCharacterField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length)
+                ), options: options);
+
+            var result = sut.TrySetValueAsDateTimeOffset(value);
+
+            Assert.Equal(expected, result);
+        }
+
+        public static IEnumerable<object[]> TrySetValueAsDateTimeOffsetCases
+        {
+            get
+            {
+                var fixture = new Fixture();
+
+                // default options
+
+                yield return new object[]
+                {
+                    25,
+                    null,
+                    fixture.Create<DateTimeOffset>(),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    25,
+                    null,
+                    fixture.Create<DateTimeOffset>(),
+                    true
+                };
+
+                yield return new object[]
+                {
+                    26,
+                    null,
+                    fixture.Create<DateTimeOffset>(),
+                    true
+                };
+            }
+        }
+
+        [Theory]
         [MemberData(nameof(TryGetValueAsDateTimeCases))]
         public void GetValueAsDateTimeReturnsExpectedResult(int length, DbaseCharacterOptions options, string value,
-            bool gotten, DateTime? gottenValueAsDateTime)
+            bool gotten, DateTime gottenValueAsDateTime)
         {
             var sut = new DbaseCharacter(
                 DbaseField.CreateCharacterField(
@@ -648,7 +1156,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Theory]
         [MemberData(nameof(TrySetValueAsDateTimeCases))]
         public void SetValueAsDateTimeReturnsExpectedResult(int length, DbaseCharacterOptions options,
-            DateTime? value, bool expected)
+            DateTime value, bool expected)
         {
             var sut = new DbaseCharacter(
                 DbaseField.CreateCharacterField(
@@ -672,7 +1180,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Theory]
         [MemberData(nameof(TryGetValueAsDateTimeOffsetCases))]
         public void GetValueAsDateTimeOffsetReturnsExpectedResult(int length, DbaseCharacterOptions options,
-            string value, bool gotten, DateTimeOffset? gottenValueAsDateTimeOffset)
+            string value, bool gotten, DateTimeOffset gottenValueAsDateTimeOffset)
         {
             var sut = new DbaseCharacter(
                 DbaseField.CreateCharacterField(
@@ -697,7 +1205,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Theory]
         [MemberData(nameof(TrySetValueAsDateTimeOffsetCases))]
         public void SetValueAsDateTimeOffsetReturnsExpectedResult(int length, DbaseCharacterOptions options,
-            DateTimeOffset? value, bool expected)
+            DateTimeOffset value, bool expected)
         {
             var sut = new DbaseCharacter(
                 DbaseField.CreateCharacterField(
