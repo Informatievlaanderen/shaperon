@@ -370,8 +370,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [MemberData(nameof(AcceptsInt32ValueCases))]
-        public void AcceptsInt32ValueReturnsExpectedResult(int length, int? value, bool accepted)
+        [MemberData(nameof(AcceptsNullableInt32ValueCases))]
+        public void AcceptsNullableInt32ValueReturnsExpectedResult(int length, int? value, bool accepted)
         {
             var sut = new DbaseFloat(
                 DbaseField.CreateFloatField(
@@ -385,7 +385,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Assert.Equal(accepted, result);
         }
 
-        public static IEnumerable<object[]> AcceptsInt32ValueCases
+        public static IEnumerable<object[]> AcceptsNullableInt32ValueCases
         {
             get
             {
@@ -434,8 +434,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [MemberData(nameof(AcceptsInt16ValueCases))]
-        public void AcceptsInt16ValueReturnsExpectedResult(int length, short? value, bool accepted)
+        [MemberData(nameof(AcceptsNullableInt16ValueCases))]
+        public void AcceptsNullableInt16ValueReturnsExpectedResult(int length, short? value, bool accepted)
         {
             var sut = new DbaseFloat(
                 DbaseField.CreateFloatField(
@@ -449,7 +449,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Assert.Equal(accepted, result);
         }
 
-        public static IEnumerable<object[]> AcceptsInt16ValueCases
+        public static IEnumerable<object[]> AcceptsNullableInt16ValueCases
         {
             get
             {
@@ -498,8 +498,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [MemberData(nameof(TryGetValueAsInt32Cases))]
-        public void TryGetValueAsInt32ReturnsExpectedResult(int length, float? value, bool gotten, int? gottenValueAsInt32)
+        [MemberData(nameof(TryGetValueAsNullableInt32Cases))]
+        public void TryGetValueAsNullableInt32ReturnsExpectedResult(int length, float? value, bool gotten, int? gottenValueAsInt32)
         {
             var sut = new DbaseFloat(
                 DbaseField.CreateFloatField(
@@ -508,13 +508,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new DbaseDecimalCount(0)
                 ), value);
 
-            var result = sut.TryGetValueAsInt32(out var valueAsInt32);
+            var result = sut.TryGetValueAsNullableInt32(out var valueAsInt32);
 
             Assert.Equal(gotten, result);
             Assert.Equal(gottenValueAsInt32, valueAsInt32);
         }
 
-        public static IEnumerable<object[]> TryGetValueAsInt32Cases
+        public static IEnumerable<object[]> TryGetValueAsNullableInt32Cases
         {
             get
             {
@@ -561,8 +561,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [MemberData(nameof(TryGetValueAsInt16Cases))]
-        public void TryGetValueAsInt16ReturnsExpectedResult(int length, float? value, bool gotten, short? gottenValueAsInt16)
+        [MemberData(nameof(TryGetValueAsNullableInt16Cases))]
+        public void TryGetValueAsNullableInt16ReturnsExpectedResult(int length, float? value, bool gotten, short? gottenValueAsInt16)
         {
             var sut = new DbaseFloat(
                 DbaseField.CreateFloatField(
@@ -571,13 +571,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new DbaseDecimalCount(0)
                 ), value);
 
-            var result = sut.TryGetValueAsInt16(out var valueAsInt16);
+            var result = sut.TryGetValueAsNullableInt16(out var valueAsInt16);
 
             Assert.Equal(gotten, result);
             Assert.Equal(gottenValueAsInt16, valueAsInt16);
         }
 
-        public static IEnumerable<object[]> TryGetValueAsInt16Cases
+        public static IEnumerable<object[]> TryGetValueAsNullableInt16Cases
         {
             get
             {
@@ -624,8 +624,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [MemberData(nameof(TrySetValueAsInt32Cases))]
-        public void TrySetValueAsInt32ReturnsExpectedResult(int length, int? value, bool expected)
+        [MemberData(nameof(TrySetValueAsNullableInt32Cases))]
+        public void TrySetValueAsNullableInt32ReturnsExpectedResult(int length, int? value, bool expected)
         {
             var sut = new DbaseFloat(
                 DbaseField.CreateFloatField(
@@ -634,12 +634,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new DbaseDecimalCount(0)
                 ));
 
-            var result = sut.TrySetValueAsInt32(value);
+            var result = sut.TrySetValueAsNullableInt32(value);
 
             Assert.Equal(expected, result);
         }
 
-        public static IEnumerable<object[]> TrySetValueAsInt32Cases
+        public static IEnumerable<object[]> TrySetValueAsNullableInt32Cases
         {
             get
             {
@@ -681,8 +681,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
-        [MemberData(nameof(TrySetValueAsInt16Cases))]
-        public void TrySetValueAsInt16ReturnsExpectedResult(int length, short? value, bool expected)
+        [MemberData(nameof(TrySetValueAsNullableInt16Cases))]
+        public void TrySetValueAsNullableInt16ReturnsExpectedResult(int length, short? value, bool expected)
         {
             var sut = new DbaseFloat(
                 DbaseField.CreateFloatField(
@@ -691,12 +691,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new DbaseDecimalCount(0)
                 ));
 
-            var result = sut.TrySetValueAsInt16(value);
+            var result = sut.TrySetValueAsNullableInt16(value);
 
             Assert.Equal(expected, result);
         }
 
-        public static IEnumerable<object[]> TrySetValueAsInt16Cases
+        public static IEnumerable<object[]> TrySetValueAsNullableInt16Cases
         {
             get
             {
@@ -738,9 +738,449 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         }
 
         [Theory]
+        [MemberData(nameof(TryGetValueAsNullableInt32Cases))]
+        public void GetValueAsNullableInt32ReturnsExpectedResult(int length, float? value,
+            bool gotten, int? gottenValueAsInt32)
+        {
+            var sut = new DbaseFloat(
+                DbaseField.CreateFloatField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ), value);
+
+            if (!gotten)
+            {
+                Assert.Throws<FormatException>(() =>
+                {
+                    var _ = sut.ValueAsNullableInt32;
+                });
+            }
+            else
+            {
+                var result = sut.ValueAsNullableInt32;
+                Assert.Equal(gottenValueAsInt32, result);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TrySetValueAsNullableInt32Cases))]
+        public void SetValueAsNullableInt32ReturnsExpectedResult(int length, int? value, bool expected)
+        {
+            var sut = new DbaseFloat(
+                DbaseField.CreateFloatField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ));
+
+            if (!expected)
+            {
+                Assert.Throws<FormatException>(() =>
+                {
+                    sut.ValueAsNullableInt32 = value;
+                });
+            }
+            else
+            {
+                sut.ValueAsNullableInt32 = value;
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TryGetValueAsNullableInt16Cases))]
+        public void GetValueAsNullableInt16ReturnsExpectedResult(int length, float? value, bool gotten, short? gottenValueAsInt16)
+        {
+            var sut = new DbaseFloat(
+                DbaseField.CreateFloatField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ), value);
+
+            if (!gotten)
+            {
+                Assert.Throws<FormatException>(() =>
+                {
+                    var _ = sut.ValueAsNullableInt16;
+                });
+            }
+            else
+            {
+                var result = sut.ValueAsNullableInt16;
+                Assert.Equal(gottenValueAsInt16, result);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TrySetValueAsNullableInt16Cases))]
+        public void SetValueAsNullableInt16ReturnsExpectedResult(int length, short? value, bool expected)
+        {
+            var sut = new DbaseFloat(
+                DbaseField.CreateFloatField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ));
+
+            if (!expected)
+            {
+                Assert.Throws<FormatException>(() =>
+                {
+                    sut.ValueAsNullableInt16 = value;
+                });
+            }
+            else
+            {
+                sut.ValueAsNullableInt16 = value;
+            }
+        }
+
+
+        [Theory]
+        [MemberData(nameof(AcceptsInt32ValueCases))]
+        public void AcceptsInt32ValueReturnsExpectedResult(int length, int value, bool accepted)
+        {
+            var sut = new DbaseFloat(
+                DbaseField.CreateFloatField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ));
+
+            var result = sut.AcceptsValue(value);
+
+            Assert.Equal(accepted, result);
+        }
+
+        public static IEnumerable<object[]> AcceptsInt32ValueCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    3,
+                    1000,
+                    false
+                };
+
+                yield return new object[]
+                {
+                    4,
+                    1000,
+                    true
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    1000,
+                    true
+                };
+
+                yield return new object[]
+                {
+                    4,
+                    -1000,
+                    false
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    -1000,
+                    true
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(AcceptsInt16ValueCases))]
+        public void AcceptsInt16ValueReturnsExpectedResult(int length, short value, bool accepted)
+        {
+            var sut = new DbaseFloat(
+                DbaseField.CreateFloatField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ));
+
+            var result = sut.AcceptsValue(value);
+
+            Assert.Equal(accepted, result);
+        }
+
+        public static IEnumerable<object[]> AcceptsInt16ValueCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    3,
+                    (short)1000,
+                    false
+                };
+
+                yield return new object[]
+                {
+                    4,
+                    (short)1000,
+                    true
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    (short)1000,
+                    true
+                };
+
+                yield return new object[]
+                {
+                    4,
+                    (short)-1000,
+                    false
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    (short)-1000,
+                    true
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TryGetValueAsInt32Cases))]
+        public void TryGetValueAsInt32ReturnsExpectedResult(int length, float? value, bool gotten, int gottenValueAsInt32)
+        {
+            var sut = new DbaseFloat(
+                DbaseField.CreateFloatField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ), value);
+
+            var result = sut.TryGetValueAsInt32(out var valueAsInt32);
+
+            Assert.Equal(gotten, result);
+            Assert.Equal(gottenValueAsInt32, valueAsInt32);
+        }
+
+        public static IEnumerable<object[]> TryGetValueAsInt32Cases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    5,
+                    22.0f,
+                    true,
+                    22
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    null,
+                    false,
+                    default(int)
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    -22.0f,
+                    true,
+                    -22
+                };
+
+                yield return new object[]
+                {
+                    DbaseFloat.MaximumLength.ToInt32(),
+                    int.MaxValue + 1000.0f,
+                    false,
+                    default(int)
+                };
+
+                yield return new object[]
+                {
+                    DbaseFloat.MaximumLength.ToInt32(),
+                    int.MinValue - 1000.0f,
+                    false,
+                    default(int)
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TryGetValueAsInt16Cases))]
+        public void TryGetValueAsInt16ReturnsExpectedResult(int length, float? value, bool gotten, short gottenValueAsInt16)
+        {
+            var sut = new DbaseFloat(
+                DbaseField.CreateFloatField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ), value);
+
+            var result = sut.TryGetValueAsInt16(out var valueAsInt16);
+
+            Assert.Equal(gotten, result);
+            Assert.Equal(gottenValueAsInt16, valueAsInt16);
+        }
+
+        public static IEnumerable<object[]> TryGetValueAsInt16Cases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    5,
+                    22.0f,
+                    true,
+                    (short)22
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    null,
+                    false,
+                    default(short)
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    -22.0f,
+                    true,
+                    (short)-22
+                };
+
+                yield return new object[]
+                {
+                    DbaseFloat.MaximumLength.ToInt32(),
+                    short.MaxValue + 1000.0f,
+                    false,
+                    default(short)
+                };
+
+                yield return new object[]
+                {
+                    DbaseFloat.MaximumLength.ToInt32(),
+                    short.MinValue - 1000.0f,
+                    false,
+                    default(short)
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TrySetValueAsInt32Cases))]
+        public void TrySetValueAsInt32ReturnsExpectedResult(int length, int value, bool expected)
+        {
+            var sut = new DbaseFloat(
+                DbaseField.CreateFloatField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ));
+
+            var result = sut.TrySetValueAsInt32(value);
+
+            Assert.Equal(expected, result);
+        }
+
+        public static IEnumerable<object[]> TrySetValueAsInt32Cases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    5,
+                    22,
+                    true
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    -22,
+                    true
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    int.MaxValue,
+                    false
+                };
+
+                yield return new object[]
+                {
+                    5,
+                    int.MinValue,
+                    false
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TrySetValueAsInt16Cases))]
+        public void TrySetValueAsInt16ReturnsExpectedResult(int length, short value, bool expected)
+        {
+            var sut = new DbaseFloat(
+                DbaseField.CreateFloatField(
+                    _fixture.Create<DbaseFieldName>(),
+                    new DbaseFieldLength(length),
+                    new DbaseDecimalCount(0)
+                ));
+
+            var result = sut.TrySetValueAsInt16(value);
+
+            Assert.Equal(expected, result);
+        }
+
+        public static IEnumerable<object[]> TrySetValueAsInt16Cases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    3,
+                    (short)22,
+                    true
+                };
+
+                yield return new object[]
+                {
+                    3,
+                    (short)-22,
+                    true
+                };
+
+                yield return new object[]
+                {
+                    3,
+                    short.MaxValue,
+                    false
+                };
+
+                yield return new object[]
+                {
+                    3,
+                    short.MinValue,
+                    false
+                };
+            }
+        }
+
+        [Theory]
         [MemberData(nameof(TryGetValueAsInt32Cases))]
         public void GetValueAsInt32ReturnsExpectedResult(int length, float? value,
-            bool gotten, int? gottenValueAsInt32)
+            bool gotten, int gottenValueAsInt32)
         {
             var sut = new DbaseFloat(
                 DbaseField.CreateFloatField(
@@ -765,7 +1205,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         [Theory]
         [MemberData(nameof(TrySetValueAsInt32Cases))]
-        public void SetValueAsInt32ReturnsExpectedResult(int length, int? value, bool expected)
+        public void SetValueAsInt32ReturnsExpectedResult(int length, int value, bool expected)
         {
             var sut = new DbaseFloat(
                 DbaseField.CreateFloatField(
@@ -789,7 +1229,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         [Theory]
         [MemberData(nameof(TryGetValueAsInt16Cases))]
-        public void GetValueAsInt16ReturnsExpectedResult(int length, float? value, bool gotten, short? gottenValueAsInt16)
+        public void GetValueAsInt16ReturnsExpectedResult(int length, float? value, bool gotten, short gottenValueAsInt16)
         {
             var sut = new DbaseFloat(
                 DbaseField.CreateFloatField(
@@ -814,7 +1254,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         [Theory]
         [MemberData(nameof(TrySetValueAsInt16Cases))]
-        public void SetValueAsInt16ReturnsExpectedResult(int length, short? value, bool expected)
+        public void SetValueAsInt16ReturnsExpectedResult(int length, short value, bool expected)
         {
             var sut = new DbaseFloat(
                 DbaseField.CreateFloatField(

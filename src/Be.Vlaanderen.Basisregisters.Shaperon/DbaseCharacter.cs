@@ -1,40 +1,8 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
-
-    public class DbaseCharacterOptions
-    {
-        public const string DefaultDateTimeFormat = "yyyyMMdd\\THHmmss";
-        public const string DefaultDateTimeOffsetFormat = "yyyy-MM-dd\\THH:mm:ss%K";
-
-        public static readonly DbaseCharacterOptions Default = new DbaseCharacterOptions(
-            DefaultDateTimeFormat,
-            DefaultDateTimeOffsetFormat
-            );
-
-        public DbaseCharacterOptions(string dateTimeFormat, string dateTimeOffsetFormat)
-        {
-            DateTimeFormat = dateTimeFormat ?? throw new ArgumentNullException(nameof(dateTimeFormat));
-            DateTimeOffsetFormat = dateTimeOffsetFormat ?? throw new ArgumentNullException(nameof(dateTimeOffsetFormat));
-        }
-
-        public DbaseCharacterOptions WithDateTimeFormat(string format)
-        {
-            return new DbaseCharacterOptions(format, DateTimeOffsetFormat);
-        }
-
-        public string DateTimeFormat { get; }
-
-        public DbaseCharacterOptions WithDateTimeOffsetFormat(string format)
-        {
-            return new DbaseCharacterOptions(DateTimeFormat, format);
-        }
-
-        public string DateTimeOffsetFormat { get; }
-    }
 
     public class DbaseCharacter : DbaseFieldValue
     {
@@ -86,6 +54,24 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return true;
         }
 
+        public bool AcceptsValue(DateTime value)
+        {
+            var formatted = value.ToString(Options.DateTimeFormat);
+            if (formatted.Length > Field.Length.ToInt32())
+                return false;
+
+            return true;
+        }
+
+        public bool AcceptsValue(DateTimeOffset value)
+        {
+            var formatted = value.ToString(Options.DateTimeOffsetFormat);
+            if (formatted.Length > Field.Length.ToInt32())
+                return false;
+
+            return true;
+        }
+
         public string Value
         {
             get => _value;
@@ -101,7 +87,64 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public DbaseCharacterOptions Options { get; }
 
-        public bool TryGetValueAsDateTime(out DateTime? value)
+        public bool TryGetValueAsDateTime(out DateTime value)
+        {
+            if (Value == null)
+            {
+                value = default;
+                return false;
+            }
+
+            if (DateTime.TryParseExact(Value,
+                Options.DateTimeFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite,
+                out var parsed))
+            {
+                value = parsed;
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+
+        public bool TrySetValueAsDateTime(DateTime value)
+        {
+            var formatted = value.ToString(Options.DateTimeFormat);
+            if (formatted.Length > Field.Length.ToInt32())
+                return false;
+
+            Value = formatted;
+            return true;
+        }
+
+        public DateTime ValueAsDateTime
+        {
+            get
+            {
+                if (!TryGetValueAsNullableDateTime(out var parsed))
+                {
+                    throw new FormatException($"The field {Field.Name} its value needs to be null or an actual date time formatted as '{Options.DateTimeFormat}'.");
+                }
+
+                if (!parsed.HasValue)
+                {
+                    throw new FormatException($"The field {Field.Name} can not be null when read as non nullable datatype.");
+                }
+
+                return parsed.Value;
+            }
+            set
+            {
+                if (!TrySetValueAsDateTime(value))
+                {
+                    throw new FormatException($"The field {Field.Name} needs to be longer to hold an actual date time formatted as '{Options.DateTimeFormat}'.");
+                }
+            }
+        }
+
+        public bool TryGetValueAsNullableDateTime(out DateTime? value)
         {
             if (Value == null)
             {
@@ -123,7 +166,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return false;
         }
 
-        public bool TrySetValueAsDateTime(DateTime? value)
+        public bool TrySetValueAsNullableDateTime(DateTime? value)
         {
             if (!value.HasValue)
             {
@@ -139,11 +182,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return true;
         }
 
-        public DateTime? ValueAsDateTime
+        public DateTime? ValueAsNullableDateTime
         {
             get
             {
-                if (!TryGetValueAsDateTime(out var parsed))
+                if (!TryGetValueAsNullableDateTime(out var parsed))
                 {
                     throw new FormatException($"The field {Field.Name} its value needs to be null or an actual date time formatted as '{Options.DateTimeFormat}'.");
                 }
@@ -152,14 +195,71 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
             set
             {
-                if (!TrySetValueAsDateTime(value))
+                if (!TrySetValueAsNullableDateTime(value))
                 {
                     throw new FormatException($"The field {Field.Name} needs to be longer to hold an actual date time formatted as '{Options.DateTimeFormat}'.");
                 }
             }
         }
 
-        public bool TryGetValueAsDateTimeOffset(out DateTimeOffset? value)
+        public bool TryGetValueAsDateTimeOffset(out DateTimeOffset value)
+        {
+            if (Value == null)
+            {
+                value = default;
+                return false;
+            }
+
+            if (DateTimeOffset.TryParseExact(Value,
+                Options.DateTimeOffsetFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite,
+                out var parsed))
+            {
+                value = parsed;
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+
+        public bool TrySetValueAsDateTimeOffset(DateTimeOffset value)
+        {
+            var formatted = value.ToString(Options.DateTimeOffsetFormat);
+            if (formatted.Length > Field.Length.ToInt32())
+                return false;
+
+            Value = formatted;
+            return true;
+        }
+
+        public DateTimeOffset ValueAsDateTimeOffset
+        {
+            get
+            {
+                if (!TryGetValueAsNullableDateTimeOffset(out var parsed))
+                {
+                    throw new FormatException($"The field {Field.Name} its value needs to be null or an actual date time with offset formatted as '{Options.DateTimeOffsetFormat}'.");
+                }
+
+                if (!parsed.HasValue)
+                {
+                    throw new FormatException($"The field {Field.Name} can not be null when read as non nullable datatype.");
+                }
+
+                return parsed.Value;
+            }
+            set
+            {
+                if (!TrySetValueAsDateTimeOffset(value))
+                {
+                    throw new FormatException($"The field {Field.Name} needs to be longer to hold an actual date time offset formatted as '{Options.DateTimeOffsetFormat}'.");
+                }
+            }
+        }
+
+        public bool TryGetValueAsNullableDateTimeOffset(out DateTimeOffset? value)
         {
             if (Value == null)
             {
@@ -181,7 +281,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return false;
         }
 
-        public bool TrySetValueAsDateTimeOffset(DateTimeOffset? value)
+        public bool TrySetValueAsNullableDateTimeOffset(DateTimeOffset? value)
         {
             if (!value.HasValue)
             {
@@ -197,11 +297,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return true;
         }
 
-        public DateTimeOffset? ValueAsDateTimeOffset
+        public DateTimeOffset? ValueAsNullableDateTimeOffset
         {
             get
             {
-                if (!TryGetValueAsDateTimeOffset(out var parsed))
+                if (!TryGetValueAsNullableDateTimeOffset(out var parsed))
                 {
                     throw new FormatException($"The field {Field.Name} its value needs to be null or an actual date time with offset formatted as '{Options.DateTimeOffsetFormat}'.");
                 }
@@ -210,7 +310,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
             set
             {
-                if (!TrySetValueAsDateTimeOffset(value))
+                if (!TrySetValueAsNullableDateTimeOffset(value))
                 {
                     throw new FormatException($"The field {Field.Name} needs to be longer to hold an actual date time offset formatted as '{Options.DateTimeOffsetFormat}'.");
                 }
