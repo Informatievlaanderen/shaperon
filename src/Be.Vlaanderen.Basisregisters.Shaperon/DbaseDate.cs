@@ -82,6 +82,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        public override void Accept(IDbaseFieldValueVisitor writer) => writer.Visit(this);
+        public override void Accept(IDbaseFieldValueVisitor visitor) => visitor.Visit(this);
     }
 }

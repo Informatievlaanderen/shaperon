@@ -96,13 +96,12 @@
         {
             var fieldValue = _fixture.Create<DbaseInt32>();
 
-            var value = _sut.GenerateAcceptableValue(fieldValue);
+            //TODO: Temporary hack
+            var value = _sut.GenerateAcceptableValue(fieldValue) ?? 0;
 
             _output.WriteLine(
                 "Generated value {0} for field with length {1}, positive digits {2}, negative digits {3} and decimals {4}.",
-                value.HasValue
-                    ? value.Value.ToString()
-                    : "null",
+                value.ToString(),
                 fieldValue.Field.Length,
                 fieldValue.Field.PositiveIntegerDigits,
                 fieldValue.Field.NegativeIntegerDigits,

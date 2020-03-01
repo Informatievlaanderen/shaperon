@@ -45,12 +45,26 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public void Visit(DbaseInt16 value)
         {
-            value.Value = _generator.GenerateAcceptableValue(value);
+            //TODO: Temporary hack
+            value.Value = _generator.GenerateAcceptableValue(value) ?? 0;
         }
 
         public void Visit(DbaseInt32 value)
         {
-            value.Value = _generator.GenerateAcceptableValue(value);
+            //TODO: Temporary hack
+            value.Value = _generator.GenerateAcceptableValue(value) ?? 0;
+        }
+
+        public void Visit(DbaseNullableInt16 value)
+        {
+            //TODO: Temporary hack
+            value.Value = 0;
+        }
+
+        public void Visit(DbaseNullableInt32 value)
+        {
+            //TODO: Temporary hack
+            value.Value = 0;
         }
 
         public void Visit(DbaseCharacter value)

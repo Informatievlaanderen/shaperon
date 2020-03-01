@@ -686,7 +686,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                     new DbaseDecimalCount(0)
                                 );
                                 var value = new DbaseInt32(field);
-                                value.Value = generator.GenerateAcceptableValue(value);
+                                //TODO: Temporary hack
+                                value.Value = generator.GenerateAcceptableValue(value) ?? 0;
                                 return value;
                             }
                         )
@@ -711,7 +712,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                     new DbaseDecimalCount(0)
                                 );
                                 var value = new DbaseInt16(field);
-                                value.Value = generator.GenerateAcceptableValue(value);
+                                //TODO: Temporary hack
+                                value.Value = generator.GenerateAcceptableValue(value) ?? 0;
                                 return value;
                             }
                         )

@@ -60,6 +60,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
+        private class DbaseNullableInt16EqualityComparer : IEqualityComparer<DbaseNullableInt16>
+        {
+            public bool Equals(DbaseNullableInt16 left, DbaseNullableInt16 right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
+            }
+
+            public int GetHashCode(DbaseNullableInt16 obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
         private class DbaseInt32EqualityComparer : IEqualityComparer<DbaseInt32>
         {
             public bool Equals(DbaseInt32 left, DbaseInt32 right)
@@ -70,6 +85,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
 
             public int GetHashCode(DbaseInt32 obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseNullableInt32EqualityComparer : IEqualityComparer<DbaseNullableInt32>
+        {
+            public bool Equals(DbaseNullableInt32 left, DbaseNullableInt32 right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
+            }
+
+            public int GetHashCode(DbaseNullableInt32 obj)
             {
                 return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
             }
@@ -263,6 +293,18 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new DbaseInt32EqualityComparer());
             }
 
+            public void Visit(DbaseNullableInt16 value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseNullableInt16>(
+                    new DbaseNullableInt16EqualityComparer());
+            }
+
+            public void Visit(DbaseNullableInt32 value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseNullableInt32>(
+                    new DbaseNullableInt32EqualityComparer());
+            }
+
             public void Visit(DbaseCharacter value)
             {
                 Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseCharacter>(
@@ -282,65 +324,57 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             public void Visit(DbaseDate value)
             {
-                HashCode = value.Value.HasValue
-                    ? value.Value.Value.GetHashCode()
-                    : 0;
+                HashCode = value.Value?.GetHashCode() ?? 0;
             }
 
             public void Visit(DbaseDateTime value)
             {
-                HashCode = value.Value.HasValue
-                    ? value.Value.Value.GetHashCode()
-                    : 0;
+                HashCode = value.Value?.GetHashCode() ?? 0;
             }
 
             public void Visit(DbaseDecimal value)
             {
-                HashCode = value.Value.HasValue
-                    ? value.Value.Value.GetHashCode()
-                    : 0;
+                HashCode = value.Value?.GetHashCode() ?? 0;
             }
 
             public void Visit(DbaseNumber value)
             {
-                HashCode = value.Value.HasValue
-                    ? value.Value.Value.GetHashCode()
-                    : 0;
+                HashCode = value.Value?.GetHashCode() ?? 0;
             }
 
             public void Visit(DbaseFloat value)
             {
-                HashCode = value.Value.HasValue
-                    ? value.Value.Value.GetHashCode()
-                    : 0;
+                HashCode = value.Value?.GetHashCode() ?? 0;
             }
 
             public void Visit(DbaseInt16 value)
             {
-                HashCode = value.Value.HasValue
-                    ? value.Value.Value.GetHashCode()
-                    : 0;
+                HashCode = value.Value.GetHashCode();
             }
 
             public void Visit(DbaseInt32 value)
             {
-                HashCode = value.Value.HasValue
-                    ? value.Value.Value.GetHashCode()
-                    : 0;
+                HashCode = value.Value.GetHashCode();
+            }
+
+            public void Visit(DbaseNullableInt16 value)
+            {
+                HashCode = value.Value?.GetHashCode() ?? 0;
+            }
+
+            public void Visit(DbaseNullableInt32 value)
+            {
+                HashCode = value.Value?.GetHashCode() ?? 0;
             }
 
             public void Visit(DbaseCharacter value)
             {
-                HashCode = value.Value != null
-                    ? value.Value.GetHashCode()
-                    : 0;
+                HashCode = value.Value?.GetHashCode() ?? 0;
             }
 
             public void Visit(DbaseLogical value)
             {
-                HashCode = value.Value != null
-                    ? value.Value.GetHashCode()
-                    : 0;
+                HashCode = value.Value?.GetHashCode() ?? 0;
             }
         }
     }
