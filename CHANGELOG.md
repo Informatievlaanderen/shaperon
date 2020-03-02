@@ -1,3 +1,10 @@
+## [7.3.1](https://github.com/informatievlaanderen/shaperon/compare/v7.3.0...v7.3.1) (2020-03-02)
+
+
+### Bug Fixes
+
+* bump netcore to 3.1.2 ([c7157b3](https://github.com/informatievlaanderen/shaperon/commit/c7157b32481b24aad0e02c1add3daa6d641b4f8e))
+
 # [7.3.0](https://github.com/informatievlaanderen/shaperon/compare/v7.2.0...v7.3.0) (2020-01-31)
 
 
