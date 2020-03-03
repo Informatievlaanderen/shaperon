@@ -645,7 +645,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             );
         }
 
-        public static void CustomizeDbaseString(this IFixture fixture)
+        public static void CustomizeDbaseCharacter(this IFixture fixture)
         {
             fixture.Customize<DbaseCharacter>(
                 customization =>
@@ -657,6 +657,32 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                 {
                                     var length = new DbaseFieldLength(random.Next(1, 255));
                                     return new DbaseCharacter(
+                                        new DbaseField(
+                                            fixture.Create<DbaseFieldName>(),
+                                            DbaseFieldType.Character,
+                                            fixture.Create<ByteOffset>(),
+                                            length,
+                                            new DbaseDecimalCount(0)
+                                        ),
+                                        new string('a', random.Next(0, length.ToInt32())));
+                                }
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseString(this IFixture fixture)
+        {
+            fixture.Customize<DbaseString>(
+                customization =>
+                    customization
+                        .FromFactory<int>(
+                            value =>
+                            {
+                                using (var random = new PooledRandom(value))
+                                {
+                                    var length = new DbaseFieldLength(random.Next(1, 255));
+                                    return new DbaseString(
                                         new DbaseField(
                                             fixture.Create<DbaseFieldName>(),
                                             DbaseFieldType.Character,
@@ -737,7 +763,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                     new DbaseDecimalCount(0)
                                 );
                                 var value = new DbaseNullableInt32(field);
-                                //TODO: Temporary hack
                                 value.Value = generator.GenerateAcceptableValue(value);
                                 return value;
                             }

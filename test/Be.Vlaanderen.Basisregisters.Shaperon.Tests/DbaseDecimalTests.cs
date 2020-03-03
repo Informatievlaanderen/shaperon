@@ -169,8 +169,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanReadWriteNull()
         {
+            _fixture.CustomizeDbaseDecimalWithoutValue();
             var sut = _fixture.Create<DbaseDecimal>();
-            sut.Value = null;
 
             using (var stream = new MemoryStream())
             {
@@ -188,7 +188,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
-                    Assert.Equal(sut.Value, result.Value);
+                    Assert.Throws<FormatException>(() => sut.Value);
                 }
             }
         }

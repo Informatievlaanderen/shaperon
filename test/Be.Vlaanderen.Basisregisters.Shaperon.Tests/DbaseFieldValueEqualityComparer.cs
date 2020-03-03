@@ -105,7 +105,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        public class DbaseStringEqualityComparer : IEqualityComparer<DbaseCharacter>
+        private class DbaseCharacterEqualityComparer : IEqualityComparer<DbaseCharacter>
         {
             public bool Equals(DbaseCharacter left, DbaseCharacter right)
             {
@@ -121,6 +121,22 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
+        private class DbaseStringEqualityComparer : IEqualityComparer<DbaseString>
+        {
+            public bool Equals(DbaseString left, DbaseString right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) &&
+                       Equals(left.Value, right.Value);
+            }
+
+            public int GetHashCode(DbaseString obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value?.GetHashCode() ?? 0;
+            }
+        }
+
         private class DbaseLogicalEqualityComparer : IEqualityComparer<DbaseLogical>
         {
             public bool Equals(DbaseLogical left, DbaseLogical right)
@@ -131,6 +147,36 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
 
             public int GetHashCode(DbaseLogical obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseBooleanEqualityComparer : IEqualityComparer<DbaseBoolean>
+        {
+            public bool Equals(DbaseBoolean left, DbaseBoolean right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
+            }
+
+            public int GetHashCode(DbaseBoolean obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseNullableBooleanEqualityComparer : IEqualityComparer<DbaseNullableBoolean>
+        {
+            public bool Equals(DbaseNullableBoolean left, DbaseNullableBoolean right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
+            }
+
+            public int GetHashCode(DbaseNullableBoolean obj)
             {
                 return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
             }
@@ -166,11 +212,56 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        private class DbaseSingleEqualityComparer : IEqualityComparer<DbaseFloat>
+        private class DbaseNullableDateTimeEqualityComparer : IEqualityComparer<DbaseNullableDateTime>
+        {
+            public bool Equals(DbaseNullableDateTime left, DbaseNullableDateTime right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
+            }
+
+            public int GetHashCode(DbaseNullableDateTime obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseDateTimeOffsetEqualityComparer : IEqualityComparer<DbaseDateTimeOffset>
+        {
+            public bool Equals(DbaseDateTimeOffset left, DbaseDateTimeOffset right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
+            }
+
+            public int GetHashCode(DbaseDateTimeOffset obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseNullableDateTimeOffsetEqualityComparer : IEqualityComparer<DbaseNullableDateTimeOffset>
+        {
+            public bool Equals(DbaseNullableDateTimeOffset left, DbaseNullableDateTimeOffset right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) && left.Value.Equals(right.Value);
+            }
+
+            public int GetHashCode(DbaseNullableDateTimeOffset obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseFloatEqualityComparer : IEqualityComparer<DbaseFloat>
         {
             private readonly DbaseDecimalCount _precision;
 
-            public DbaseSingleEqualityComparer(DbaseDecimalCount precision)
+            public DbaseFloatEqualityComparer(DbaseDecimalCount precision)
             {
                 _precision = precision;
             }
@@ -191,11 +282,59 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        private class DbaseDoubleEqualityComparer : IEqualityComparer<DbaseNumber>
+        private class DbaseSingleEqualityComparer : IEqualityComparer<DbaseSingle>
         {
             private readonly DbaseDecimalCount _precision;
 
-            public DbaseDoubleEqualityComparer(DbaseDecimalCount precision)
+            public DbaseSingleEqualityComparer(DbaseDecimalCount precision)
+            {
+                _precision = precision;
+            }
+
+            public bool Equals(DbaseSingle left, DbaseSingle right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) &&
+                       Math.Abs(left.Value - right.Value) < Convert.ToSingle(Math.Pow(10, -_precision.ToInt32()));
+            }
+
+            public int GetHashCode(DbaseSingle obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseNullableSingleEqualityComparer : IEqualityComparer<DbaseNullableSingle>
+        {
+            private readonly DbaseDecimalCount _precision;
+
+            public DbaseNullableSingleEqualityComparer(DbaseDecimalCount precision)
+            {
+                _precision = precision;
+            }
+
+            public bool Equals(DbaseNullableSingle left, DbaseNullableSingle right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                if (left.Value == null && right.Value == null) return left.Field.Equals(right.Field);
+                if (left.Value == null || right.Value == null) return false;
+                return left.Field.Equals(right.Field) &&
+                       Math.Abs(left.Value.Value - right.Value.Value) < Convert.ToSingle(Math.Pow(10, -_precision.ToInt32()));
+            }
+
+            public int GetHashCode(DbaseNullableSingle obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseNumberEqualityComparer : IEqualityComparer<DbaseNumber>
+        {
+            private readonly DbaseDecimalCount _precision;
+
+            public DbaseNumberEqualityComparer(DbaseDecimalCount precision)
             {
                 _precision = precision;
             }
@@ -216,6 +355,54 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
+        private class DbaseDoubleEqualityComparer : IEqualityComparer<DbaseDouble>
+        {
+            private readonly DbaseDecimalCount _precision;
+
+            public DbaseDoubleEqualityComparer(DbaseDecimalCount precision)
+            {
+                _precision = precision;
+            }
+
+            public bool Equals(DbaseDouble left, DbaseDouble right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                return left.Field.Equals(right.Field) &&
+                       Math.Abs(left.Value - right.Value) < Math.Pow(10, -_precision.ToInt32());
+            }
+
+            public int GetHashCode(DbaseDouble obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class DbaseNullableDoubleEqualityComparer : IEqualityComparer<DbaseNullableDouble>
+        {
+            private readonly DbaseDecimalCount _precision;
+
+            public DbaseNullableDoubleEqualityComparer(DbaseDecimalCount precision)
+            {
+                _precision = precision;
+            }
+
+            public bool Equals(DbaseNullableDouble left, DbaseNullableDouble right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                if (left.Value == null && right.Value == null) return left.Field.Equals(right.Field);
+                if (left.Value == null || right.Value == null) return false;
+                return left.Field.Equals(right.Field) &&
+                       Math.Abs(left.Value.Value - right.Value.Value) < Math.Pow(10, -_precision.ToInt32());
+            }
+
+            public int GetHashCode(DbaseNullableDouble obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
         private class DbaseDecimalEqualityComparer : IEqualityComparer<DbaseDecimal>
         {
             private readonly DbaseDecimalCount _precision;
@@ -229,10 +416,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 if (left == null && right == null) return true;
                 if (left == null || right == null) return false;
-                if (left.Value == null && right.Value == null) return left.Field.Equals(right.Field);
-                if (left.Value == null || right.Value == null) return false;
                 return left.Field.Equals(right.Field) &&
-                       Math.Abs(left.Value.Value - right.Value.Value) < Convert.ToDecimal(Math.Pow(10, -_precision.ToInt32()));
+                       Math.Abs(left.Value - right.Value) < Convert.ToDecimal(Math.Pow(10, -_precision.ToInt32()));
             }
 
             public int GetHashCode(DbaseDecimal obj)
@@ -241,7 +426,32 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        private class ComparerSelectingVisitor : IDbaseFieldValueVisitor
+        private class DbaseNullableDecimalEqualityComparer : IEqualityComparer<DbaseNullableDecimal>
+        {
+            private readonly DbaseDecimalCount _precision;
+
+            public DbaseNullableDecimalEqualityComparer(DbaseDecimalCount precision)
+            {
+                _precision = precision;
+            }
+
+            public bool Equals(DbaseNullableDecimal left, DbaseNullableDecimal right)
+            {
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                if (left.Value == null && right.Value == null) return left.Field.Equals(right.Field);
+                if (left.Value == null || right.Value == null) return false;
+                return left.Field.Equals(right.Field) &&
+                       Math.Abs(left.Value.Value - right.Value.Value) < Convert.ToDecimal(Math.Pow(10, -_precision.ToInt32()));
+            }
+
+            public int GetHashCode(DbaseNullableDecimal obj)
+            {
+                return obj.Field.GetHashCode() ^ obj.Value.GetHashCode();
+            }
+        }
+
+        private class ComparerSelectingVisitor : ITypedDbaseFieldValueVisitor
         {
             private readonly DbaseDecimalCount _precision;
             public IEqualityComparer<object> Comparer { get; private set; }
@@ -263,22 +473,70 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new DbaseDateTimeEqualityComparer());
             }
 
+            public void Visit(DbaseNullableDateTime value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseNullableDateTime>(
+                    new DbaseNullableDateTimeEqualityComparer());
+            }
+
+            public void Visit(DbaseDateTimeOffset value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseDateTimeOffset>(
+                    new DbaseDateTimeOffsetEqualityComparer());
+            }
+
+            public void Visit(DbaseNullableDateTimeOffset value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseNullableDateTimeOffset>(
+                    new DbaseNullableDateTimeOffsetEqualityComparer());
+            }
+
             public void Visit(DbaseDecimal value)
             {
                 Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseDecimal>(
                     new DbaseDecimalEqualityComparer(_precision));
             }
 
+            public void Visit(DbaseNullableDecimal value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseNullableDecimal>(
+                    new DbaseNullableDecimalEqualityComparer(_precision));
+            }
+
+            public void Visit(DbaseDouble value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseDouble>(
+                    new DbaseDoubleEqualityComparer(_precision));
+            }
+
+            public void Visit(DbaseNullableDouble value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseNullableDouble>(
+                    new DbaseNullableDoubleEqualityComparer(_precision));
+            }
+
             public void Visit(DbaseNumber value)
             {
                 Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseNumber>(
-                    new DbaseDoubleEqualityComparer(_precision));
+                    new DbaseNumberEqualityComparer(_precision));
             }
 
             public void Visit(DbaseFloat value)
             {
                 Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseFloat>(
+                    new DbaseFloatEqualityComparer(_precision));
+            }
+
+            public void Visit(DbaseSingle value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseSingle>(
                     new DbaseSingleEqualityComparer(_precision));
+            }
+
+            public void Visit(DbaseNullableSingle value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseNullableSingle>(
+                    new DbaseNullableSingleEqualityComparer(_precision));
             }
 
             public void Visit(DbaseInt16 value)
@@ -287,16 +545,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     new DbaseInt16EqualityComparer());
             }
 
-            public void Visit(DbaseInt32 value)
-            {
-                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseInt32>(
-                    new DbaseInt32EqualityComparer());
-            }
-
             public void Visit(DbaseNullableInt16 value)
             {
                 Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseNullableInt16>(
                     new DbaseNullableInt16EqualityComparer());
+            }
+
+            public void Visit(DbaseInt32 value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseInt32>(
+                    new DbaseInt32EqualityComparer());
             }
 
             public void Visit(DbaseNullableInt32 value)
@@ -308,6 +566,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             public void Visit(DbaseCharacter value)
             {
                 Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseCharacter>(
+                    new DbaseCharacterEqualityComparer());
+            }
+
+            public void Visit(DbaseString value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseString>(
                     new DbaseStringEqualityComparer());
             }
 
@@ -316,9 +580,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseLogical>(
                     new DbaseLogicalEqualityComparer());
             }
+
+            public void Visit(DbaseBoolean value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseBoolean>(
+                    new DbaseBooleanEqualityComparer());
+            }
+
+            public void Visit(DbaseNullableBoolean value)
+            {
+                Comparer = new DelegatingDbaseFieldValueEqualityComparer<DbaseNullableBoolean>(
+                    new DbaseNullableBooleanEqualityComparer());
+            }
         }
 
-        private class HashCodeVisitor : IDbaseFieldValueVisitor
+        private class HashCodeVisitor : ITypedDbaseFieldValueVisitor
         {
             public int HashCode { get; private set; }
 
@@ -329,10 +605,50 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             public void Visit(DbaseDateTime value)
             {
+                HashCode = value.Value.GetHashCode();
+            }
+
+            public void Visit(DbaseNullableDateTime value)
+            {
+                HashCode = value.Value?.GetHashCode() ?? 0;
+            }
+
+            public void Visit(DbaseDateTimeOffset value)
+            {
+                HashCode = value.Value.GetHashCode();
+            }
+
+            public void Visit(DbaseNullableDateTimeOffset value)
+            {
                 HashCode = value.Value?.GetHashCode() ?? 0;
             }
 
             public void Visit(DbaseDecimal value)
+            {
+                HashCode = value.Value.GetHashCode();
+            }
+
+            public void Visit(DbaseNullableDecimal value)
+            {
+                HashCode = value.Value?.GetHashCode() ?? 0;
+            }
+
+            public void Visit(DbaseDouble value)
+            {
+                HashCode = value.Value.GetHashCode();
+            }
+
+            public void Visit(DbaseNullableDouble value)
+            {
+                HashCode = value.Value?.GetHashCode() ?? 0;
+            }
+
+            public void Visit(DbaseSingle value)
+            {
+                HashCode = value.Value.GetHashCode();
+            }
+
+            public void Visit(DbaseNullableSingle value)
             {
                 HashCode = value.Value?.GetHashCode() ?? 0;
             }
@@ -352,14 +668,14 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 HashCode = value.Value.GetHashCode();
             }
 
-            public void Visit(DbaseInt32 value)
-            {
-                HashCode = value.Value.GetHashCode();
-            }
-
             public void Visit(DbaseNullableInt16 value)
             {
                 HashCode = value.Value?.GetHashCode() ?? 0;
+            }
+
+            public void Visit(DbaseInt32 value)
+            {
+                HashCode = value.Value.GetHashCode();
             }
 
             public void Visit(DbaseNullableInt32 value)
@@ -372,7 +688,22 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 HashCode = value.Value?.GetHashCode() ?? 0;
             }
 
+            public void Visit(DbaseString value)
+            {
+                HashCode = value.Value?.GetHashCode() ?? 0;
+            }
+
             public void Visit(DbaseLogical value)
+            {
+                HashCode = value.Value?.GetHashCode() ?? 0;
+            }
+
+            public void Visit(DbaseBoolean value)
+            {
+                HashCode = value.Value.GetHashCode();
+            }
+
+            public void Visit(DbaseNullableBoolean value)
             {
                 HashCode = value.Value?.GetHashCode() ?? 0;
             }
