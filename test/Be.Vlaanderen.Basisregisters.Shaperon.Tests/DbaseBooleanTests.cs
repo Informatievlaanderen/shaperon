@@ -19,7 +19,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             _fixture.CustomizeDbaseFieldName();
             _fixture.CustomizeDbaseFieldLength();
             _fixture.CustomizeDbaseDecimalCount();
-            _fixture.CustomizeDbaseLogical();
+            _fixture.CustomizeDbaseBoolean();
             _fixture.Register(() => new BinaryReader(new MemoryStream()));
             _fixture.Register(() => new BinaryWriter(new MemoryStream()));
         }
@@ -28,7 +28,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void CreateFailsIfFieldIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => new DbaseLogical(null)
+                () => new DbaseBoolean(null)
             );
         }
 
@@ -41,11 +41,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [InlineData('Y', true)]
         [InlineData('t', true)]
         [InlineData('T', true)]
-        [InlineData('?', null)]
-        [InlineData(' ', null)]
         public void CanReadAllValidRepresentations(char representation, bool? value)
         {
-            var sut = _fixture.Create<DbaseLogical>();
+            var sut = _fixture.Create<DbaseBoolean>();
 
             using (var stream = new MemoryStream())
             {
@@ -59,7 +57,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseLogical(sut.Field);
+                    var result = new DbaseBoolean(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -68,10 +66,38 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
+        [Theory]
+        [InlineData('?')]
+        [InlineData(' ')]
+        public void CanNotReadNullRepresentations(char representation)
+        {
+            var sut = _fixture.Create<DbaseBoolean>();
+
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
+                {
+                    writer.Write(Convert.ToByte(representation));
+                    writer.Flush();
+                }
+
+                stream.Position = 0;
+
+                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
+                {
+                    var result = new DbaseBoolean(sut.Field);
+                    result.Read(reader);
+
+                    Assert.Equal(sut.Field, result.Field);
+                    Assert.Throws<FormatException>(() => result.Value);
+                }
+            }
+        }
+
         [Fact]
         public void CanReadWrite()
         {
-            var sut = _fixture.Create<DbaseLogical>();
+            var sut = _fixture.Create<DbaseBoolean>();
 
             using (var stream = new MemoryStream())
             {
@@ -85,7 +111,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseLogical(sut.Field);
+                    var result = new DbaseBoolean(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -97,8 +123,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanReadWriteMultiple()
         {
-            var sut1 = _fixture.Create<DbaseLogical>();
-            var sut2 = _fixture.Create<DbaseLogical>();
+            var sut1 = _fixture.Create<DbaseBoolean>();
+            var sut2 = _fixture.Create<DbaseBoolean>();
 
             using (var stream = new MemoryStream())
             {
@@ -113,8 +139,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result1 = new DbaseLogical(sut1.Field);
-                    var result2 = new DbaseLogical(sut2.Field);
+                    var result1 = new DbaseBoolean(sut1.Field);
+                    var result2 = new DbaseBoolean(sut2.Field);
                     result1.Read(reader);
                     result2.Read(reader);
 
@@ -129,8 +155,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanReadWriteNull()
         {
-            var sut = _fixture.Create<DbaseLogical>();
-            sut.Value = null;
+            _fixture.CustomizeDbaseBooleanWithoutValue();
+            var sut = _fixture.Create<DbaseBoolean>();
 
             using (var stream = new MemoryStream())
             {
@@ -144,11 +170,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseLogical(sut.Field);
+                    var result = new DbaseBoolean(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
-                    Assert.Equal(sut.Value, result.Value);
+                    Assert.Throws<FormatException>(() => sut.Value);
                 }
             }
         }
@@ -156,7 +182,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanNotReadPastEndOfStream()
         {
-            var sut = _fixture.Create<DbaseLogical>();
+            var sut = _fixture.Create<DbaseBoolean>();
 
             using (var stream = new MemoryStream())
             {
@@ -164,7 +190,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseLogical(sut.Field);
+                    var result = new DbaseBoolean(sut.Field);
                     Assert.Throws<EndOfStreamException>(() => result.Read(reader));
                 }
             }
@@ -178,7 +204,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             Assert.Throws<ArgumentException>(
                 () =>
-                    new DbaseLogical(
+                    new DbaseBoolean(
                         new DbaseField(
                             _fixture.Create<DbaseFieldName>(),
                             DbaseFieldType.Logical,
@@ -197,7 +223,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .First(specimen => specimen != DbaseFieldType.Logical);
             Assert.Throws<ArgumentException>(
                 () =>
-                    new DbaseLogical(
+                    new DbaseBoolean(
                         new DbaseField(
                             _fixture.Create<DbaseFieldName>(),
                             fieldType,
@@ -216,7 +242,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .First(specimen => specimen.ToInt32() != 1);
             Assert.Throws<ArgumentException>(
                 () =>
-                    new DbaseLogical(
+                    new DbaseBoolean(
                         new DbaseField(
                             _fixture.Create<DbaseFieldName>(),
                             DbaseFieldType.Logical,
@@ -232,21 +258,21 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void IsDbaseFieldValue()
         {
-            Assert.IsAssignableFrom<DbaseFieldValue>(_fixture.Create<DbaseLogical>());
+            Assert.IsAssignableFrom<DbaseFieldValue>(_fixture.Create<DbaseBoolean>());
         }
 
         [Fact]
         public void ReaderCanNotBeNull()
         {
             new GuardClauseAssertion(_fixture)
-                .Verify(new Methods<DbaseLogical>().Select(instance => instance.Read(null)));
+                .Verify(new Methods<DbaseBoolean>().Select(instance => instance.Read(null)));
         }
 
         [Fact]
         public void WriterCanNotBeNull()
         {
             new GuardClauseAssertion(_fixture)
-                .Verify(new Methods<DbaseLogical>().Select(instance => instance.Write(null)));
+                .Verify(new Methods<DbaseBoolean>().Select(instance => instance.Write(null)));
         }
     }
 }

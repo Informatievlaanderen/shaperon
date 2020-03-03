@@ -25,7 +25,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     $"The number field {field.Name}'s decimal count must be 0 to use it as a short integer field.",
                     nameof(field));
 
-            _value = null;
+            _value = default;
         }
 
         public DbaseInt16(DbaseField field, short value) : base(field)
@@ -92,7 +92,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
                     );
                 }
-                _value = null;
+                _value = default;
             }
             else
             {

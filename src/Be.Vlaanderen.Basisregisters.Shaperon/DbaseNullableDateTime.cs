@@ -18,7 +18,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     $"The field {field.Name} 's type must be character to use it as a date time field.", nameof(field));
 
             Options = options ?? DbaseDateTimeOptions.Default;
-            _value = null;
+            _value = default;
         }
 
         public DbaseNullableDateTime(DbaseField field, DateTime? value, DbaseDateTimeOptions options = null) : base(field)
@@ -74,7 +74,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (!value.HasValue)
             {
-                _value = null;
+                _value = default;
                 return true;
             }
 
@@ -120,7 +120,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
                     );
                 }
-                _value = null;
+                _value = default;
             }
             else
             {

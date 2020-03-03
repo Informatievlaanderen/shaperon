@@ -100,7 +100,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 }
                 else
                 {
-                    _value = null;
+                    _value = default;
                 }
             }
         }

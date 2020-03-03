@@ -26,7 +26,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     $"The logical field {field.Name}'s length must be 1 to use it as a boolean field.",
                     nameof(field));
 
-            _value = null;
+            _value = default;
         }
 
         public DbaseBoolean(DbaseField field, bool value) : base(field)
@@ -89,7 +89,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     break;
 
                 default:
-                    _value = null;
+                    _value = default;
                     break;
             }
         }
@@ -99,7 +99,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (writer == null)
                 throw new ArgumentNullException(nameof(writer));
 
-            var value = FormatAsByte(Value);
+            var value = FormatAsByte(_value);
             writer.Write(value);
         }
 

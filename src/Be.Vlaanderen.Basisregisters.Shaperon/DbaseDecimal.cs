@@ -48,7 +48,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 NumberDecimalSeparator = "."
             };
 
-            _value = null;
+            _value = default;
         }
 
         public DbaseDecimal(DbaseField field, decimal value) : base(field)
@@ -58,7 +58,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             if (field.FieldType != DbaseFieldType.Number)
                 throw new ArgumentException(
-                    $"The field {field.Name} 's type must be number to use it as a double field.", nameof(field));
+                    $"The field {field.Name} 's type must be number to use it as a decimal field.", nameof(field));
 
             if (field.Length < MinimumLength || field.Length > MaximumLength)
                 throw new ArgumentException(
@@ -141,7 +141,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
                     );
                 }
-                _value = null;
+                _value = default;
             }
             else
             {

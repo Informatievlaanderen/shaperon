@@ -861,6 +861,24 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         .OmitAutoProperties());
         }
 
+        public static void CustomizeDbaseBooleanWithoutValue(this IFixture fixture)
+        {
+            fixture.Customize<DbaseBoolean>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            value => new DbaseBoolean(
+                                new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Logical,
+                                    fixture.Create<ByteOffset>(),
+                                    new DbaseFieldLength(1),
+                                    new DbaseDecimalCount(0)
+                                ))
+                        )
+                        .OmitAutoProperties());
+        }
+
         public static void CustomizeDbaseNullableBoolean(this IFixture fixture)
         {
             fixture.Customize<DbaseNullableBoolean>(

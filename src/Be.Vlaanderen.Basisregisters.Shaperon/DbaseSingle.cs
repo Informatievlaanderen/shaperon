@@ -45,9 +45,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 NumberDecimalSeparator = "."
             };
 
-            _value = null;
+            _value = default;
         }
-        
+
         public DbaseSingle(DbaseField field, float value) : base(field)
         {
             if (field == null)
@@ -120,7 +120,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 }
             }
         }
-        
+
         public override void Read(BinaryReader reader)
         {
             if (reader == null)
@@ -136,7 +136,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     );
                 }
 
-                _value = null;
+                _value = default;
             }
             else
             {
