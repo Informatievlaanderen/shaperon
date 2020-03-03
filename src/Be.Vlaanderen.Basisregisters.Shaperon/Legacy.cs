@@ -72,7 +72,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
                     );
                 }
-                Value = null;
+                Value = default;
             }
             else
             {
@@ -173,7 +173,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
                     );
                 }
-                Value = null;
+                Value = default;
             }
             else
             {
@@ -245,7 +245,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
                     );
                 }
-                Value = null;
+                Value = default;
             }
             else
             {
@@ -264,7 +264,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 }
                 else
                 {
-                    Value = null;
+                    Value = default;
                 }
             }
         }
@@ -384,7 +384,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 }
                 else
                 {
-                    _value = null;
+                    _value = default;
                 }
             }
         }
@@ -403,7 +403,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
                     );
                 }
-                Value = null;
+                Value = default;
             }
             else
             {
