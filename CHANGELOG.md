@@ -1,3 +1,10 @@
+# [7.4.0](https://github.com/informatievlaanderen/shaperon/compare/v7.3.1...v7.4.0) (2020-03-03)
+
+
+### Features
+
+* first class support for non nullable and nullable value as ([d69d247](https://github.com/informatievlaanderen/shaperon/commit/d69d247ac461456f1a76ba7f8b2c264c1011f470))
+
 ## [7.3.1](https://github.com/informatievlaanderen/shaperon/compare/v7.3.0...v7.3.1) (2020-03-02)
 
 
