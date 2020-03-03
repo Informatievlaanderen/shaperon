@@ -1232,7 +1232,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                     fixture.Create<DbaseFieldName>(),
                                     DbaseFieldType.Character,
                                     fixture.Create<ByteOffset>(),
-                                    new DbaseFieldLength(15),
+                                    new DbaseFieldLength(25),
                                     new DbaseDecimalCount(0)
                                 ), value)
                         )
@@ -1250,7 +1250,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                     fixture.Create<DbaseFieldName>(),
                                     DbaseFieldType.Character,
                                     fixture.Create<ByteOffset>(),
-                                    new DbaseFieldLength(15),
+                                    new DbaseFieldLength(25),
                                     new DbaseDecimalCount(0)
                                 )
                             )
@@ -1260,16 +1260,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public static void CustomizeDbaseNullableDateTimeOffset(this IFixture fixture)
         {
-            fixture.Customize<DbaseNullableDateTime>(
+            fixture.Customize<DbaseNullableDateTimeOffset>(
                 customization =>
                     customization
-                        .FromFactory<DateTime?>(
-                            value => new DbaseNullableDateTime(
+                        .FromFactory<DateTimeOffset?>(
+                            value => new DbaseNullableDateTimeOffset(
                                 new DbaseField(
                                     fixture.Create<DbaseFieldName>(),
                                     DbaseFieldType.Character,
                                     fixture.Create<ByteOffset>(),
-                                    new DbaseFieldLength(15),
+                                    new DbaseFieldLength(25),
                                     new DbaseDecimalCount(0)
                                 ), value)
                         )

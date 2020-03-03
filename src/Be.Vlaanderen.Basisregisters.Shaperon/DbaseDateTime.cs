@@ -17,8 +17,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 throw new ArgumentException(
                     $"The field {field.Name} 's type must be character to use it as a date time field.", nameof(field));
 
-            _value = null;
             Options = options ?? DbaseDateTimeOptions.Default;
+            _value = null;
         }
 
         public DbaseDateTime(DbaseField field, DateTime value, DbaseDateTimeOptions options = null) : base(field)
@@ -30,8 +30,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 throw new ArgumentException(
                     $"The field {field.Name} 's type must be character to use it as a date time field.", nameof(field));
 
-            Value = value;
             Options = options ?? DbaseDateTimeOptions.Default;
+            Value = value;
         }
 
         public bool AcceptsValue(DateTime value)

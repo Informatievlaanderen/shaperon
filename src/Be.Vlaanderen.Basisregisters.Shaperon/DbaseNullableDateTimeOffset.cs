@@ -17,8 +17,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 throw new ArgumentException(
                     $"The field {field.Name} 's type must be character to use it as a date time offset field.", nameof(field));
 
-            _value = null;
             Options = options ?? DbaseDateTimeOffsetOptions.Default;
+            _value = null;
         }
 
         public DbaseNullableDateTimeOffset(DbaseField field, DateTimeOffset? value, DbaseDateTimeOffsetOptions options = null) : base(field)
@@ -30,8 +30,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 throw new ArgumentException(
                     $"The field {field.Name} 's type must be character to use it as a date time offset field.", nameof(field));
 
-            Value = value;
             Options = options ?? DbaseDateTimeOffsetOptions.Default;
+            Value = value;
         }
 
         public bool AcceptsValue(DateTimeOffset? value)

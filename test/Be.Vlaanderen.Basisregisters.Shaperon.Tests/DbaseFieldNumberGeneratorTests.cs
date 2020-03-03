@@ -22,16 +22,20 @@
             _fixture.CustomizeDbaseFieldName();
             _fixture.CustomizeDbaseFieldLength();
             _fixture.CustomizeDbaseField();
+
             _fixture.CustomizeDbaseNumber();
+            _fixture.CustomizeDbaseFloat();
+
+            _fixture.CustomizeDbaseDouble();
             _fixture.CustomizeDbaseNullableDouble();
+            _fixture.CustomizeDbaseSingle();
+            _fixture.CustomizeDbaseNullableSingle();
+            _fixture.CustomizeDbaseDecimal();
+            _fixture.CustomizeDbaseNullableDecimal();
             _fixture.CustomizeDbaseInt32();
             _fixture.CustomizeDbaseNullableInt32();
             _fixture.CustomizeDbaseInt16();
             _fixture.CustomizeDbaseNullableInt16();
-            _fixture.CustomizeDbaseFloat();
-            _fixture.CustomizeDbaseNullableSingle();
-            _fixture.CustomizeDbaseDecimal();
-            _fixture.CustomizeDbaseNullableDecimal();
 
             _sut = new DbaseFieldNumberGenerator(new Random());
         }

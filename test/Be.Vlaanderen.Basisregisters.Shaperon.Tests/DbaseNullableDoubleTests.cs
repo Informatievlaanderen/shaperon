@@ -9,17 +9,17 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using AutoFixture.Idioms;
     using Xunit;
 
-    public class DbaseNullableSingleTests
+    public class DbaseNullableDoubleTests
     {
         private readonly Fixture _fixture;
 
-        public DbaseNullableSingleTests()
+        public DbaseNullableDoubleTests()
         {
             _fixture = new Fixture();
             _fixture.CustomizeDbaseFieldName();
-            _fixture.CustomizeDbaseFieldLength();
-            _fixture.CustomizeDbaseDecimalCount();
-            _fixture.CustomizeDbaseNullableSingle();
+            _fixture.CustomizeDbaseFieldLength(DbaseNullableDouble.MaximumLength);
+            _fixture.CustomizeDbaseDecimalCount(DbaseNullableDouble.MaximumDecimalCount);
+            _fixture.CustomizeDbaseNullableDouble();
             _fixture.Register(() => new BinaryReader(new MemoryStream()));
             _fixture.Register(() => new BinaryWriter(new MemoryStream()));
         }
@@ -27,51 +27,51 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void MaximumDecimalCountReturnsExpectedValue()
         {
-            Assert.Equal(new DbaseDecimalCount(7), DbaseNullableSingle.MaximumDecimalCount);
+            Assert.Equal(new DbaseDecimalCount(15), DbaseNullableDouble.MaximumDecimalCount);
         }
 
         [Fact]
         public void MaximumIntegerDigitsReturnsExpectedValue()
         {
-            Assert.Equal(new DbaseIntegerDigits(20), DbaseNullableSingle.MaximumIntegerDigits);
+            Assert.Equal(new DbaseIntegerDigits(18), DbaseNullableDouble.MaximumIntegerDigits);
         }
 
         [Fact]
         public void MaximumLengthReturnsExpectedValue()
         {
-            Assert.Equal(new DbaseFieldLength(20), DbaseNullableSingle.MaximumLength);
+            Assert.Equal(new DbaseFieldLength(18), DbaseNullableDouble.MaximumLength);
         }
 
         [Fact]
         public void PositiveValueMinimumLengthReturnsExpectedValue()
         {
-            Assert.Equal(new DbaseFieldLength(3), DbaseNullableSingle.PositiveValueMinimumLength);
+            Assert.Equal(new DbaseFieldLength(3), DbaseNullableDouble.PositiveValueMinimumLength);
         }
 
         [Fact]
         public void NegativeValueMinimumLengthReturnsExpectedValue()
         {
-            Assert.Equal(new DbaseFieldLength(4), DbaseNullableSingle.NegativeValueMinimumLength);
+            Assert.Equal(new DbaseFieldLength(4), DbaseNullableDouble.NegativeValueMinimumLength);
         }
 
         [Fact]
         public void CreateFailsIfFieldIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => new DbaseNullableSingle(null)
+                () => new DbaseNullableDouble(null)
             );
         }
 
         [Fact]
-        public void CreateFailsIfFieldIsNotFloat()
+        public void CreateFailsIfFieldIsNotNumber()
         {
             var fieldType = new Generator<DbaseFieldType>(_fixture)
-                .First(specimen => specimen != DbaseFieldType.Float);
-            var length = _fixture.GenerateDbaseSingleLength();
-            var decimalCount = _fixture.GenerateDbaseSingleDecimalCount(length);
+                .First(specimen => specimen != DbaseFieldType.Number);
+            var length = _fixture.GenerateDbaseDoubleLength();
+            var decimalCount = _fixture.GenerateDbaseDoubleDecimalCount(length);
             Assert.Throws<ArgumentException>(
                 () =>
-                    new DbaseNullableSingle(
+                    new DbaseNullableDouble(
                         new DbaseField(
                             _fixture.Create<DbaseFieldName>(),
                             fieldType,
@@ -86,7 +86,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
-        [InlineData(21)]
+        [InlineData(19)]
         [InlineData(254)]
         public void CreateFailsIfFieldLengthIsOutOfRange(int outOfRange)
         {
@@ -94,7 +94,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var decimalCount = new DbaseDecimalCount(0);
             Assert.Throws<ArgumentException>(
                 () =>
-                    new DbaseNullableSingle(
+                    new DbaseNullableDouble(
                         new DbaseField(
                             _fixture.Create<DbaseFieldName>(),
                             DbaseFieldType.Number,
@@ -109,67 +109,67 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void IsDbaseFieldValue()
         {
-            Assert.IsAssignableFrom<DbaseFieldValue>(_fixture.Create<DbaseNullableSingle>());
+            Assert.IsAssignableFrom<DbaseFieldValue>(_fixture.Create<DbaseNullableDouble>());
         }
 
         [Fact]
         public void ReaderCanNotBeNull()
         {
             new GuardClauseAssertion(_fixture)
-                .Verify(new Methods<DbaseNullableSingle>().Select(instance => instance.Read(null)));
+                .Verify(new Methods<DbaseNullableDouble>().Select(instance => instance.Read(null)));
         }
 
         [Fact]
         public void WriterCanNotBeNull()
         {
             new GuardClauseAssertion(_fixture)
-                .Verify(new Methods<DbaseNullableSingle>().Select(instance => instance.Write(null)));
+                .Verify(new Methods<DbaseNullableDouble>().Select(instance => instance.Write(null)));
         }
 
         [Fact]
         public void LengthOfPositiveValueBeingSetCanNotExceedFieldLength()
         {
-            var length = DbaseNullableSingle.MaximumLength;
-            var decimalCount = _fixture.GenerateDbaseSingleDecimalCount(length);
+            var length = DbaseNullableDouble.MaximumLength;
+            var decimalCount = _fixture.GenerateDbaseDoubleDecimalCount(length);
 
             var sut =
-                new DbaseNullableSingle(
+                new DbaseNullableDouble(
                     new DbaseField(
                         _fixture.Create<DbaseFieldName>(),
-                        DbaseFieldType.Float,
+                        DbaseFieldType.Number,
                         _fixture.Create<ByteOffset>(),
                         length,
                         decimalCount
                     )
                 );
 
-            Assert.Throws<ArgumentException>(() => sut.Value = float.MaxValue);
+            Assert.Throws<ArgumentException>(() => sut.Value = double.MaxValue);
         }
 
         [Fact]
         public void LengthOfNegativeValueBeingSetCanNotExceedFieldLength()
         {
-            var length = DbaseNullableSingle.MaximumLength;
-            var decimalCount = _fixture.GenerateDbaseSingleDecimalCount(length);
+            var length = DbaseNullableDouble.MaximumLength;
+            var decimalCount = _fixture.GenerateDbaseDoubleDecimalCount(length);
 
             var sut =
-                new DbaseNullableSingle(
+                new DbaseNullableDouble(
                     new DbaseField(
                         _fixture.Create<DbaseFieldName>(),
-                        DbaseFieldType.Float,
+                        DbaseFieldType.Number,
                         _fixture.Create<ByteOffset>(),
                         length,
                         decimalCount
                     )
                 );
 
-            Assert.Throws<ArgumentException>(() => sut.Value = float.MinValue);
+            Assert.Throws<ArgumentException>(() => sut.Value = double.MinValue);
         }
 
         [Fact]
         public void CanReadWriteNull()
         {
-            var sut = _fixture.Create<DbaseNullableSingle>();
+            var sut = _fixture.Create<DbaseNullableDouble>();
             sut.Value = null;
 
             using (var stream = new MemoryStream())
@@ -184,7 +184,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseNullableSingle(sut.Field);
+                    var result = new DbaseNullableDouble(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -198,12 +198,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             using (var random = new PooledRandom())
             {
-                var sut = new DbaseNullableSingle(
+                var sut = new DbaseNullableDouble(
                     new DbaseField(
                         _fixture.Create<DbaseFieldName>(),
-                        DbaseFieldType.Float,
+                        DbaseFieldType.Number,
                         _fixture.Create<ByteOffset>(),
-                        DbaseNullableSingle.NegativeValueMinimumLength,
+                        DbaseNullableDouble.NegativeValueMinimumLength,
                         new DbaseDecimalCount(1)
                     )
                 );
@@ -223,7 +223,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                     using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                     {
-                        var result = new DbaseNullableSingle(sut.Field);
+                        var result = new DbaseNullableDouble(sut.Field);
                         result.Read(reader);
 
                         Assert.Equal(sut, result, new DbaseFieldValueEqualityComparer());
@@ -232,18 +232,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-
         [Fact]
         public void CanReadWriteWithMaxDecimalCount()
         {
-            var length = DbaseNullableSingle.MaximumLength;
-            var decimalCount = DbaseDecimalCount.Min(DbaseNullableSingle.MaximumDecimalCount,
-                new DbaseDecimalCount(length.ToInt32() - 2));
+            var length = DbaseNullableDouble.MaximumLength;
+            var decimalCount = DbaseNullableDouble.MaximumDecimalCount;
             var sut =
-                new DbaseNullableSingle(
+                new DbaseNullableDouble(
                     new DbaseField(
                         _fixture.Create<DbaseFieldName>(),
-                        DbaseFieldType.Float,
+                        DbaseFieldType.Number,
                         _fixture.Create<ByteOffset>(),
                         length,
                         decimalCount
@@ -268,10 +266,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                     using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                     {
-                        var result = new DbaseNullableSingle(sut.Field);
+                        var result = new DbaseNullableDouble(sut.Field);
                         result.Read(reader);
 
-                        Assert.Equal(sut, result, new DbaseFieldValueEqualityComparer());
+                        Assert.Equal(sut.Field, result.Field);
+                        Assert.Equal(sut.Value, result.Value);
                     }
                 }
             }
@@ -280,7 +279,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanReadWrite()
         {
-            var sut = _fixture.Create<DbaseNullableSingle>();
+            var sut = _fixture.Create<DbaseNullableDouble>();
 
             using (var stream = new MemoryStream())
             {
@@ -294,7 +293,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseNullableSingle(sut.Field);
+                    var result = new DbaseNullableDouble(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -306,7 +305,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanNotReadPastEndOfStream()
         {
-            var sut = _fixture.Create<DbaseNullableSingle>();
+            var sut = _fixture.Create<DbaseNullableDouble>();
 
             using (var stream = new MemoryStream())
             {
@@ -320,7 +319,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseNullableSingle(sut.Field);
+                    var result = new DbaseNullableDouble(sut.Field);
                     Assert.Throws<EndOfStreamException>(() => result.Read(reader));
                 }
             }
@@ -329,16 +328,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void WritesExcessDecimalsAsZero()
         {
-            var length = _fixture.GenerateDbaseSingleLength();
-            var decimalCount = _fixture.GenerateDbaseSingleDecimalCount(length);
-            var sut = new DbaseNullableSingle(
+            var length = _fixture.GenerateDbaseDoubleLength();
+            var decimalCount = _fixture.GenerateDbaseDoubleDecimalCount(length);
+            var sut = new DbaseNullableDouble(
                 new DbaseField(
                     _fixture.Create<DbaseFieldName>(),
-                    DbaseFieldType.Float,
+                    DbaseFieldType.Number,
                     _fixture.Create<ByteOffset>(),
                     length,
                     decimalCount
-                ), 0.0f);
+                ), 0.0);
 
             using (var stream = new MemoryStream())
             {

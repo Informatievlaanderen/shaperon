@@ -79,7 +79,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void LengthOfValueBeingSetCanNotExceedFieldLength()
         {
             var maxLength = new DbaseFieldLength(
-                int.MaxValue.ToString(CultureInfo.InvariantCulture).Length - 1
+                short.MaxValue.ToString(CultureInfo.InvariantCulture).Length - 1
                 // because it's impossible to create a value longer than this (we need the test to generate a longer value)
             );
             var length = _fixture.GenerateDbaseInt16LengthLessThan(maxLength);
@@ -99,14 +99,14 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .Range(0, sut.Field.Length.ToInt32())
                 .Aggregate(1, (current, _) => current * 10));
 
-            Assert.Throws<ArgumentException>(() => sut.Value = value);
+            Assert.Throws<FormatException>(() => sut.Value = value);
         }
 
         [Fact]
         public void LengthOfNegativeValueBeingSetCanNotExceedFieldLength()
         {
             var maxLength = new DbaseFieldLength(
-                int.MinValue.ToString(CultureInfo.InvariantCulture).Length - 1
+                short.MinValue.ToString(CultureInfo.InvariantCulture).Length - 1
                 // because it's impossible to create a value longer than this (we need the test to generate a longer value)
             );
             var length = _fixture.GenerateDbaseInt16LengthLessThan(maxLength);
@@ -126,7 +126,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .Range(0, sut.Field.Length.ToInt32())
                 .Aggregate(-1, (current, _) => current * 10));
 
-            Assert.Throws<ArgumentException>(() => sut.Value = value);
+            Assert.Throws<FormatException>(() => sut.Value = value);
         }
 
         [Fact]

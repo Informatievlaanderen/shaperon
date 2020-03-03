@@ -9,13 +9,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using AutoFixture;
     using AutoFixture.Idioms;
     using Xunit;
+    using Xunit.Abstractions;
 
     public class DbaseInt16Tests
     {
+        private readonly ITestOutputHelper _output;
         private readonly Fixture _fixture;
 
-        public DbaseInt16Tests()
+        public DbaseInt16Tests(ITestOutputHelper output)
         {
+            _output = output ?? throw new ArgumentNullException(nameof(output));
             _fixture = new Fixture();
             _fixture.CustomizeDbaseFieldName();
             _fixture.CustomizeDbaseFieldLength();
@@ -99,7 +102,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .Range(0, sut.Field.Length.ToInt32())
                 .Aggregate(1, (current, _) => current * 10));
 
-            Assert.Throws<ArgumentException>(() => sut.Value = value);
+            Assert.Throws<FormatException>(() => sut.Value = value);
         }
 
         [Fact]
@@ -125,8 +128,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var value = Convert.ToInt16(Enumerable
                 .Range(0, sut.Field.Length.ToInt32())
                 .Aggregate(-1, (current, _) => current * 10));
+            _output.WriteLine(value.ToString(CultureInfo.InvariantCulture));
 
-            Assert.Throws<ArgumentException>(() => sut.Value = value);
+            Assert.Throws<FormatException>(() => sut.Value = value);
         }
 
         [Fact]

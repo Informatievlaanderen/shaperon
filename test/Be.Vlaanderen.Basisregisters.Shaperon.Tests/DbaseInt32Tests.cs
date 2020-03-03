@@ -100,7 +100,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .Range(0, sut.Field.Length.ToInt32())
                 .Aggregate(1, (current, _) => current * 10);
 
-            Assert.Throws<ArgumentException>(() => sut.Value = value);
+            Assert.Throws<FormatException>(() => sut.Value = value);
         }
 
         [Fact]
@@ -127,7 +127,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .Range(0, sut.Field.Length.ToInt32())
                 .Aggregate(-1, (current, _) => current * 10);
 
-            Assert.Throws<ArgumentException>(() => sut.Value = value);
+            Assert.Throws<FormatException>(() => sut.Value = value);
         }
 
         [Fact]
