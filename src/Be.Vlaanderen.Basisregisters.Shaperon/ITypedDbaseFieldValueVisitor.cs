@@ -1,22 +1,23 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon
 {
-    public partial interface ITypedDbaseFieldValueVisitor
+    public interface ITypedDbaseFieldValueVisitor : IDbaseFieldValueVisitor
     {
         void Visit(DbaseInt16 value);
         void Visit(DbaseNullableInt16 value);
         void Visit(DbaseInt32 value);
         void Visit(DbaseNullableInt32 value);
         void Visit(DbaseString value);
-        //DbaseDouble
-        //DbaseNullableDouble
-        //DbaseSingle
-        //DbaseNullableSingle
-        //DbaseBoolean
-        //DbaseNullableBoolean
-        //
+        void Visit(DbaseBoolean value);
+        void Visit(DbaseNullableBoolean value);
+        void Visit(DbaseDecimal value);
+        void Visit(DbaseNullableDecimal value);
+        void Visit(DbaseDouble value);
+        void Visit(DbaseNullableDouble value);
+        void Visit(DbaseSingle value);
+        void Visit(DbaseNullableSingle value);
         void Visit(DbaseDateTime value);
         void Visit(DbaseNullableDateTime value);
-        //DbaseDateTimeOffset
-        //DbaseNullableDateTimeOffset
+        void Visit(DbaseDateTimeOffset value);
+        void Visit(DbaseNullableDateTimeOffset value);
     }
 }

@@ -60,7 +60,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             {
                 if (!_value.HasValue)
                 {
-                    throw new InvalidOperationException($"The field {Field.Name} can not be null when read as non nullable datatype.");
+                    throw new FormatException($"The field {Field.Name} can not be null when read as non nullable datatype.");
                 }
                 return _value.Value;
             }
@@ -69,7 +69,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 var length = FormatAsString(value).Length;
 
                 if (length > Field.Length.ToInt32())
-                    throw new ArgumentException(
+                    throw new FormatException(
                         $"The value length {length} of field {Field.Name} is greater than its field length {Field.Length}.");
 
                 _value = value;

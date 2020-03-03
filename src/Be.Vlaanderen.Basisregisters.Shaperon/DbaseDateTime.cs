@@ -15,7 +15,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             if (field.FieldType != DbaseFieldType.Character)
                 throw new ArgumentException(
-                    $"The field {field.Name} 's type must be character to use it as a character field.", nameof(field));
+                    $"The field {field.Name} 's type must be character to use it as a date time field.", nameof(field));
 
             _value = null;
             Options = options ?? DbaseDateTimeOptions.Default;
@@ -28,7 +28,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             if (field.FieldType != DbaseFieldType.Character)
                 throw new ArgumentException(
-                    $"The field {field.Name} 's type must be character to use it as a character field.", nameof(field));
+                    $"The field {field.Name} 's type must be character to use it as a date time field.", nameof(field));
 
             Value = value;
             Options = options ?? DbaseDateTimeOptions.Default;
@@ -45,7 +45,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public DbaseDateTimeOptions Options { get; }
 
-        public bool TryGetValue(out DateTime value)
+        private bool TryGetValue(out DateTime value)
         {
             if (_value == null)
             {
@@ -67,7 +67,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return false;
         }
 
-        public bool TrySetValue(DateTime value)
+        private bool TrySetValue(DateTime value)
         {
             var formatted = value.ToString(Options.DateTimeFormat);
             if (formatted.Length > Field.Length.ToInt32())

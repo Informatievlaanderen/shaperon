@@ -5,7 +5,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using System.IO;
     using System.Linq;
 
-    [Obsolete("Please use DbaseNumber instead.")]
     public class DbaseDecimal : DbaseFieldValue
     {
         // REMARK: Actual max double integer digits is 308, field only supports 254, but number dbase type only supports 18.
@@ -29,7 +28,30 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         private decimal? _value;
 
-        public DbaseDecimal(DbaseField field, decimal? value = null) : base(field)
+        public DbaseDecimal(DbaseField field) : base(field)
+        {
+            if (field == null)
+                throw new ArgumentNullException(nameof(field));
+
+            if (field.FieldType != DbaseFieldType.Number)
+                throw new ArgumentException(
+                    $"The field {field.Name} 's type must be number to use it as a decimal field.", nameof(field));
+
+            if (field.Length < MinimumLength || field.Length > MaximumLength)
+                throw new ArgumentException(
+                    $"The field {field.Name} 's length ({field.Length}) must be between {MinimumLength} and {MaximumLength}.",
+                    nameof(field));
+
+            Provider = new NumberFormatInfo
+            {
+                NumberDecimalDigits = DbaseDecimalCount.Min(MaximumDecimalCount, field.DecimalCount).ToInt32(),
+                NumberDecimalSeparator = "."
+            };
+
+            _value = null;
+        }
+
+        public DbaseDecimal(DbaseField field, decimal value) : base(field)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));
@@ -66,41 +88,41 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         }
 
-        public decimal? Value
+        public decimal Value
         {
-            get => _value;
+            get
+            {
+                if (!_value.HasValue)
+                {
+                    throw new FormatException($"The field {Field.Name} can not be null when read as non nullable datatype.");
+                }
+                return _value.Value;
+            }
             set
             {
-                if (value.HasValue)
+                if (Field.DecimalCount.ToInt32() == 0)
                 {
-                    if (Field.DecimalCount.ToInt32() == 0)
-                    {
-                        var truncated = Math.Truncate(value.Value);
-                        var length = truncated.ToString("F", Provider).Length;
+                    var truncated = Math.Truncate(value);
+                    var length = truncated.ToString("F", Provider).Length;
 
-                        if (length > Field.Length.ToInt32())
-                            throw new ArgumentException(
-                                $"The length ({length}) of the value ({truncated}) of field {Field.Name} is greater than its field length {Field.Length}, which would result in loss of precision.");
+                    if (length > Field.Length.ToInt32())
+                        throw new ArgumentException(
+                            $"The length ({length}) of the value ({truncated}) of field {Field.Name} is greater than its field length {Field.Length}, which would result in loss of precision.");
 
-                        _value = truncated;
-                    }
-                    else
-                    {
-                        var digits = DbaseDecimalCount.Min(MaximumDecimalCount, Field.DecimalCount).ToInt32();
-                        var rounded = Math.Round(value.Value, digits);
-                        var roundedFormatted = rounded.ToString("F", Provider);
-                        var length = roundedFormatted.Length;
-
-                        if (length > Field.Length.ToInt32())
-                            throw new ArgumentException(
-                                $"The length ({length}) of the value ({roundedFormatted}) of field {Field.Name} is greater than its field length {Field.Length}, which would result in loss of precision.");
-
-                        _value = decimal.Parse(roundedFormatted, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, Provider);
-                    }
+                    _value = truncated;
                 }
                 else
                 {
-                    _value = default;
+                    var digits = DbaseDecimalCount.Min(MaximumDecimalCount, Field.DecimalCount).ToInt32();
+                    var rounded = Math.Round(value, digits);
+                    var roundedFormatted = rounded.ToString("F", Provider);
+                    var length = roundedFormatted.Length;
+
+                    if (length > Field.Length.ToInt32())
+                        throw new ArgumentException(
+                            $"The length ({length}) of the value ({roundedFormatted}) of field {Field.Name} is greater than its field length {Field.Length}, which would result in loss of precision.");
+
+                    _value = decimal.Parse(roundedFormatted, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, Provider);
                 }
             }
         }
@@ -119,13 +141,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
                     );
                 }
-                Value = default;
+                _value = null;
             }
             else
             {
                 var unpadded = reader.ReadLeftPaddedString(Field.Name.ToString(), Field.Length.ToInt32(), ' ');
 
-                Value = decimal.TryParse(unpadded, NumberStyle, Provider, out var parsed)
+                _value = decimal.TryParse(unpadded, NumberStyle, Provider, out var parsed)
                     ? (decimal?) parsed
                     : null;
             }
@@ -136,9 +158,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (writer == null)
                 throw new ArgumentNullException(nameof(writer));
 
-            if (Value.HasValue)
+            if (_value.HasValue)
             {
-                var unpadded = Value.Value.ToString("F", Provider);
+                var unpadded = _value.Value.ToString("F", Provider);
                 if (unpadded.Length < Field.Length.ToInt32() && Field.DecimalCount.ToInt32() > 0)
                 {
                     // Pad with decimal zeros if space left.
@@ -164,39 +186,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        public override void Accept(IDbaseFieldValueVisitor visitor) => visitor.Visit(this);
-    }
-
-    public partial class DbaseField
-    {
-        public static DbaseField CreateInt32Field(DbaseFieldName name, DbaseFieldLength length)
-            => new DbaseField(name, DbaseFieldType.Number, ByteOffset.Initial, length, new DbaseDecimalCount(0));
-
-        [Obsolete("Please use DbaseField.CreateCharacterField instead")]
-        public static DbaseField CreateStringField(DbaseFieldName name, DbaseFieldLength length)
-            => new DbaseField(name, DbaseFieldType.Character, ByteOffset.Initial, length, new DbaseDecimalCount(0));
-
-
-        [Obsolete("Please use DbaseField.CreateNumberField or DbaseField.CreateFloatField instead")]
-        public static DbaseField CreateInt16Field(DbaseFieldName name, DbaseFieldLength length)
-            => new DbaseField(name, DbaseFieldType.Number, ByteOffset.Initial, length, new DbaseDecimalCount(0));
-
-        [Obsolete("Please use DbaseField.CreateCharacterField instead")]
-        public static DbaseField CreateDateTimeField(DbaseFieldName name)
-            => new DbaseField(name, DbaseFieldType.DateTime, ByteOffset.Initial, new DbaseFieldLength(15), new DbaseDecimalCount(0));
-
-        [Obsolete("Please use DbaseField.CreateNumberField instead")]
-        public static DbaseField CreateDoubleField(DbaseFieldName name, DbaseFieldLength length, DbaseDecimalCount decimalCount)
-            => new DbaseField(name, DbaseFieldType.Number, ByteOffset.Initial, length, decimalCount);
-
-        [Obsolete("Please use DbaseField.CreateFloatField instead")]
-        public static DbaseField CreateSingleField(DbaseFieldName name, DbaseFieldLength length, DbaseDecimalCount decimalCount)
-            => new DbaseField(name, DbaseFieldType.Float, ByteOffset.Initial, length, decimalCount);
-    }
-
-    public partial interface IDbaseFieldValueVisitor
-    {
-        [Obsolete("Please use DbaseNumber instead.")]
-        void Visit(DbaseDecimal value);
+        public override void Accept(IDbaseFieldValueVisitor visitor) => (visitor as ITypedDbaseFieldValueVisitor)?.Visit(this);
     }
 }

@@ -27,9 +27,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             _fixture.CustomizeDbaseSchema();
             _fixture.CustomizeDbaseDateTime();
             _fixture.CustomizeDbaseLogical();
-            _fixture.CustomizeDbaseSingle();
+            _fixture.CustomizeDbaseFloat();
             _fixture.CustomizeDbaseString();
-            _fixture.CustomizeDbaseDouble();
+            _fixture.CustomizeDbaseNumber();
             _fixture.Register<Stream>(() => new MemoryStream());
         }
 

@@ -46,7 +46,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     var length = FormatAsString(value.Value).Length;
 
                     if (length > Field.Length.ToInt32())
-                        throw new ArgumentException(
+                        throw new FormatException(
                             $"The value length {length} of field {Field.Name} is greater than its field length {Field.Length}.");
                 }
 

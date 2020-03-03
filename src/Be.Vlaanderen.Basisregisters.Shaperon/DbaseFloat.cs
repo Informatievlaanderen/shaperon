@@ -32,7 +32,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             if (field.FieldType != DbaseFieldType.Float)
                 throw new ArgumentException(
-                    $"The field {field.Name} 's type must be float to use it as a single field.", nameof(field));
+                    $"The field {field.Name} 's type must be float to use it as a float field.", nameof(field));
 
             if (field.Length < MinimumLength || field.Length > MaximumLength)
                 throw new ArgumentException(

@@ -35,7 +35,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             if (field.FieldType != DbaseFieldType.Number)
                 throw new ArgumentException(
-                    $"The field {field.Name} 's type must be number to use it as a double field.", nameof(field));
+                    $"The field {field.Name} 's type must be number to use it as a number field.", nameof(field));
 
             if (field.Length < MinimumLength || field.Length > MaximumLength)
                 throw new ArgumentException(

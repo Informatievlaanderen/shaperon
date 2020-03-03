@@ -14,7 +14,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             if (field.FieldType != DbaseFieldType.Character)
                 throw new ArgumentException(
-                    $"The field {field.Name} 's type must be character to use it as a character field.", nameof(field));
+                    $"The field {field.Name} 's type must be character to use it as a string field.", nameof(field));
 
             Value = value;
         }
@@ -39,7 +39,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 _value = value;
             }
         }
-        
+
         public override void Read(BinaryReader reader)
         {
             if (reader == null)

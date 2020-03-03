@@ -9,22 +9,18 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     using AutoFixture;
     using AutoFixture.Idioms;
     using Xunit;
-    using Xunit.Abstractions;
 
-    public class DbaseInt32Tests
+    public class DbaseNullableInt16Tests
     {
         private readonly Fixture _fixture;
 
-        private ITestOutputHelper _out;
-
-        public DbaseInt32Tests(ITestOutputHelper @out)
+        public DbaseNullableInt16Tests()
         {
-            _out = @out ?? throw new ArgumentNullException(nameof(@out));
             _fixture = new Fixture();
             _fixture.CustomizeDbaseFieldName();
             _fixture.CustomizeDbaseFieldLength();
             _fixture.CustomizeDbaseDecimalCount();
-            _fixture.CustomizeDbaseInt32();
+            _fixture.CustomizeDbaseNullableInt16();
             _fixture.Register(() => new BinaryReader(new MemoryStream()));
             _fixture.Register(() => new BinaryWriter(new MemoryStream()));
         }
@@ -33,7 +29,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void CreateFailsIfFieldIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => new DbaseInt32(null)
+                () => new DbaseNullableInt16(null)
             );
         }
 
@@ -46,7 +42,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .First(specimen => specimen.ToInt32() > 0);
             Assert.Throws<ArgumentException>(
                 () =>
-                    new DbaseInt32(
+                    new DbaseNullableInt16(
                         new DbaseField(
                             _fixture.Create<DbaseFieldName>(),
                             fieldType,
@@ -67,7 +63,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 .First(specimen => specimen.ToInt32() != 0 && specimen.ToInt32() < length.ToInt32());
             Assert.Throws<ArgumentException>(
                 () =>
-                    new DbaseInt32(
+                    new DbaseNullableInt16(
                         new DbaseField(
                             _fixture.Create<DbaseFieldName>(),
                             _fixture.GenerateDbaseInt32FieldType(),
@@ -86,11 +82,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 int.MaxValue.ToString(CultureInfo.InvariantCulture).Length - 1
                 // because it's impossible to create a value longer than this (we need the test to generate a longer value)
             );
-            var length = _fixture.GenerateDbaseInt32LengthLessThan(maxLength);
-            _out.WriteLine("Length used is: {0}", length.ToString());
+            var length = _fixture.GenerateDbaseInt16LengthLessThan(maxLength);
 
             var sut =
-                new DbaseInt32(
+                new DbaseNullableInt16(
                     new DbaseField(
                         _fixture.Create<DbaseFieldName>(),
                         _fixture.GenerateDbaseInt32FieldType(),
@@ -100,10 +95,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     )
                 );
 
-            var value = Enumerable
+            var value = Convert.ToInt16(Enumerable
                 .Range(0, sut.Field.Length.ToInt32())
-                .Aggregate(1, (current, _) => current * 10);
-            _out.WriteLine("Value used is: {0}", value.ToString());
+                .Aggregate(1, (current, _) => current * 10));
 
             Assert.Throws<ArgumentException>(() => sut.Value = value);
         }
@@ -115,10 +109,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 int.MinValue.ToString(CultureInfo.InvariantCulture).Length - 1
                 // because it's impossible to create a value longer than this (we need the test to generate a longer value)
             );
-            var length = _fixture.GenerateDbaseInt32LengthLessThan(maxLength);
+            var length = _fixture.GenerateDbaseInt16LengthLessThan(maxLength);
 
             var sut =
-                new DbaseInt32(
+                new DbaseNullableInt16(
                     new DbaseField(
                         _fixture.Create<DbaseFieldName>(),
                         _fixture.GenerateDbaseInt32FieldType(),
@@ -128,9 +122,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     )
                 );
 
-            var value = Enumerable
+            var value = Convert.ToInt16(Enumerable
                 .Range(0, sut.Field.Length.ToInt32())
-                .Aggregate(-1, (current, _) => current * 10);
+                .Aggregate(-1, (current, _) => current * 10));
 
             Assert.Throws<ArgumentException>(() => sut.Value = value);
         }
@@ -138,29 +132,28 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void IsDbaseFieldValue()
         {
-            Assert.IsAssignableFrom<DbaseFieldValue>(_fixture.Create<DbaseInt32>());
+            Assert.IsAssignableFrom<DbaseFieldValue>(_fixture.Create<DbaseNullableInt16>());
         }
 
         [Fact]
         public void ReaderCanNotBeNull()
         {
             new GuardClauseAssertion(_fixture)
-                .Verify(new Methods<DbaseInt32>().Select(instance => instance.Read(null)));
+                .Verify(new Methods<DbaseNullableInt16>().Select(instance => instance.Read(null)));
         }
 
         [Fact]
         public void WriterCanNotBeNull()
         {
             new GuardClauseAssertion(_fixture)
-                .Verify(new Methods<DbaseInt32>().Select(instance => instance.Write(null)));
+                .Verify(new Methods<DbaseNullableInt16>().Select(instance => instance.Write(null)));
         }
 
         [Fact]
         public void CanReadWriteNull()
         {
-            var sut = _fixture.Create<DbaseInt32>();
-            //TODO: Temporary hack
-            //sut.Value = null;
+            var sut = _fixture.Create<DbaseNullableInt16>();
+            sut.Value = null;
 
             using (var stream = new MemoryStream())
             {
@@ -174,7 +167,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseInt32(sut.Field);
+                    var result = new DbaseNullableInt16(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -186,8 +179,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanReadWriteNegative()
         {
-            var value = Math.Abs(_fixture.Create<int>()) * -1;
-            var sut = new DbaseInt32(
+            var value = Convert.ToInt16(Math.Abs(_fixture.Create<short>()) * -1);
+            var sut = new DbaseNullableInt16(
                 new DbaseField(
                     _fixture.Create<DbaseFieldName>(),
                     _fixture.GenerateDbaseInt32FieldType(),
@@ -210,7 +203,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseInt32(sut.Field);
+                    var result = new DbaseNullableInt16(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -222,7 +215,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanReadWrite()
         {
-            var sut = _fixture.Create<DbaseInt32>();
+            var sut = _fixture.Create<DbaseNullableInt16>();
 
             using (var stream = new MemoryStream())
             {
@@ -236,7 +229,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseInt32(sut.Field);
+                    var result = new DbaseNullableInt16(sut.Field);
                     result.Read(reader);
 
                     Assert.Equal(sut.Field, result.Field);
@@ -248,7 +241,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void CanNotReadPastEndOfStream()
         {
-            var sut = _fixture.Create<DbaseInt32>();
+            var sut = _fixture.Create<DbaseNullableInt16>();
 
             using (var stream = new MemoryStream())
             {
@@ -262,176 +255,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
                 using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
                 {
-                    var result = new DbaseInt32(sut.Field);
-                    Assert.Throws<EndOfStreamException>(() => result.Read(reader));
-                }
-            }
-        }
-    }
-
-    public class DbaseDateTimeTests
-    {
-        private readonly Fixture _fixture;
-
-        public DbaseDateTimeTests()
-        {
-            _fixture = new Fixture();
-            _fixture.CustomizeDbaseFieldName();
-            _fixture.CustomizeDbaseFieldLength();
-            _fixture.CustomizeDbaseDecimalCount();
-            _fixture.CustomizeDbaseDateTime();
-            _fixture.Register(() => new BinaryReader(new MemoryStream()));
-            _fixture.Register(() => new BinaryWriter(new MemoryStream()));
-        }
-
-        [Fact]
-        public void CreateFailsIfFieldIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => new DbaseDateTime(null)
-            );
-        }
-
-        [Fact]
-        public void CreateFailsIfFieldIsNotDateTimeOrCharacter()
-        {
-            var fieldType = new Generator<DbaseFieldType>(_fixture)
-                .First(specimen => specimen != DbaseFieldType.DateTime && specimen != DbaseFieldType.Character);
-            Assert.Throws<ArgumentException>(
-                () =>
-                    new DbaseDateTime(
-                        new DbaseField(
-                            _fixture.Create<DbaseFieldName>(),
-                            fieldType,
-                            _fixture.Create<ByteOffset>(),
-                            new DbaseFieldLength(15),
-                            new DbaseDecimalCount(0)
-                        )
-                    )
-            );
-        }
-
-        [Fact]
-        public void IsDbaseFieldValue()
-        {
-            Assert.IsAssignableFrom<DbaseFieldValue>(_fixture.Create<DbaseDateTime>());
-        }
-
-        [Fact]
-        public void DateTimeMillisecondsAreRemovedUponConstruction()
-        {
-            var field = new DbaseField(
-                _fixture.Create<DbaseFieldName>(),
-                DbaseFieldType.DateTime,
-                _fixture.Create<ByteOffset>(),
-                new DbaseFieldLength(15),
-                new DbaseDecimalCount(0));
-            var sut = new DbaseDateTime(field, new DateTime(1, 1, 1, 1, 1, 1, 1));
-
-            Assert.Equal(new DateTime(1, 1, 1, 1, 1, 1, 0), sut.Value);
-        }
-
-        [Fact]
-        public void DateTimeMillisecondsAreRemovedUponSet()
-        {
-            var field = new DbaseField(
-                _fixture.Create<DbaseFieldName>(),
-                DbaseFieldType.DateTime,
-                _fixture.Create<ByteOffset>(),
-                new DbaseFieldLength(15),
-                new DbaseDecimalCount(0));
-            var sut = new DbaseDateTime(field);
-
-            sut.Value = new DateTime(1, 1, 1, 1, 1, 1, 1);
-
-            Assert.Equal(new DateTime(1, 1, 1, 1, 1, 1, 0), sut.Value);
-        }
-
-        [Fact]
-        public void ReaderCanNotBeNull()
-        {
-            new GuardClauseAssertion(_fixture)
-                .Verify(new Methods<DbaseDateTime>().Select(instance => instance.Read(null)));
-        }
-
-        [Fact]
-        public void WriterCanNotBeNull()
-        {
-            new GuardClauseAssertion(_fixture)
-                .Verify(new Methods<DbaseDateTime>().Select(instance => instance.Write(null)));
-        }
-
-        [Fact]
-        public void CanReadWriteNull()
-        {
-            var sut = _fixture.Create<DbaseDateTime>();
-            sut.Value = null;
-
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
-                {
-                    sut.Write(writer);
-                    writer.Flush();
-                }
-
-                stream.Position = 0;
-
-                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
-                {
-                    var result = new DbaseDateTime(sut.Field);
-                    result.Read(reader);
-
-                    Assert.Equal(sut.Field, result.Field);
-                    Assert.Equal(sut.Value, result.Value);
-                }
-            }
-        }
-
-        [Fact]
-        public void CanReadWrite()
-        {
-            var sut = _fixture.Create<DbaseDateTime>();
-
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
-                {
-                    sut.Write(writer);
-                    writer.Flush();
-                }
-
-                stream.Position = 0;
-
-                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
-                {
-                    var result = new DbaseDateTime(sut.Field);
-                    result.Read(reader);
-
-                    Assert.Equal(sut.Field, result.Field);
-                    Assert.Equal(sut.Value, result.Value);
-                }
-            }
-        }
-
-        [Fact]
-        public void CanNotReadPastEndOfStream()
-        {
-            var sut = _fixture.Create<DbaseDateTime>();
-
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new BinaryWriter(stream, Encoding.ASCII, true))
-                {
-                    writer.Write(_fixture.CreateMany<byte>(new Random().Next(0, 14)).ToArray());
-                    writer.Flush();
-                }
-
-                stream.Position = 0;
-
-                using (var reader = new BinaryReader(stream, Encoding.ASCII, true))
-                {
-                    var result = new DbaseDateTime(sut.Field);
+                    var result = new DbaseNullableInt16(sut.Field);
                     Assert.Throws<EndOfStreamException>(() => result.Read(reader));
                 }
             }
