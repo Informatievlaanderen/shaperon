@@ -68,10 +68,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (Field.DecimalCount.ToInt32() == 0)
             {
-                if (value.HasValue)
-                    return FormatAsString(value.Value).Length <= Field.Length.ToInt32();
-
-                return true;
+                return !value.HasValue || AcceptsValue(value.Value);
             }
 
             return false;
@@ -81,10 +78,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (Field.DecimalCount.ToInt32() == 0)
             {
-                if (value.HasValue)
-                    return FormatAsString(value.Value).Length <= Field.Length.ToInt32();
-
-                return true;
+                return !value.HasValue || AcceptsValue(value.Value);
             }
 
             return false;
@@ -146,7 +140,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 }
                 else
                 {
-                    _value = null;
+                    _value = default;
                 }
             }
         }
@@ -228,7 +222,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     return false;
                 }
 
-                value = null;
+                value = default;
                 return true;
             }
 
@@ -352,7 +346,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     return false;
                 }
 
-                value = null;
+                value = default;
                 return true;
             }
 
@@ -417,7 +411,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
                     );
                 }
-                Value = null;
+                Value = default;
             }
             else
             {

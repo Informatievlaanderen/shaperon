@@ -63,7 +63,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     break;
 
                 default:
-                    Value = null;
+                    Value = default;
                     break;
             }
         }

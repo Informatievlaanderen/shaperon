@@ -32,26 +32,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public bool AcceptsValue(DateTime? value)
         {
-            if (value.HasValue)
-            {
-                var formatted = value.Value.ToString(Options.DateTimeFormat);
-                if (formatted.Length > Field.Length.ToInt32())
-                    return false;
-            }
-
-            return true;
+            return !value.HasValue || AcceptsValue(value.Value);
         }
 
         public bool AcceptsValue(DateTimeOffset? value)
         {
-            if (value.HasValue)
-            {
-                var formatted = value.Value.ToString(Options.DateTimeOffsetFormat);
-                if (formatted.Length > Field.Length.ToInt32())
-                    return false;
-            }
-
-            return true;
+            return !value.HasValue || AcceptsValue(value.Value);
         }
 
         public bool AcceptsValue(DateTime value)
@@ -148,7 +134,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (Value == null)
             {
-                value = null;
+                value = default;
                 return true;
             }
 
@@ -170,7 +156,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (!value.HasValue)
             {
-                Value = null;
+                Value = default;
                 return true;
             }
 
@@ -263,7 +249,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (Value == null)
             {
-                value = null;
+                value = default;
                 return true;
             }
 
@@ -285,7 +271,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (!value.HasValue)
             {
-                Value = null;
+                Value = default;
                 return true;
             }
 
@@ -331,7 +317,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
                     );
                 }
-                Value = null;
+                Value = default;
             }
             else
             {

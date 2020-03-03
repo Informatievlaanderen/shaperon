@@ -65,10 +65,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (Field.DecimalCount.ToInt32() == 0)
             {
-                if (value.HasValue)
-                    return FormatAsString(value.Value).Length <= Field.Length.ToInt32();
-
-                return true;
+                return !value.HasValue || AcceptsValue(value.Value);
             }
 
             return false;
@@ -78,10 +75,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             if (Field.DecimalCount.ToInt32() == 0)
             {
-                if (value.HasValue)
-                    return FormatAsString(value.Value).Length <= Field.Length.ToInt32();
-
-                return true;
+                return !value.HasValue || AcceptsValue(value.Value);
             }
 
             return false;
@@ -141,7 +135,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 }
                 else
                 {
-                    _value = null;
+                    _value = default;
                 }
             }
         }
@@ -224,7 +218,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     return false;
                 }
 
-                value = null;
+                value = default;
                 return true;
             }
 
@@ -350,7 +344,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     return false;
                 }
 
-                value = null;
+                value = default;
                 return true;
             }
 
@@ -417,7 +411,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     );
                 }
 
-                Value = null;
+                Value = default;
             }
             else
             {
