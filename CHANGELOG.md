@@ -1,3 +1,10 @@
+# [7.5.0](https://github.com/informatievlaanderen/shaperon/compare/v7.4.0...v7.5.0) (2020-03-04)
+
+
+### Features
+
+* restore typed dbase data types [#23](https://github.com/informatievlaanderen/shaperon/issues/23) ([17c20ea](https://github.com/informatievlaanderen/shaperon/commit/17c20ead7b02c2a702a75a695d178c42611dc2a2))
+
 # [7.4.0](https://github.com/informatievlaanderen/shaperon/compare/v7.3.1...v7.4.0) (2020-03-03)
 
 
