@@ -29,6 +29,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             NumberStyles.AllowLeadingWhite |
             NumberStyles.AllowTrailingWhite;
 
+        public const string FixedPointFormatSpecifier = "F";
+
         private NumberFormatInfo Provider { get; }
 
         private double? _value;
@@ -119,7 +121,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     if (Field.DecimalCount.ToInt32() == 0)
                     {
                         var truncated = Math.Truncate(value.Value);
-                        var length = truncated.ToString("F", Provider).Length;
+                        var length = truncated.ToString(FixedPointFormatSpecifier, Provider).Length;
                         if (length > Field.Length.ToInt32())
                         {
                             throw new ArgumentException(
@@ -132,7 +134,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                     {
                         var digits = DbaseDecimalCount.Min(MaximumDecimalCount, Field.DecimalCount).ToInt32();
                         var rounded = Math.Round(value.Value, digits);
-                        var roundedFormatted = rounded.ToString("F", Provider);
+                        var roundedFormatted = rounded.ToString(FixedPointFormatSpecifier, Provider);
                         var length = roundedFormatted.Length;
                         if (length > Field.Length.ToInt32())
                         {

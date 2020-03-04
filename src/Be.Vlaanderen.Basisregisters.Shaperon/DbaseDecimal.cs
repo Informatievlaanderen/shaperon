@@ -75,7 +75,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var digits = DbaseDecimalCount.Min(MaximumDecimalCount, Field.DecimalCount).ToInt32();
             var rounded = Math.Round(value.Value, digits);
             return rounded.ToString("F", Provider).Length <= Field.Length.ToInt32();
-
         }
 
         public decimal Value
@@ -93,7 +92,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 if (Field.DecimalCount.ToInt32() == 0)
                 {
                     var truncated = Math.Truncate(value);
-                    var length = truncated.ToString("F", Provider).Length;
+                    var length = truncated.ToString(DbaseNumber.FixedPointFormatSpecifier, Provider).Length;
 
                     if (length > Field.Length.ToInt32())
                         throw new ArgumentException(
@@ -105,7 +104,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 {
                     var digits = DbaseDecimalCount.Min(MaximumDecimalCount, Field.DecimalCount).ToInt32();
                     var rounded = Math.Round(value, digits);
-                    var roundedFormatted = rounded.ToString("F", Provider);
+                    var roundedFormatted = rounded.ToString(DbaseNumber.FixedPointFormatSpecifier, Provider);
                     var length = roundedFormatted.Length;
 
                     if (length > Field.Length.ToInt32())

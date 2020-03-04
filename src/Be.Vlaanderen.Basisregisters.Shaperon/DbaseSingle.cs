@@ -90,7 +90,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 if (Field.DecimalCount.ToInt32() == 0)
                 {
                     var truncated = (float) Math.Truncate(value);
-                    var length = truncated.ToString("F", Provider).Length;
+                    var length = truncated.ToString(DbaseFloat.FixedPointFormatSpecifier, Provider).Length;
                     if (length > Field.Length.ToInt32())
                         throw new ArgumentException(
                             $"The length ({length}) of the value ({truncated}) of field {Field.Name} is greater than its field length {Field.Length}, which would result in loss of precision.");
@@ -101,7 +101,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 {
                     var digits = DbaseDecimalCount.Min(MaximumDecimalCount, Field.DecimalCount).ToInt32();
                     var rounded = (float) Math.Round(value, digits);
-                    var roundedFormatted = rounded.ToString("F", Provider);
+                    var roundedFormatted = rounded.ToString(DbaseFloat.FixedPointFormatSpecifier, Provider);
                     var length = roundedFormatted.Length;
 
                     if (length > Field.Length.ToInt32())
