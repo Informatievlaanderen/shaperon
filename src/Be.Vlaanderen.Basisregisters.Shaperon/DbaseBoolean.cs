@@ -7,7 +7,27 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     {
         private bool? _value;
 
-        public DbaseBoolean(DbaseField field) : this(field, default) {}
+        public DbaseBoolean(DbaseField field) : base(field)
+        {
+            if (field == null)
+                throw new ArgumentNullException(nameof(field));
+
+            if (field.FieldType != DbaseFieldType.Logical)
+                throw new ArgumentException(
+                    $"The field {field.Name}'s type must be logical to use it as a boolean field.", nameof(field));
+
+            if (field.DecimalCount.ToInt32() != 0)
+                throw new ArgumentException(
+                    $"The logical field {field.Name}'s decimal count must be 0 to use it as a boolean field.",
+                    nameof(field));
+
+            if (field.Length.ToInt32() != 1)
+                throw new ArgumentException(
+                    $"The logical field {field.Name}'s length must be 1 to use it as a boolean field.",
+                    nameof(field));
+
+            _value = default;
+        }
 
         public DbaseBoolean(DbaseField field, bool value) : base(field)
         {
