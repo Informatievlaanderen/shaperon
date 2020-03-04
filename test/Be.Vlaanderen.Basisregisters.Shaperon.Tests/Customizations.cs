@@ -247,6 +247,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
+        public static DbaseFieldLength GenerateDbaseInt16LengthLessThan(this IFixture fixture,
+            DbaseFieldLength maxLength)
+        {
+            using (var random = new PooledRandom())
+            {
+                return new DbaseFieldLength(random.Next(1, maxLength.ToInt32()));
+            }
+        }
+
         public static DbaseFieldType GenerateDbaseInt32FieldType(this IFixture fixture)
         {
             return new Generator<DbaseFieldType>(fixture)
@@ -257,12 +266,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         {
             return new Generator<DbaseFieldType>(fixture)
                 .First(specimen => specimen == DbaseFieldType.Number || specimen == DbaseFieldType.Float);
-        }
-
-        public static DbaseFieldType GenerateDbaseDateTimeFieldType(this IFixture fixture)
-        {
-            return new Generator<DbaseFieldType>(fixture)
-                .First(specimen => specimen == DbaseFieldType.DateTime || specimen == DbaseFieldType.Character);
         }
 
         public static int GenerateDbaseSchemaFieldCount(this IFixture fixture)
@@ -642,7 +645,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             );
         }
 
-        public static void CustomizeDbaseString(this IFixture fixture)
+        public static void CustomizeDbaseCharacter(this IFixture fixture)
         {
             fixture.Customize<DbaseCharacter>(
                 customization =>
@@ -654,6 +657,32 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                 {
                                     var length = new DbaseFieldLength(random.Next(1, 255));
                                     return new DbaseCharacter(
+                                        new DbaseField(
+                                            fixture.Create<DbaseFieldName>(),
+                                            DbaseFieldType.Character,
+                                            fixture.Create<ByteOffset>(),
+                                            length,
+                                            new DbaseDecimalCount(0)
+                                        ),
+                                        new string('a', random.Next(0, length.ToInt32())));
+                                }
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseString(this IFixture fixture)
+        {
+            fixture.Customize<DbaseString>(
+                customization =>
+                    customization
+                        .FromFactory<int>(
+                            value =>
+                            {
+                                using (var random = new PooledRandom(value))
+                                {
+                                    var length = new DbaseFieldLength(random.Next(1, 255));
+                                    return new DbaseString(
                                         new DbaseField(
                                             fixture.Create<DbaseFieldName>(),
                                             DbaseFieldType.Character,
@@ -693,6 +722,54 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         .OmitAutoProperties());
         }
 
+        public static void CustomizeDbaseInt32WithoutValue(this IFixture fixture)
+        {
+            fixture.Customize<DbaseInt32>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            generator =>
+                            {
+                                var fieldType = fixture.GenerateDbaseInt32FieldType();
+                                var length = fixture.GenerateDbaseInt32Length(fieldType);
+                                var field = new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    fieldType,
+                                    fixture.Create<ByteOffset>(),
+                                    length,
+                                    new DbaseDecimalCount(0)
+                                );
+                                return new DbaseInt32(field);
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseNullableInt32(this IFixture fixture)
+        {
+            fixture.Customize<DbaseNullableInt32>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            generator =>
+                            {
+                                var fieldType = fixture.GenerateDbaseInt32FieldType();
+                                var length = fixture.GenerateDbaseInt32Length(fieldType);
+                                var field = new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    fieldType,
+                                    fixture.Create<ByteOffset>(),
+                                    length,
+                                    new DbaseDecimalCount(0)
+                                );
+                                var value = new DbaseNullableInt32(field);
+                                value.Value = generator.GenerateAcceptableValue(value);
+                                return value;
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
         public static void CustomizeDbaseInt16(this IFixture fixture)
         {
             fixture.Customize<DbaseInt16>(
@@ -714,6 +791,108 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                                 value.Value = generator.GenerateAcceptableValue(value);
                                 return value;
                             }
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseInt16WithoutValue(this IFixture fixture)
+        {
+            fixture.Customize<DbaseInt16>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            generator =>
+                            {
+                                var fieldType = fixture.GenerateDbaseInt16FieldType();
+                                var length = fixture.GenerateDbaseInt16Length(fieldType);
+                                var field = new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    fieldType,
+                                    fixture.Create<ByteOffset>(),
+                                    length,
+                                    new DbaseDecimalCount(0)
+                                );
+                                return new DbaseInt16(field);
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseNullableInt16(this IFixture fixture)
+        {
+            fixture.Customize<DbaseNullableInt16>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            generator =>
+                            {
+                                var fieldType = fixture.GenerateDbaseInt16FieldType();
+                                var length = fixture.GenerateDbaseInt16Length(fieldType);
+                                var field = new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    fieldType,
+                                    fixture.Create<ByteOffset>(),
+                                    length,
+                                    new DbaseDecimalCount(0)
+                                );
+                                var value = new DbaseNullableInt16(field);
+                                value.Value = generator.GenerateAcceptableValue(value);
+                                return value;
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseBoolean(this IFixture fixture)
+        {
+            fixture.Customize<DbaseBoolean>(
+                customization =>
+                    customization
+                        .FromFactory<bool>(
+                            value => new DbaseBoolean(
+                                new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Logical,
+                                    fixture.Create<ByteOffset>(),
+                                    new DbaseFieldLength(1),
+                                    new DbaseDecimalCount(0)
+                                ), value)
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseBooleanWithoutValue(this IFixture fixture)
+        {
+            fixture.Customize<DbaseBoolean>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            value => new DbaseBoolean(
+                                new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Logical,
+                                    fixture.Create<ByteOffset>(),
+                                    new DbaseFieldLength(1),
+                                    new DbaseDecimalCount(0)
+                                ))
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseNullableBoolean(this IFixture fixture)
+        {
+            fixture.Customize<DbaseNullableBoolean>(
+                customization =>
+                    customization
+                        .FromFactory<bool?>(
+                            value => new DbaseNullableBoolean(
+                                new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Logical,
+                                    fixture.Create<ByteOffset>(),
+                                    new DbaseFieldLength(1),
+                                    new DbaseDecimalCount(0)
+                                ), value)
                         )
                         .OmitAutoProperties());
         }
@@ -761,7 +940,128 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         .OmitAutoProperties());
         }
 
+        public static void CustomizeDbaseDecimalWithoutValue(this IFixture fixture)
+        {
+            fixture.Customize<DbaseDecimal>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            generator =>
+                            {
+                                var length = fixture.GenerateDbaseDecimalLength();
+                                var decimalCount = fixture.GenerateDbaseDecimalDecimalCount(length);
+                                var field = new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Number,
+                                    fixture.Create<ByteOffset>(),
+                                    length,
+                                    decimalCount
+                                );
+                                return new DbaseDecimal(field);
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseNullableDecimal(this IFixture fixture)
+        {
+            fixture.Customize<DbaseNullableDecimal>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            generator =>
+                            {
+                                var length = fixture.GenerateDbaseDecimalLength();
+                                var decimalCount = fixture.GenerateDbaseDecimalDecimalCount(length);
+                                var field = new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Number,
+                                    fixture.Create<ByteOffset>(),
+                                    length,
+                                    decimalCount
+                                );
+                                var value = new DbaseNullableDecimal(field);
+                                value.Value = generator.GenerateAcceptableValue(value);
+                                return value;
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
         public static void CustomizeDbaseDouble(this IFixture fixture)
+        {
+            fixture.Customize<DbaseDouble>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            generator =>
+                            {
+                                var length = fixture.GenerateDbaseDoubleLength();
+                                var decimalCount = fixture.GenerateDbaseDoubleDecimalCount(length);
+                                var field = new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Number,
+                                    fixture.Create<ByteOffset>(),
+                                    length,
+                                    decimalCount
+                                );
+                                var value = new DbaseDouble(field);
+                                value.Value = generator.GenerateAcceptableValue(value);
+                                return value;
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseDoubleWithoutValue(this IFixture fixture)
+        {
+            fixture.Customize<DbaseDouble>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            generator =>
+                            {
+                                var length = fixture.GenerateDbaseDoubleLength();
+                                var decimalCount = fixture.GenerateDbaseDoubleDecimalCount(length);
+                                var field = new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Number,
+                                    fixture.Create<ByteOffset>(),
+                                    length,
+                                    decimalCount
+                                );
+                                return new DbaseDouble(field);
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseNullableDouble(this IFixture fixture)
+        {
+            fixture.Customize<DbaseNullableDouble>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            generator =>
+                            {
+                                var length = fixture.GenerateDbaseDoubleLength();
+                                var decimalCount = fixture.GenerateDbaseDoubleDecimalCount(length);
+                                var field = new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Number,
+                                    fixture.Create<ByteOffset>(),
+                                    length,
+                                    decimalCount
+                                );
+                                var value = new DbaseNullableDouble(field);
+                                value.Value = generator.GenerateAcceptableValue(value);
+                                return value;
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseNumber(this IFixture fixture)
         {
             fixture.Customize<DbaseNumber>(
                 customization =>
@@ -786,7 +1086,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         .OmitAutoProperties());
         }
 
-        public static void CustomizeDbaseSingle(this IFixture fixture)
+        public static void CustomizeDbaseFloat(this IFixture fixture)
         {
             fixture.Customize<DbaseFloat>(
                 customization =>
@@ -811,18 +1111,183 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         .OmitAutoProperties());
         }
 
+        public static void CustomizeDbaseSingle(this IFixture fixture)
+        {
+            fixture.Customize<DbaseSingle>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            generator =>
+                            {
+                                var length = fixture.GenerateDbaseSingleLength();
+                                var decimalCount = fixture.GenerateDbaseSingleDecimalCount(length);
+                                var field = new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Float,
+                                    fixture.Create<ByteOffset>(),
+                                    length,
+                                    decimalCount
+                                );
+                                var value = new DbaseSingle(field);
+                                value.Value = generator.GenerateAcceptableValue(value);
+                                return value;
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseSingleWithoutValue(this IFixture fixture)
+        {
+            fixture.Customize<DbaseSingle>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            generator =>
+                            {
+                                var length = fixture.GenerateDbaseSingleLength();
+                                var decimalCount = fixture.GenerateDbaseSingleDecimalCount(length);
+                                var field = new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Float,
+                                    fixture.Create<ByteOffset>(),
+                                    length,
+                                    decimalCount
+                                );
+                                return new DbaseSingle(field);
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseNullableSingle(this IFixture fixture)
+        {
+            fixture.Customize<DbaseNullableSingle>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            generator =>
+                            {
+                                var length = fixture.GenerateDbaseSingleLength();
+                                var decimalCount = fixture.GenerateDbaseSingleDecimalCount(length);
+                                var field = new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Float,
+                                    fixture.Create<ByteOffset>(),
+                                    length,
+                                    decimalCount
+                                );
+                                var value = new DbaseNullableSingle(field);
+                                value.Value = generator.GenerateAcceptableValue(value);
+                                return value;
+                            }
+                        )
+                        .OmitAutoProperties());
+        }
+
         public static void CustomizeDbaseDateTime(this IFixture fixture)
         {
             fixture.Customize<DbaseDateTime>(
                 customization =>
                     customization
-                        .FromFactory<DateTime?>(
+                        .FromFactory<DateTime>(
                             value => new DbaseDateTime(
                                 new DbaseField(
                                     fixture.Create<DbaseFieldName>(),
-                                    fixture.GenerateDbaseDateTimeFieldType(),
+                                    DbaseFieldType.Character,
                                     fixture.Create<ByteOffset>(),
                                     new DbaseFieldLength(15),
+                                    new DbaseDecimalCount(0)
+                                ), value)
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseDateTimeWithoutValue(this IFixture fixture)
+        {
+            fixture.Customize<DbaseDateTime>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            value => new DbaseDateTime(
+                                new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Character,
+                                    fixture.Create<ByteOffset>(),
+                                    new DbaseFieldLength(15),
+                                    new DbaseDecimalCount(0)
+                                )
+                            )
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseNullableDateTime(this IFixture fixture)
+        {
+            fixture.Customize<DbaseNullableDateTime>(
+                customization =>
+                    customization
+                        .FromFactory<DateTime?>(
+                            value => new DbaseNullableDateTime(
+                                new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Character,
+                                    fixture.Create<ByteOffset>(),
+                                    new DbaseFieldLength(15),
+                                    new DbaseDecimalCount(0)
+                                ), value)
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseDateTimeOffset(this IFixture fixture)
+        {
+            fixture.Customize<DbaseDateTimeOffset>(
+                customization =>
+                    customization
+                        .FromFactory<DateTimeOffset>(
+                            value => new DbaseDateTimeOffset(
+                                new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Character,
+                                    fixture.Create<ByteOffset>(),
+                                    new DbaseFieldLength(25),
+                                    new DbaseDecimalCount(0)
+                                ), value)
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseDateTimeOffsetWithoutValue(this IFixture fixture)
+        {
+            fixture.Customize<DbaseDateTimeOffset>(
+                customization =>
+                    customization
+                        .FromNumberGenerator(
+                            value => new DbaseDateTimeOffset(
+                                new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Character,
+                                    fixture.Create<ByteOffset>(),
+                                    new DbaseFieldLength(25),
+                                    new DbaseDecimalCount(0)
+                                )
+                            )
+                        )
+                        .OmitAutoProperties());
+        }
+
+        public static void CustomizeDbaseNullableDateTimeOffset(this IFixture fixture)
+        {
+            fixture.Customize<DbaseNullableDateTimeOffset>(
+                customization =>
+                    customization
+                        .FromFactory<DateTimeOffset?>(
+                            value => new DbaseNullableDateTimeOffset(
+                                new DbaseField(
+                                    fixture.Create<DbaseFieldName>(),
+                                    DbaseFieldType.Character,
+                                    fixture.Create<ByteOffset>(),
+                                    new DbaseFieldLength(25),
                                     new DbaseDecimalCount(0)
                                 ), value)
                         )

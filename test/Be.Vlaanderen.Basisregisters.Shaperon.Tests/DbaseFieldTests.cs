@@ -408,51 +408,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Assert.Equal(new DbaseIntegerDigits(0), result.NegativeIntegerDigits);
         }
 
-
-        [Fact]
-        public void CreateInt32FieldReturnsExpectedResult()
-        {
-            var name = _fixture.Create<DbaseFieldName>();
-            var length = _fixture.Create<DbaseFieldLength>();
-            var positiveIntegerDigits = new DbaseIntegerDigits(length.ToInt32());
-            var negativeIntegerDigits = positiveIntegerDigits != new DbaseIntegerDigits(0)
-                ? positiveIntegerDigits.Minus(new DbaseIntegerDigits(1))
-                : new DbaseIntegerDigits(0);
-            var result = DbaseField.CreateInt32Field(
-                name,
-                length);
-
-            Assert.Equal(name, result.Name);
-            Assert.Equal(DbaseFieldType.Number, result.FieldType);
-            Assert.Equal(ByteOffset.Initial, result.Offset);
-            Assert.Equal(length, result.Length);
-            Assert.Equal(new DbaseDecimalCount(0), result.DecimalCount);
-            Assert.Equal(positiveIntegerDigits, result.PositiveIntegerDigits);
-            Assert.Equal(negativeIntegerDigits, result.NegativeIntegerDigits);
-        }
-
-        [Fact]
-        public void CreateInt16FieldReturnsExpectedResult()
-        {
-            var name = _fixture.Create<DbaseFieldName>();
-            var length = _fixture.Create<DbaseFieldLength>();
-            var positiveIntegerDigits = new DbaseIntegerDigits(length.ToInt32());
-            var negativeIntegerDigits = positiveIntegerDigits != new DbaseIntegerDigits(0)
-                ? positiveIntegerDigits.Minus(new DbaseIntegerDigits(1))
-                : new DbaseIntegerDigits(0);
-            var result = DbaseField.CreateInt16Field(
-                name,
-                length);
-
-            Assert.Equal(name, result.Name);
-            Assert.Equal(DbaseFieldType.Number, result.FieldType);
-            Assert.Equal(ByteOffset.Initial, result.Offset);
-            Assert.Equal(length, result.Length);
-            Assert.Equal(new DbaseDecimalCount(0), result.DecimalCount);
-            Assert.Equal(positiveIntegerDigits, result.PositiveIntegerDigits);
-            Assert.Equal(negativeIntegerDigits, result.NegativeIntegerDigits);
-        }
-
         [Fact]
         public void CreateDateFieldReturnsExpectedResult()
         {
