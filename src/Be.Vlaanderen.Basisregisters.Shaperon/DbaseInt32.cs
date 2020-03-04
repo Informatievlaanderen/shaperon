@@ -73,34 +73,14 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
-        private static string FormatAsString(int value) => value.ToString(CultureInfo.InvariantCulture);
+        internal static string FormatAsString(int value) => value.ToString(CultureInfo.InvariantCulture);
 
         public override void Read(BinaryReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
 
-            if (reader.PeekChar() == '\0')
-            {
-                var read = reader.ReadBytes(Field.Length.ToInt32());
-                if (read.Length != Field.Length.ToInt32())
-                {
-                    throw new EndOfStreamException(
-                        $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
-                    );
-                }
-                _value = default;
-            }
-            else
-            {
-                var unpadded = reader.ReadLeftPaddedString(Field.Name.ToString(), Field.Length.ToInt32(), ' ');
-
-                _value = int.TryParse(unpadded,
-                    NumberStyles.Integer | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
-                    CultureInfo.InvariantCulture, out var parsed)
-                    ? (int?) parsed
-                    : null;
-            }
+            _value = reader.ReadAsNullableInt32(Field);
         }
 
         public override void Write(BinaryWriter writer)
@@ -108,16 +88,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (writer == null)
                 throw new ArgumentNullException(nameof(writer));
 
-            if (_value.HasValue)
-            {
-                var unpadded = FormatAsString(_value.Value);
-                writer.WriteLeftPaddedString(unpadded, Field.Length.ToInt32(), ' ');
-            }
-            else
-            {
-                writer.Write(new string(' ', Field.Length.ToInt32()).ToCharArray());
-                // or writer.Write(new byte[Field.Length]); // to determine
-            }
+            writer.WriteAsNullableInt32(Field, _value);
         }
 
         public override void Accept(IDbaseFieldValueVisitor visitor) => (visitor as ITypedDbaseFieldValueVisitor)?.Visit(this);

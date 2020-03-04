@@ -34,28 +34,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
 
-            var charValue = reader.ReadByte();
-
-            switch (charValue)
-            {
-                case DbaseLogicalBytes.Bytet:
-                case DbaseLogicalBytes.ByteT:
-                case DbaseLogicalBytes.Bytey:
-                case DbaseLogicalBytes.ByteY:
-                    Value = true;
-                    break;
-
-                case DbaseLogicalBytes.Bytef:
-                case DbaseLogicalBytes.ByteF:
-                case DbaseLogicalBytes.Byten:
-                case DbaseLogicalBytes.ByteN:
-                    Value = false;
-                    break;
-
-                default:
-                    Value = null;
-                    break;
-            }
+            Value = reader.ReadAsNullableBoolean();
         }
 
         public override void Write(BinaryWriter writer)
@@ -63,17 +42,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (writer == null)
                 throw new ArgumentNullException(nameof(writer));
 
-            var value = FormatAsByte(Value);
-            writer.Write(value);
+            writer.WriteAsNullableBoolean(Value);
         }
 
-        private static byte FormatAsByte(bool? value) =>
-            value.HasValue
-                ? value.Value
-                    ? DbaseLogicalBytes.ByteT
-                    : DbaseLogicalBytes.ByteF
-                : DbaseLogicalBytes.ByteUnknown;
-
-        public override void Accept(IDbaseFieldValueVisitor visitor) => (visitor as ITypedDbaseFieldValueVisitor)?.Visit(this);
+        public override void Accept(IDbaseFieldValueVisitor visitor) =>
+            (visitor as ITypedDbaseFieldValueVisitor)?.Visit(this);
     }
 }

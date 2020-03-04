@@ -18,8 +18,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public static readonly DbaseDecimalCount MaximumDecimalCount = new DbaseDecimalCount(7);
 
-        private const NumberStyles NumberStyle = NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite |
-                                                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign;
+        public const NumberStyles NumberStyle = NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite |
+                                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign;
 
         private NumberFormatInfo Provider { get; }
 
@@ -401,25 +401,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
 
-            if (reader.PeekChar() == '\0')
-            {
-                var read = reader.ReadBytes(Field.Length.ToInt32());
-                if (read.Length != Field.Length.ToInt32())
-                {
-                    throw new EndOfStreamException(
-                        $"Unable to read beyond the end of the stream. Expected stream to have {Field.Length.ToInt32()} byte(s) available but only found {read.Length} byte(s) as part of reading field {Field.Name.ToString()}."
-                    );
-                }
-
-                Value = default;
-            }
-            else
-            {
-                var unpadded = reader.ReadLeftPaddedString(Field.Name.ToString(), Field.Length.ToInt32(), ' ');
-                Value = float.TryParse(unpadded, NumberStyle, Provider, out var parsed)
-                    ? (float?) parsed
-                    : null;
-            }
+            Value = reader.ReadAsNullableSingle(Field, Provider);
         }
 
         public override void Write(BinaryWriter writer)
@@ -427,30 +409,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             if (writer == null)
                 throw new ArgumentNullException(nameof(writer));
 
-            if (Value.HasValue)
-            {
-                var unpadded = Value.Value.ToString("F", Provider);
-                if (unpadded.Length < Field.Length.ToInt32() && Field.DecimalCount.ToInt32() > 0)
-                {
-                    // Pad with decimal zeros if space left.
-                    var parts = unpadded.Split(Provider.NumberDecimalSeparator.Single());
-                    if (parts.Length == 2 && parts[1].Length < Field.DecimalCount.ToInt32())
-                    {
-                        unpadded = string.Concat(
-                            unpadded,
-                            new string(
-                                '0',
-                                Field.DecimalCount.ToInt32() - parts[1].Length));
-                    }
-                }
-
-                writer.WriteLeftPaddedString(unpadded, Field.Length.ToInt32(), ' ');
-            }
-            else
-            {
-                writer.Write(new string(' ', Field.Length.ToInt32()).ToCharArray());
-                // or writer.Write(new byte[Field.Length]); // to determine
-            }
+            writer.WriteAsNullableSingle(Field, Provider, Value);
         }
 
         public override void Accept(IDbaseFieldValueVisitor visitor) => visitor.Visit(this);
