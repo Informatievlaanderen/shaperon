@@ -146,5 +146,20 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 }
             }
         }
+
+        [Fact]
+        public void HasValueReturnsExpectedResultWhenWithValue()
+        {
+            var sut = _fixture.Create<DbaseDateTime>();
+            Assert.True(sut.HasValue);
+        }
+
+        [Fact]
+        public void HasValueReturnsExpectedResultWhenWithoutValue()
+        {
+            _fixture.CustomizeDbaseDateTimeWithoutValue();
+            var sut = _fixture.Create<DbaseDateTime>();
+            Assert.False(sut.HasValue);
+        }
     }
 }

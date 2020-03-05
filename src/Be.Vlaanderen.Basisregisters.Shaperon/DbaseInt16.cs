@@ -46,13 +46,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Value = value;
         }
 
-        public bool AcceptsValue(short? value)
+        public bool AcceptsValue(short value)
         {
-            if (value.HasValue)
-                return FormatAsString(value.Value).Length <= Field.Length.ToInt32();
-
-            return true;
+            return FormatAsString(value).Length <= Field.Length.ToInt32();
         }
+
+        public bool HasValue => _value.HasValue;
 
         public short Value
         {

@@ -204,5 +204,20 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             Assert.Equal(accepted, result);
         }
+
+        [Fact]
+        public void HasValueReturnsExpectedResultWhenWithValue()
+        {
+            var sut = _fixture.Create<DbaseString>();
+            Assert.True(sut.HasValue);
+        }
+
+        [Fact]
+        public void HasValueReturnsExpectedResultWhenWithoutValue()
+        {
+            _fixture.CustomizeDbaseStringWithoutValue();
+            var sut = _fixture.Create<DbaseString>();
+            Assert.False(sut.HasValue);
+        }
     }
 }

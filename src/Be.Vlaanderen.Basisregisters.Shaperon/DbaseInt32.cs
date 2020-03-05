@@ -51,6 +51,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return FormatAsString(value).Length <= Field.Length.ToInt32();
         }
 
+        public bool HasValue => _value.HasValue;
+
         public int Value
         {
             get

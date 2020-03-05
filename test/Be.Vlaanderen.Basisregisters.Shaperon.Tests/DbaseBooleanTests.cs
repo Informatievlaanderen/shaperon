@@ -274,5 +274,20 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             new GuardClauseAssertion(_fixture)
                 .Verify(new Methods<DbaseBoolean>().Select(instance => instance.Write(null)));
         }
+
+        [Fact]
+        public void HasValueReturnsExpectedResultWhenWithValue()
+        {
+            var sut = _fixture.Create<DbaseBoolean>();
+            Assert.True(sut.HasValue);
+        }
+
+        [Fact]
+        public void HasValueReturnsExpectedResultWhenWithoutValue()
+        {
+            _fixture.CustomizeDbaseBooleanWithoutValue();
+            var sut = _fixture.Create<DbaseBoolean>();
+            Assert.False(sut.HasValue);
+        }
     }
 }
