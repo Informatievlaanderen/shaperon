@@ -1,3 +1,10 @@
+# [7.6.0](https://github.com/informatievlaanderen/shaperon/compare/v7.5.0...v7.6.0) (2020-03-05)
+
+
+### Features
+
+* hasvalue indication on non-nullable dbase values ([a3219d7](https://github.com/informatievlaanderen/shaperon/commit/a3219d7a2b050914d1f1cc41763d2c72443fa57b))
+
 # [7.5.0](https://github.com/informatievlaanderen/shaperon/compare/v7.4.0...v7.5.0) (2020-03-04)
 
 
