@@ -42,7 +42,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 position = stream.Position;
                 _record.Write(writer);
                 writer.Write((byte)0x20);
-                writer.Write(fixture.CreateMany<byte>(2).ToArray());
+                writer.Write(fixture.CreateMany<char>(2).ToArray());
                 writer.Write(DbaseRecord.EndOfFile);
                 writer.Flush();
             }
