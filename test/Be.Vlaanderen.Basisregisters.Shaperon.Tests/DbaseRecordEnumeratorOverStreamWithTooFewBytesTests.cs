@@ -40,7 +40,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 writer.Flush();
                 position = stream.Position;
                 _record.Write(writer);
-                writer.Write(fixture.CreateMany<byte>(2).ToArray());
+                writer.Write(fixture.CreateMany<char>(2).ToArray());
                 writer.Write(DbaseRecord.EndOfFile);
                 writer.Flush();
             }
