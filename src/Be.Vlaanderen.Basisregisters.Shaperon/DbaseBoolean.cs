@@ -51,6 +51,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Value = value;
         }
 
+        public bool HasValue => _value.HasValue;
+
         public bool Value
         {
             get

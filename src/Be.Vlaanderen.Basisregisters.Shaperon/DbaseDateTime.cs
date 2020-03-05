@@ -43,6 +43,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return true;
         }
 
+        public bool HasValue => _value != null;
+
         public DbaseDateTimeOptions Options { get; }
 
         private bool TryGetValue(out DateTime value)

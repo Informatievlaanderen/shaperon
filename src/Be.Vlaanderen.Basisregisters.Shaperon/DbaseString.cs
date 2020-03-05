@@ -27,6 +27,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return true;
         }
 
+        public bool HasValue => _value != null;
+
         public string Value
         {
             get => _value;

@@ -77,6 +77,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return rounded.ToString("F", Provider).Length <= Field.Length.ToInt32();
         }
 
+        public bool HasValue => _value.HasValue;
+
         public decimal Value
         {
             get
