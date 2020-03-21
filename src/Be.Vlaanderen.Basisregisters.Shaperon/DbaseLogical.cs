@@ -29,6 +29,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public bool? Value { get; set; }
 
+        public override void Reset() => Value = default;
+
         public override void Read(BinaryReader reader)
         {
             if (reader == null)
