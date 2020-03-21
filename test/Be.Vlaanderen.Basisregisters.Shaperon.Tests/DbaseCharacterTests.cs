@@ -1225,5 +1225,16 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                 sut.ValueAsDateTimeOffset = value;
             }
         }
+
+        [Fact]
+        public void ResetHasExpectedResult()
+        {
+            var sut = _fixture.Create<DbaseCharacter>();
+            sut.Value = _fixture.Create<string>();
+
+            sut.Reset();
+
+            Assert.Null(sut.Value);
+        }
     }
 }

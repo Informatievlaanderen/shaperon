@@ -382,5 +382,20 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var sut = _fixture.Create<DbaseDecimal>();
             Assert.False(sut.HasValue);
         }
+
+        [Fact]
+        public void ResetHasExpectedResult()
+        {
+            using (var random = new PooledRandom())
+            {
+                var sut = _fixture.Create<DbaseDecimal>();
+                sut.Value = new DbaseFieldNumberGenerator(random).GenerateAcceptableValue(sut);
+
+                sut.Reset();
+
+                Assert.False(sut.HasValue);
+                Assert.Throws<FormatException>(() => sut.Value);
+            }
+        }
     }
 }

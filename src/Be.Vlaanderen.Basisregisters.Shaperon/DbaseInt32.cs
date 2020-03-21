@@ -75,6 +75,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
+        public override void Reset() => _value = default;
+
         internal static string FormatAsString(int value) => value.ToString(CultureInfo.InvariantCulture);
 
         public override void Read(BinaryReader reader)

@@ -106,6 +106,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
+        public override void Reset() => _value = default;
+
         public override void Read(BinaryReader reader)
         {
             if (reader == null)

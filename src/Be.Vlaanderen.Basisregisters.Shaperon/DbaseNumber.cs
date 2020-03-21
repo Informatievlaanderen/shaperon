@@ -152,6 +152,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             }
         }
 
+        public override void Reset() => _value = default;
+
         public bool TryGetValueAsInt32(out int value)
         {
             if (Field.DecimalCount.ToInt32() == 0)

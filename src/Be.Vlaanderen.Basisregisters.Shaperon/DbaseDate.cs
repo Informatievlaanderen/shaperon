@@ -27,6 +27,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             set => _value = value.RoundToDay(); // Reason: due to serialization, precision is only guaranteed up to the day.
         }
 
+        public override void Reset() => _value = default;
+
         public override void Read(BinaryReader reader)
         {
             if (reader == null)
