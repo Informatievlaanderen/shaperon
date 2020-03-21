@@ -1,3 +1,10 @@
+## [7.7.1](https://github.com/informatievlaanderen/shaperon/compare/v7.7.0...v7.7.1) (2020-03-21)
+
+
+### Bug Fixes
+
+* use correct build user ([3c727f3](https://github.com/informatievlaanderen/shaperon/commit/3c727f3b08b14f18dc5151e4732dd54cf6db6660))
+
 # [7.7.0](https://github.com/informatievlaanderen/shaperon/compare/v7.6.0...v7.7.0) (2020-03-21)
 
 
