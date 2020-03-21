@@ -1,3 +1,10 @@
+# [7.7.0](https://github.com/informatievlaanderen/shaperon/compare/v7.6.0...v7.7.0) (2020-03-21)
+
+
+### Features
+
+* add support for reseting a field to its default value ([0c411cf](https://github.com/informatievlaanderen/shaperon/commit/0c411cff190ebf0d29c6698db9b32131ba7021d9))
+
 # [7.6.0](https://github.com/informatievlaanderen/shaperon/compare/v7.5.0...v7.6.0) (2020-03-05)
 
 
