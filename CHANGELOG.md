@@ -1,3 +1,11 @@
+## [7.7.2](https://github.com/informatievlaanderen/shaperon/compare/v7.7.1...v7.7.2) (2020-05-04)
+
+
+### Bug Fixes
+
+* dbasestring reset test ([0491d83](https://github.com/informatievlaanderen/shaperon/commit/0491d831a3ce2aca4a7cb593a88b8db9b1e08c28))
+* move to GH-actions ([4b45710](https://github.com/informatievlaanderen/shaperon/commit/4b45710f6db00a764a6269dde75f5a8d940adc39))
+
 ## [7.7.1](https://github.com/informatievlaanderen/shaperon/compare/v7.7.0...v7.7.1) (2020-03-21)
 
 
