@@ -1,3 +1,10 @@
+## [7.7.3](https://github.com/informatievlaanderen/shaperon/compare/v7.7.2...v7.7.3) (2020-05-04)
+
+
+### Bug Fixes
+
+* remove trailing quotes ([5bc48fc](https://github.com/informatievlaanderen/shaperon/commit/5bc48fc3cf5e0cc227095c98f03aa3efa056c107))
+
 ## [7.7.2](https://github.com/informatievlaanderen/shaperon/compare/v7.7.1...v7.7.2) (2020-05-04)
 
 
