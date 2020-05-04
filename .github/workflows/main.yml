@@ -104,8 +104,8 @@ jobs:
       if: env.RELEASE_VERSION != 'none'
       shell: bash
       run: |
-        node packages/Be.Vlaanderen.Basisregisters.Build.Pipeline/Content/ci-nuget.js dist/$LIBNAME/$LIBNAME.$SEMVER.nupkg"
-        node packages/Be.Vlaanderen.Basisregisters.Build.Pipeline/Content/ci-nuget.js dist/$LIBNAME/$LIBNAME.Geometries.$SEMVER.nupkg"
+        node packages/Be.Vlaanderen.Basisregisters.Build.Pipeline/Content/ci-nuget.js dist/$LIBNAME/$LIBNAME.$SEMVER.nupkg
+        node packages/Be.Vlaanderen.Basisregisters.Build.Pipeline/Content/ci-nuget.js dist/$LIBNAME/$LIBNAME.Geometries.$SEMVER.nupkg
       env:
         LIBNAME: Be.Vlaanderen.Basisregisters.Shaperon
         SEMVER: ${{ env.RELEASE_VERSION }}
