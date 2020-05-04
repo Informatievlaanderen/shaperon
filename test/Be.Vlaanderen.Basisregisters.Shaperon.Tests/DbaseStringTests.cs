@@ -224,7 +224,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void ResetHasExpectedResult()
         {
             var sut = _fixture.Create<DbaseString>();
-            sut.Value = _fixture.Create<string>();
+            var generated = _fixture.Create<string>();
+            sut.Value = generated.Substring(0, Math.Min(generated.Length, sut.Field.Length.ToInt32()));
 
             sut.Reset();
 
