@@ -1,3 +1,10 @@
+## [7.7.4](https://github.com/informatievlaanderen/shaperon/compare/v7.7.3...v7.7.4) (2020-05-18)
+
+
+### Bug Fixes
+
+* move to 3.1.4 ([03068e6](https://github.com/informatievlaanderen/shaperon/commit/03068e6adf1b1d23331ec9193bfc0f86878e5271))
+
 ## [7.7.3](https://github.com/informatievlaanderen/shaperon/compare/v7.7.2...v7.7.3) (2020-05-04)
 
 
