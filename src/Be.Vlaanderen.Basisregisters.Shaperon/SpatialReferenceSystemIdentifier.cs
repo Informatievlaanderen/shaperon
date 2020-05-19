@@ -6,6 +6,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
     public readonly struct SpatialReferenceSystemIdentifier : IEquatable<SpatialReferenceSystemIdentifier>
     {
         public static readonly SpatialReferenceSystemIdentifier BelgeLambert1972 =
+            new SpatialReferenceSystemIdentifier(31370);
+        public static readonly SpatialReferenceSystemIdentifier EsriBelgeLambert1972 =
             new SpatialReferenceSystemIdentifier(103300);
 
         private readonly int _value;

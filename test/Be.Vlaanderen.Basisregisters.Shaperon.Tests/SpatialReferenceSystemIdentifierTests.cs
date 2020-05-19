@@ -17,8 +17,15 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void BelgeLambert1972ReturnsExpectedValue()
         {
-            Assert.Equal(new SpatialReferenceSystemIdentifier(103300),
+            Assert.Equal(new SpatialReferenceSystemIdentifier(31370),
                 SpatialReferenceSystemIdentifier.BelgeLambert1972);
+        }
+
+        [Fact]
+        public void EsriBelgeLambert1972ReturnsExpectedValue()
+        {
+            Assert.Equal(new SpatialReferenceSystemIdentifier(103300),
+                SpatialReferenceSystemIdentifier.EsriBelgeLambert1972);
         }
 
         [Fact]
