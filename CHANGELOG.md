@@ -1,3 +1,15 @@
+# [8.0.0](https://github.com/informatievlaanderen/shaperon/compare/v7.7.4...v8.0.0) (2020-05-22)
+
+
+### Features
+
+* **spatialreferencesystemidentifier:** srid belge lambert 1972 changed ([3101b74](https://github.com/informatievlaanderen/shaperon/commit/3101b74af93e93215c0f5845b912990673c3b7e5))
+
+
+### BREAKING CHANGES
+
+* **spatialreferencesystemidentifier:** Spatial reference identifier of BelgeLambert1972 value changed
+
 ## [7.7.4](https://github.com/informatievlaanderen/shaperon/compare/v7.7.3...v7.7.4) (2020-05-18)
 
 
