@@ -1,6 +1,6 @@
 {
   "name": "shaperon",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "description": "Lightweight dbase and shape record handling.",
   "author": "Basisregisters Vlaanderen",
   "license": "MIT",
@@ -48,7 +48,10 @@
     ]
   },
   "release": {
-    "branches": [ "master", "main" ],
+    "branches": [
+      "master",
+      "main"
+    ],
     "verifyConditions": [
       "@semantic-release/changelog",
       "@semantic-release/git",
