@@ -1,3 +1,10 @@
+## [8.0.4](https://github.com/informatievlaanderen/shaperon/compare/v8.0.3...v8.0.4) (2020-11-18)
+
+
+### Bug Fixes
+
+* remove set-env usage in gh-actions ([e24e5f7](https://github.com/informatievlaanderen/shaperon/commit/e24e5f70506c31a3cb4e5cc74f4b8f0202081e4b))
+
 ## [8.0.3](https://github.com/informatievlaanderen/shaperon/compare/v8.0.2...v8.0.3) (2020-09-21)
 
 
