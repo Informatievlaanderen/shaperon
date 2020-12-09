@@ -1,3 +1,11 @@
+# [8.1.0](https://github.com/informatievlaanderen/shaperon/compare/v8.0.4...v8.1.0) (2020-12-09)
+
+
+### Features
+
+* fix sporadically failing tests ([a592533](https://github.com/informatievlaanderen/shaperon/commit/a592533fad8d6a3065b66c8e09eae990bc5718cd))
+* multipolygon support ([f160642](https://github.com/informatievlaanderen/shaperon/commit/f160642573c28b6384f87337ec2b4e2ba4a6bcb3))
+
 ## [8.0.4](https://github.com/informatievlaanderen/shaperon/compare/v8.0.3...v8.0.4) (2020-11-18)
 
 
