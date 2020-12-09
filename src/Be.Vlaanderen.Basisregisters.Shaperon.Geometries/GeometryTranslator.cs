@@ -17,17 +17,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
             return new NetTopologySuite.Geometries.Point(point.X, point.Y);
         }
 
-//        public static Point FromGeometryPointM(PointM point)
-//        {
-//            if (point == null) throw new ArgumentNullException(nameof(point));
-//            return new Point(point.X, point.Y);
-//        }
-//
-//        public static PointM ToGeometryPointM(Point point)
-//        {
-//            return new PointM(point.X, point.Y);
-//        }
-
         public static Polygon FromGeometryPolygon(NetTopologySuite.Geometries.Polygon polygon)
         {
             if (polygon == null) throw new ArgumentNullException(nameof(polygon));
@@ -160,6 +149,87 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
             }
 
             return new NetTopologySuite.Geometries.MultiLineString(lines);
+        }
+
+        public static NetTopologySuite.Geometries.MultiPolygon ToGeometryMultiPolygon(Polygon polygon)
+        {
+            if (polygon == null) throw new ArgumentNullException(nameof(polygon));
+            var linearRings = new NetTopologySuite.Geometries.LinearRing[polygon.NumberOfParts];
+            var toPointIndex = polygon.NumberOfPoints;
+
+            for (var partIndex = polygon.NumberOfParts - 1; partIndex >= 0; partIndex--)
+            {
+                var fromPointIndex = polygon.Parts[partIndex];
+
+                linearRings[partIndex] = new NetTopologySuite.Geometries.LinearRing(
+                    GeometryConfiguration.GeometryFactory.CoordinateSequenceFactory.Create(
+                        polygon.Points
+                            .Skip(fromPointIndex)
+                            .Take(toPointIndex - fromPointIndex)
+                            .Select(point => new NetTopologySuite.Geometries.Coordinate(point.X, point.Y))
+                            .ToArray()),
+                    GeometryConfiguration.GeometryFactory);
+
+                toPointIndex = fromPointIndex;
+            }
+
+            var polygons = new List<NetTopologySuite.Geometries.Polygon>();
+            var ringIndex = 0;
+            while (ringIndex < linearRings.Length)
+            {
+                var shell = linearRings[ringIndex];
+                if (shell.IsCCW)
+                {
+                    throw new InvalidOperationException("The shell of a polygon must have a clockwise orientation.");
+                }
+                var holes = new List<NetTopologySuite.Geometries.LinearRing>();
+                ringIndex++;
+                while (ringIndex < linearRings.Length && linearRings[ringIndex].IsCCW)
+                {
+                    holes.Add(linearRings[ringIndex]);
+                    ringIndex++;
+                }
+
+                polygons.Add(new NetTopologySuite.Geometries.Polygon(
+                    shell,
+                    holes.ToArray(),
+                    GeometryConfiguration.GeometryFactory));
+            }
+            return new NetTopologySuite.Geometries.MultiPolygon(polygons.ToArray(), GeometryConfiguration.GeometryFactory);
+        }
+
+        public static Polygon FromGeometryMultiPolygon(NetTopologySuite.Geometries.MultiPolygon multiPolygon)
+        {
+            if (multiPolygon == null) throw new ArgumentNullException(nameof(multiPolygon));
+
+            var boundingBox = new BoundingBox2D(
+                multiPolygon.EnvelopeInternal.MinX,
+                multiPolygon.EnvelopeInternal.MinY,
+                multiPolygon.EnvelopeInternal.MaxX,
+                multiPolygon.EnvelopeInternal.MaxY
+            );
+
+            var linearRings = multiPolygon
+                .Geometries
+                .Cast<NetTopologySuite.Geometries.Polygon>()
+                .SelectMany(polygon => new [] { polygon.Shell }.Concat(polygon.Holes))
+                .ToArray();
+
+            var offset = 0;
+            var parts = new int[linearRings.Length];
+            for (var index = 0; index < linearRings.Length; index++)
+            {
+                parts[index] = offset;
+                var line = linearRings[index];
+                offset += line.NumPoints;
+            }
+
+            var points = linearRings
+                .SelectMany(line => line.Coordinates)
+                .Select(coordinate => new Point(coordinate.X, coordinate.Y))
+                .ToArray();
+
+            return new Polygon(boundingBox, parts, points);
         }
     }
 }

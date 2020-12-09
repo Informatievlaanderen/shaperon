@@ -74,12 +74,20 @@
         [Fact]
         public void ToLengthReturnsExpectedValue()
         {
-            var value = _fixture.Create<int>().AsDbaseIntegerDigitsValue();
+            var value = _fixture.Create<int>().AsDbaseFieldCompatibleDbaseIntegerDigitsValue();
             var sut = new DbaseIntegerDigits(value);
 
             var result = sut.ToLength();
 
             Assert.Equal(new DbaseFieldLength(sut.ToInt32()), result);
+        }
+
+        [Fact]
+        public void ToLengthThrowsWhenNoDigits()
+        {
+            var sut = new DbaseIntegerDigits(0);
+
+            Assert.Throws<InvalidOperationException>(() => sut.ToLength());
         }
 
         // [Fact]
