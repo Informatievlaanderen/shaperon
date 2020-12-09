@@ -42,35 +42,6 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
             Assert.Equal(result.Y, input.Y);
         }
 
-//        [Fact]
-//        public void FromGeometryPointMCanNotBeNull()
-//        {
-//            Assert.Throws<ArgumentNullException>(
-//                () => GeometryTranslator.FromGeometryPointM(null));
-//        }
-
-//        [Fact]
-//        public void FromGeometryPointMReturnsExpectedResult()
-//        {
-//            _fixture.CustomizeGeometryPointM();
-//            var input = _fixture.Create<PointM>();
-//            var result = GeometryTranslator.FromGeometryPointM(input);
-//            Assert.Equal(result.X, input.X);
-//            Assert.Equal(result.Y, input.Y);
-//        }
-
-//        [Fact]
-//        public void ToGeometryPointMReturnsExpectedResult()
-//        {
-//            _fixture.CustomizePoint();
-//            var input = _fixture.Create<Point>();
-//            var result = GeometryTranslator.ToGeometryPointM(input);
-//            Assert.Equal(input.X, result.X);
-//            Assert.Equal(input.Y, result.Y);
-//            Assert.Equal(double.NaN, result.Z);
-//            Assert.Equal(double.NaN, result.M);
-//        }
-
         [Fact]
         public void FromGeometryPolygonCanNotBeNull()
         {
@@ -223,6 +194,94 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                             .Range(0, line.NumPoints)
                             .Select(index => line.CoordinateSequence.GetOrdinate(index, NetTopologySuite.Geometries.Ordinate.M)))
             );
+        }
+
+        [Fact]
+        public void FromGeometryMultiPolygonCanNotBeNull()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => GeometryTranslator.FromGeometryMultiPolygon(null));
+        }
+
+        [Fact]
+        public void FromGeometryMultiPolygonReturnsExpectedResult()
+        {
+            _fixture.CustomizeGeometryMultiPolygon();
+            var input = _fixture.Create<NetTopologySuite.Geometries.MultiPolygon>();
+            var result = GeometryTranslator.FromGeometryMultiPolygon(input);
+
+            Assert.Equal(
+                new BoundingBox2D(
+                    input.EnvelopeInternal.MinX,
+                    input.EnvelopeInternal.MinY,
+                    input.EnvelopeInternal.MaxX,
+                    input.EnvelopeInternal.MaxY
+                ), result.BoundingBox);
+            Assert.Equal(input.Geometries.Cast<NetTopologySuite.Geometries.Polygon>().Sum(polygon => polygon.Holes.Length + 1),
+                result.NumberOfParts);
+            Assert.Equal(input.Geometries.Cast<NetTopologySuite.Geometries.Polygon>().Sum(polygon => polygon.Shell.NumPoints + polygon.Holes.Sum(hole => hole.NumPoints)),
+                result.NumberOfPoints);
+            var linearRings = input.Geometries.Cast<NetTopologySuite.Geometries.Polygon>().SelectMany(polygon => new [] { polygon.Shell}.Concat(polygon.Holes));
+            var offset = 0;
+            Assert.Equal(
+                linearRings.Select(ring =>
+                {
+                    var part = offset;
+                    offset += ring.NumPoints;
+                    return part;
+                }).ToArray(),
+                result.Parts);
+            Assert.Equal(
+                linearRings.SelectMany(ring => Enumerable.Range(0, ring.NumPoints).Select(index => new Point(ring.GetPointN(index).X, ring.GetPointN(index).Y))).ToArray(),
+                result.Points);
+        }
+
+        [Fact]
+        public void ToGeometryMultiPolygonCanNotBeNull()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => GeometryTranslator.ToGeometryMultiPolygon(null));
+        }
+
+        [Fact]
+        public void ToGeometryMultiPolygonReturnsExpectedResult()
+        {
+            _fixture.CustomizeMultiPolygon();
+            var input = _fixture.Create<Polygon>();
+            var result = GeometryTranslator.ToGeometryMultiPolygon(input);
+            Assert.Equal(input.NumberOfParts, result.Geometries.Cast<NetTopologySuite.Geometries.Polygon>().Sum(polygon => polygon.Holes.Length + 1));
+            Assert.Equal(input.NumberOfPoints, result.Geometries.Cast<NetTopologySuite.Geometries.Polygon>().Sum(polygon => polygon.Shell.NumPoints + polygon.Holes.Sum(hole => hole.NumPoints)));
+            Assert.Equal(input.BoundingBox, new BoundingBox2D(
+                result.EnvelopeInternal.MinX,
+                result.EnvelopeInternal.MinY,
+                result.EnvelopeInternal.MaxX,
+                result.EnvelopeInternal.MaxY
+            ));
+            var offset = 0;
+            var parts = new List<int>();
+            foreach (var linearRing in result
+                .Geometries
+                .Cast<NetTopologySuite.Geometries.Polygon>()
+                .SelectMany(polygon => new[] {polygon.Shell}.Concat(polygon.Holes)))
+            {
+                parts.Add(offset);
+                offset += linearRing.NumPoints;
+            }
+            Assert.Equal(input.Parts, parts);
+            Assert.Equal(input.Points,
+                result
+                    .Geometries
+                    .Cast<NetTopologySuite.Geometries.Polygon>()
+                    .SelectMany(polygon =>
+                        polygon
+                            .Shell
+                            .Coordinates
+                            .Concat(
+                                polygon
+                                    .Holes
+                                    .SelectMany(hole => hole.Coordinates))
+                            .Select(point => new Point(point.X, point.Y))
+                        ));
         }
     }
 }

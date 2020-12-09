@@ -1,5 +1,6 @@
 namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
 {
+    using System.Collections.Generic;
     using System.Linq;
     using AutoFixture;
 
@@ -109,6 +110,56 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
             );
         }
 
+        public static void CustomizeGeometryMultiPolygon(this IFixture fixture)
+        {
+            fixture.Customize<NetTopologySuite.Geometries.MultiPolygon>(customization =>
+                customization.FromFactory(generator =>
+                {
+                    var polygonCount = generator.Next(1, 4);
+                    var polygons = new NetTopologySuite.Geometries.Polygon[polygonCount];
+                    for (var polygonIndex = 0; polygonIndex < polygonCount; polygonIndex++)
+                    {
+                        var offsetX = 10.0 * polygonIndex;
+                        var offsetY = 10.0 * polygonIndex;
+
+                        var shell = new NetTopologySuite.Geometries.LinearRing(
+                            new []
+                            {
+                                new NetTopologySuite.Geometries.Point(offsetX, offsetY).Coordinate,
+                                new NetTopologySuite.Geometries.Point(offsetX, offsetY + 5.0).Coordinate,
+                                new NetTopologySuite.Geometries.Point(offsetX + 5.0, offsetY + 5.0).Coordinate,
+                                new NetTopologySuite.Geometries.Point(offsetX + 5.0, offsetY).Coordinate,
+                                new NetTopologySuite.Geometries.Point(offsetX, offsetY).Coordinate
+                            });
+
+                        var holes = new[] // points are enumerated counter clock wise
+                        {
+                            new NetTopologySuite.Geometries.LinearRing(
+                                new[]
+                                {
+                                    new NetTopologySuite.Geometries.Point(offsetX + 1.0, offsetY + 2.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 2.0, offsetY + 2.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 2.0, offsetY + 3.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 1.0, offsetY + 3.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 1.0, offsetY + 2.0).Coordinate
+                                }),
+                            new NetTopologySuite.Geometries.LinearRing(
+                                new[]
+                                {
+                                    new NetTopologySuite.Geometries.Point(offsetX + 3.0, offsetY + 1.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 4.0, offsetY + 1.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 4.0, offsetY + 2.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 3.0, offsetY + 2.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 3.0, offsetY + 1.0).Coordinate
+                                })
+                        };
+                        polygons[polygonIndex] = new NetTopologySuite.Geometries.Polygon(shell, holes, GeometryConfiguration.GeometryFactory);
+                    }
+                    return new NetTopologySuite.Geometries.MultiPolygon(polygons);
+                }).OmitAutoProperties()
+            );
+        }
+
         public static void CustomizePolygon(this IFixture fixture)
         {
             const int polygonExteriorBufferCoordinate = 50;
@@ -144,6 +195,81 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
                             points[index].X + polygonExteriorBufferCoordinate,
                             points[index].Y + polygonExteriorBufferCoordinate
                         );
+                    }
+
+                    var boundingBox = new BoundingBox2D(
+                        points.Min(p => p.X),
+                        points.Min(p => p.Y),
+                        points.Max(p => p.X),
+                        points.Max(p => p.Y)
+                    );
+                    return new Polygon(boundingBox, parts, points);
+                }).OmitAutoProperties()
+            );
+        }
+
+        public static void CustomizeMultiPolygon(this IFixture fixture)
+        {
+            fixture.Customize<Polygon>(customization =>
+                customization.FromFactory(generator =>
+                {
+                    var polygonCount = generator.Next(1, 4);
+                    var polygons = new NetTopologySuite.Geometries.Polygon[polygonCount];
+                    for (var polygonIndex = 0; polygonIndex < polygonCount; polygonIndex++)
+                    {
+                        var offsetX = 10.0 * polygonIndex;
+                        var offsetY = 10.0 * polygonIndex;
+
+                        var shell = new NetTopologySuite.Geometries.LinearRing(
+                            new []
+                            {
+                                new NetTopologySuite.Geometries.Point(offsetX, offsetY).Coordinate,
+                                new NetTopologySuite.Geometries.Point(offsetX, offsetY + 5.0).Coordinate,
+                                new NetTopologySuite.Geometries.Point(offsetX + 5.0, offsetY + 5.0).Coordinate,
+                                new NetTopologySuite.Geometries.Point(offsetX + 5.0, offsetY).Coordinate,
+                                new NetTopologySuite.Geometries.Point(offsetX, offsetY).Coordinate
+                            });
+
+                        var holes = new[] // points are enumerated counter clock wise
+                        {
+                            new NetTopologySuite.Geometries.LinearRing(
+                                new[]
+                                {
+                                    new NetTopologySuite.Geometries.Point(offsetX + 1.0, offsetY + 2.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 2.0, offsetY + 2.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 2.0, offsetY + 3.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 1.0, offsetY + 3.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 1.0, offsetY + 2.0).Coordinate
+                                }),
+                            new NetTopologySuite.Geometries.LinearRing(
+                                new[]
+                                {
+                                    new NetTopologySuite.Geometries.Point(offsetX + 3.0, offsetY + 1.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 4.0, offsetY + 1.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 4.0, offsetY + 2.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 3.0, offsetY + 2.0).Coordinate,
+                                    new NetTopologySuite.Geometries.Point(offsetX + 3.0, offsetY + 1.0).Coordinate
+                                })
+                        };
+                        polygons[polygonIndex] = new NetTopologySuite.Geometries.Polygon(shell, holes);
+                    }
+
+                    var linearRings = polygons
+                        .SelectMany(polygon => new[] {polygon.Shell}.Concat(polygon.Holes))
+                        .ToArray();
+                    var parts = new int[linearRings.Length];
+                    var points = new Point[polygons.Sum(polygon => polygon.Shell.NumPoints + polygon.Holes.Sum(hole => hole.NumPoints))];
+                    var offset = 0;
+                    for (var ringIndex = 0; ringIndex < linearRings.Length; ringIndex++)
+                    {
+                        var linearRing = linearRings[ringIndex];
+                        parts[ringIndex] = offset;
+                        for (var pointIndex = 0; pointIndex < linearRing.NumPoints; pointIndex++)
+                        {
+                            var point = linearRing.GetPointN(pointIndex);
+                            points[offset + pointIndex] = new Point(point.X, point.Y);
+                        }
+                        offset += linearRing.NumPoints;
                     }
 
                     var boundingBox = new BoundingBox2D(

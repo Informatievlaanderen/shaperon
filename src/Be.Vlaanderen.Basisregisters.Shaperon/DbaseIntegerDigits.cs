@@ -41,7 +41,10 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public override string ToString() => _value.ToString();
 
         [Pure]
-        public DbaseFieldLength ToLength() => new DbaseFieldLength(_value);
+        public DbaseFieldLength ToLength() => _value == 0
+            ? throw new InvalidOperationException("The conversion of this zero digit instance to a dbase field length is not possible. Dbase field length starts at 1.")
+            : new DbaseFieldLength(_value);
+
         public int CompareTo(DbaseIntegerDigits other) => _value.CompareTo(other._value);
 
         public static DbaseIntegerDigits operator +(DbaseIntegerDigits left, DbaseIntegerDigits right)
