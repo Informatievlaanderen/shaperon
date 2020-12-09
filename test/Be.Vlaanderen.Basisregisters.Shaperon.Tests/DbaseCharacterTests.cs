@@ -1230,7 +1230,11 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public void ResetHasExpectedResult()
         {
             var sut = _fixture.Create<DbaseCharacter>();
-            sut.Value = _fixture.Create<string>();
+            sut.Value = new string(
+                _fixture
+                    .CreateMany<char>(new Random().Next(1, sut.Field.Length.ToInt32() + 1))
+                    .ToArray()
+            );
 
             sut.Reset();
 
