@@ -164,6 +164,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void MinusDbaseFieldLengthReturnsExpectedValue()
         {
+            _fixture.CustomizeDbaseFieldLength(new DbaseFieldLength(250));
             var value = _fixture.Create<DbaseFieldLength>();
             var sut = new Generator<DbaseFieldLength>(_fixture).First(candidate => candidate > value);
 
@@ -175,6 +176,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void MinusDbaseFieldLengthOperatorReturnsExpectedValue()
         {
+            _fixture.CustomizeDbaseFieldLength(new DbaseFieldLength(250));
             var value = _fixture.Create<DbaseFieldLength>();
             var sut = new Generator<DbaseFieldLength>(_fixture).First(candidate => candidate > value);
 
