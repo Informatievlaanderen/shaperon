@@ -34,7 +34,11 @@ Target.create "Lib_Test" (fun _ ->
   |> List.iter testWithDotNet
 )
 
-Target.create "Lib_Publish" (fun _ -> publishSource "Be.Vlaanderen.Basisregisters.Shaperon")
+Target.create "Lib_Publish" (fun _ ->
+  publishSource "Be.Vlaanderen.Basisregisters.Shaperon"
+  publishSource "Be.Vlaanderen.Basisregisters.Shaperon.Geometries"
+)
+
 Target.create "Lib_Pack" (fun _ -> pack "Be.Vlaanderen.Basisregisters.Shaperon")
 
 // --------------------------------------------------------------------------------
