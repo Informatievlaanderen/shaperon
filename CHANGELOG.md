@@ -1,3 +1,10 @@
+## [8.1.3](https://github.com/informatievlaanderen/shaperon/compare/v8.1.2...v8.1.3) (2021-05-28)
+
+
+### Bug Fixes
+
+* move to 5.0.6 ([75c30ae](https://github.com/informatievlaanderen/shaperon/commit/75c30aed49135992d2b32449e2dfd6b488e4e0a3))
+
 ## [8.1.2](https://github.com/informatievlaanderen/shaperon/compare/v8.1.1...v8.1.2) (2021-02-02)
 
 
