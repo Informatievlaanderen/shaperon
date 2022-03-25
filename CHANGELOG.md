@@ -1,3 +1,15 @@
+# [9.0.0](https://github.com/informatievlaanderen/shaperon/compare/v8.1.3...v9.0.0) (2022-03-25)
+
+
+### Features
+
+* move to dotnet 6.0.3 ([1e7e1b8](https://github.com/informatievlaanderen/shaperon/commit/1e7e1b83aa05652921af742a0ef7ba8fad7cfecd))
+
+
+### BREAKING CHANGES
+
+* move to dotnet 6.0.3
+
 ## [8.1.3](https://github.com/informatievlaanderen/shaperon/compare/v8.1.2...v8.1.3) (2021-05-28)
 
 
