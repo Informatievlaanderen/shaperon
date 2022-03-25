@@ -32,7 +32,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public static int AsDbaseFieldLengthValue(this int value)
         {
-            return new Random(value).Next(1, 255);
+            return new Random(value).Next(1, 254);
         }
 
         public static int AsDbaseFieldLengthValue(this int value, int maximum)
@@ -67,7 +67,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public static int AsDbaseDecimalCountValue(this int value)
         {
-            return new Random(value).Next(0, 255);
+            return new Random(value).Next(0, 254);
         }
 
         public static int AsDbaseDecimalCountValue(this int value, int maximum)
