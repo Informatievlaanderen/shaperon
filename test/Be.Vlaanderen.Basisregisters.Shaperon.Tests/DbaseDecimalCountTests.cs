@@ -143,7 +143,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         [Fact]
         public void ToLengthReturnsExpectedValue()
         {
-            var value = _fixture.Create<int>().AsDbaseDecimalCountValue();
+            var value = _fixture.Create<int>().AsDbaseFieldLengthValue();
             var sut = new DbaseDecimalCount(value);
 
             var result = sut.ToLength();
