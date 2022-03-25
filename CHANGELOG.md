@@ -1,3 +1,10 @@
+## [9.0.1](https://github.com/informatievlaanderen/shaperon/compare/v9.0.0...v9.0.1) (2022-03-25)
+
+
+### Bug Fixes
+
+* DbaseDecimalCountTests ([494adbe](https://github.com/informatievlaanderen/shaperon/commit/494adbe51aabc1a4359560949d5cc969847ce4b5))
+
 # [9.0.0](https://github.com/informatievlaanderen/shaperon/compare/v8.1.3...v9.0.0) (2022-03-25)
 
 
