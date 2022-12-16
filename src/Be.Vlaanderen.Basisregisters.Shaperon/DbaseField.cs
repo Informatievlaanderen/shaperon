@@ -38,6 +38,12 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public DbaseField(DbaseFieldName name, DbaseFieldType fieldType, ByteOffset offset, DbaseFieldLength length,
             DbaseDecimalCount decimalCount)
         {
+            string possibleName = typeof(DbaseField).GetAttributeValue();
+            if (possibleName != null)
+            {
+                name = new DbaseFieldName(possibleName);
+            }
+
             if (!Enum.IsDefined(typeof(DbaseFieldType), fieldType))
             {
                 throw new ArgumentException(
