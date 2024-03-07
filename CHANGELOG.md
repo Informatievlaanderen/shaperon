@@ -1,3 +1,15 @@
+# [10.0.0](https://github.com/informatievlaanderen/shaperon/compare/v9.0.1...v10.0.0) (2024-03-07)
+
+
+### Features
+
+* move to dotnet 8.0.2 ([3aefdba](https://github.com/informatievlaanderen/shaperon/commit/3aefdba112b3d8724fb01c4fa24b502039c4ac4f))
+
+
+### BREAKING CHANGES
+
+* move to dotnet 8.0.2
+
 ## [9.0.1](https://github.com/informatievlaanderen/shaperon/compare/v9.0.0...v9.0.1) (2022-03-25)
 
 
