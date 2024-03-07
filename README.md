@@ -1,4 +1,4 @@
-# Be.Vlaanderen.Basisregisters.Shaperon [![Build Status](https://github.com/Informatievlaanderen/shaperon/workflows/CI/badge.svg)](https://github.com/Informatievlaanderen/shaperon/actions)
+# Be.Vlaanderen.Basisregisters.Shaperon [![Build Status](https://github.com/Informatievlaanderen/shaperon/workflows/Build/badge.svg)](https://github.com/Informatievlaanderen/shaperon/actions)
 
 Lightweight dbase and shape record handling.
 
