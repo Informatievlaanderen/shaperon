@@ -15,11 +15,11 @@ licenseUrl https://opensource.org/licenses/MIT
 description Lightweight dbase and shape record handling (net topology suite integration).
 
 dependencies:
-  framework: net8.0
+  framework: netstandard2.1
     Be.Vlaanderen.Basisregisters.Shaperon CURRENTVERSION
 
     NetTopologySuite >= LOCKEDVERSION
 
 files
-  Be.Vlaanderen.Basisregisters.Shaperon.Geometries.dll => lib\net8.0
-  Be.Vlaanderen.Basisregisters.Shaperon.Geometries.pdb => lib\net8.0
+  Be.Vlaanderen.Basisregisters.Shaperon.Geometries.dll => lib\netstandard2.1
+  Be.Vlaanderen.Basisregisters.Shaperon.Geometries.pdb => lib\netstandard2.1
