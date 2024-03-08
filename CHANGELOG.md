@@ -1,3 +1,10 @@
+## [10.0.2](https://github.com/informatievlaanderen/shaperon/compare/v10.0.1...v10.0.2) (2024-03-08)
+
+
+### Bug Fixes
+
+* pack shaperon.geometries ([7bbe2ad](https://github.com/informatievlaanderen/shaperon/commit/7bbe2ade6218d66f1497f1276cc678b3f60f6dff))
+
 ## [10.0.1](https://github.com/informatievlaanderen/shaperon/compare/v10.0.0...v10.0.1) (2024-03-08)
 
 
