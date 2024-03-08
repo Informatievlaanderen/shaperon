@@ -15,8 +15,8 @@ licenseUrl https://opensource.org/licenses/MIT
 description Lightweight dbase and shape record handling.
 
 dependencies:
-  framework: net8.0
+  framework: netstandard2.1
 
 files
-  Be.Vlaanderen.Basisregisters.Shaperon.dll => lib\net8.0
-  Be.Vlaanderen.Basisregisters.Shaperon.pdb => lib\net8.0
+  Be.Vlaanderen.Basisregisters.Shaperon.dll => lib\netstandard2.1
+  Be.Vlaanderen.Basisregisters.Shaperon.pdb => lib\netstandard2.1
