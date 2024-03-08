@@ -1,3 +1,11 @@
+## [10.0.1](https://github.com/informatievlaanderen/shaperon/compare/v10.0.0...v10.0.1) (2024-03-08)
+
+
+### Bug Fixes
+
+* dependency on netstandard2.1 ([2162b36](https://github.com/informatievlaanderen/shaperon/commit/2162b36ee6d9bda1a2a6dfaa3e3f99c38e4a3f00))
+* package-lock.json ([894786b](https://github.com/informatievlaanderen/shaperon/commit/894786bef47f7dc700daa21eb80580642c1c2c5e))
+
 # [10.0.0](https://github.com/informatievlaanderen/shaperon/compare/v9.0.1...v10.0.0) (2024-03-07)
 
 
