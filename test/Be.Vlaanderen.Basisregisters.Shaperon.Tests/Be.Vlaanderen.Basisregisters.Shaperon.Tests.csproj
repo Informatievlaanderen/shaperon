@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\packages\Be.Vlaanderen.Basisregisters.Build.Pipeline\Content\Be.Vlaanderen.Basisregisters.Build.Pipeline.Settings.Test.props" />
+  <Import Project="..\..\.build\Be.Vlaanderen.Basisregisters.Build.Pipeline\Content\Be.Vlaanderen.Basisregisters.Build.Pipeline.Settings.Test.props" />
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
@@ -11,5 +11,16 @@
     <ProjectReference Include="..\..\src\Be.Vlaanderen.Basisregisters.Shaperon\Be.Vlaanderen.Basisregisters.Shaperon.csproj" />
   </ItemGroup>
 
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
+ <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" />
+    <PackageReference Include="Albedo" />
+    <PackageReference Include="AutoFixture" />
+    <PackageReference Include="AutoFixture.Idioms" />
+    <PackageReference Include="PublicApiGenerator" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NetTopologySuite" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+  </ItemGroup>
 </Project>

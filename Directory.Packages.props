@@ -1,0 +1,22 @@
+<Project>
+    <PropertyGroup>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <CentralPackageVersionOverrideEnabled>false</CentralPackageVersionOverrideEnabled>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageVersion Include="NetTopologySuite" Version="2.6.0" />
+
+        <PackageVersion Include="System.Text.Encoding.CodePages" Version="9.0.3" />
+        <PackageVersion Include="Albedo" Version="2.0.0" />
+        <PackageVersion Include="AutoFixture" Version="4.18.1" />
+        <PackageVersion Include="AutoFixture.Idioms" Version="4.18.1" />
+        <PackageVersion Include="PublicApiGenerator" Version="11.4.5" />
+        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+        <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageVersion Include="xunit" Version="2.9.3" />
+        <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
+        <PackageVersion Include="SourceLink.Embed.AllSourceFiles" Version="2.8.3" />
+        <PackageVersion Include="SourceLink.Copy.PdbFiles" Version="2.8.3" />
+    </ItemGroup>
+</Project>

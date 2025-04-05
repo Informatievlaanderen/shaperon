@@ -160,7 +160,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return Array.Find(All, candidate => candidate._value == value);
         }
 
-        public static bool TryParse(byte value, out DbaseCodePage parsed)
+        public static bool TryParse(byte value, out DbaseCodePage? parsed)
         {
             parsed = Array.Exists(All, candidate => candidate._value == value)
                 ? Array.Find(All, candidate => candidate._value == value)
@@ -169,7 +169,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return parsed != null;
         }
 
-        public Encoding ToEncoding(EncodingProvider provider = default)
+        public Encoding? ToEncoding(EncodingProvider? provider = default)
         {
             if (provider == null)
             {
@@ -178,8 +178,8 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return _codePage.HasValue ? provider.GetEncoding(_codePage.Value) : null;
         }
 
-        public bool Equals(DbaseCodePage other) => other != null && other._value == _value;
-        public override bool Equals(object obj) => obj is DbaseCodePage other && Equals(other);
+        public bool Equals(DbaseCodePage? other) => other != null && other._value == _value;
+        public override bool Equals(object? obj) => obj is DbaseCodePage other && Equals(other);
         public override int GetHashCode() => _value;
         public override string ToString() => _value.ToString();
 

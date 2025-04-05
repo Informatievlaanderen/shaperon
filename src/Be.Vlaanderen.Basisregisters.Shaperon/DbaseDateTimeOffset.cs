@@ -6,9 +6,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
     public class DbaseDateTimeOffset : DbaseFieldValue
     {
-        private string _value;
+        private string? _value;
 
-        public DbaseDateTimeOffset(DbaseField field, DbaseDateTimeOffsetOptions options = null) : base(field)
+        public DbaseDateTimeOffset(DbaseField field, DbaseDateTimeOffsetOptions? options = null) : base(field)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));
@@ -21,7 +21,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             _value = default;
         }
 
-        public DbaseDateTimeOffset(DbaseField field, DateTimeOffset value, DbaseDateTimeOffsetOptions options = null) : base(field)
+        public DbaseDateTimeOffset(DbaseField field, DateTimeOffset value, DbaseDateTimeOffsetOptions? options = null) : base(field)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));

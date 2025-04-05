@@ -22,7 +22,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon.Geometries
         public TGeometry ReadAs<TGeometry>(byte[] value)
             where TGeometry : Geometry => (TGeometry) Read(value);
 
-        public bool TryReadAs<TGeometry>(byte[] value, out TGeometry geometry)
+        public bool TryReadAs<TGeometry>(byte[] value, out TGeometry? geometry)
             where TGeometry : Geometry
         {
             var parsed = Read(value);

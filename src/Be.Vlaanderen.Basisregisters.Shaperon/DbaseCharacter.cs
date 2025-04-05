@@ -6,9 +6,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
     public class DbaseCharacter : DbaseFieldValue
     {
-        private string _value;
+        private string? _value;
 
-        public DbaseCharacter(DbaseField field, string value = null, DbaseCharacterOptions options = null) : base(field)
+        public DbaseCharacter(DbaseField field, string? value = null, DbaseCharacterOptions? options = null) : base(field)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));
@@ -21,7 +21,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             Value = value;
         }
 
-        public bool AcceptsValue(string value)
+        public bool AcceptsValue(string? value)
         {
             if (value != null)
                 return value.Length <= Field.Length.ToInt32();
@@ -58,7 +58,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return true;
         }
 
-        public string Value
+        public string? Value
         {
             get => _value;
             set
