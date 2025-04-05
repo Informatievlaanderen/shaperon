@@ -6,9 +6,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
     public class DbaseDateTime : DbaseFieldValue
     {
-        private string _value;
+        private string? _value;
 
-        public DbaseDateTime(DbaseField field, DbaseDateTimeOptions options = null) : base(field)
+        public DbaseDateTime(DbaseField field, DbaseDateTimeOptions? options = null) : base(field)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));
@@ -21,7 +21,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             _value = default;
         }
 
-        public DbaseDateTime(DbaseField field, DateTime value, DbaseDateTimeOptions options = null) : base(field)
+        public DbaseDateTime(DbaseField field, DateTime value, DbaseDateTimeOptions? options = null) : base(field)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));

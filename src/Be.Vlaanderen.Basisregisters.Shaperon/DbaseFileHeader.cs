@@ -29,14 +29,14 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public DbaseRecordCount RecordCount { get; }
         public DbaseSchema Schema { get; }
 
-        public bool Equals(DbaseFileHeader other) =>
+        public bool Equals(DbaseFileHeader? other) =>
             other != null &&
             LastUpdated.Equals(other.LastUpdated) &&
             CodePage.Equals(other.CodePage) &&
             RecordCount.Equals(other.RecordCount) &&
             Schema.Equals(other.Schema);
 
-        public override bool Equals(object obj) =>
+        public override bool Equals(object? obj) =>
             obj is DbaseFileHeader dbaseFileHeader && Equals(dbaseFileHeader);
 
         public override int GetHashCode() =>
@@ -117,7 +117,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             var bytesToSkip = headerLength - (HeaderMetaDataSize + FieldMetaDataSize * fieldCount);
             reader.ReadBytes(bytesToSkip);
 
-            return new DbaseFileHeader(lastUpdated, codePage, recordCount, schema);
+            return new DbaseFileHeader(lastUpdated, codePage!, recordCount, schema);
         }
 
         public void Write(BinaryWriter writer)
@@ -161,7 +161,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
             private readonly DbaseFileHeader _header;
             private readonly BinaryReader _reader;
-            private DbaseRecord _current;
+            private DbaseRecord? _current;
             private State _state;
             private RecordNumber _number;
 
@@ -239,7 +239,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         throw new InvalidOperationException("Enumeration has already ended. Reset is not supported.");
                     }
 
-                    return _current;
+                    return _current!;
                 }
             }
 
@@ -260,7 +260,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             private readonly DbaseFileHeader _header;
             private readonly BinaryReader _reader;
             private RecordNumber _number;
-            private TDbaseRecord _current;
+            private TDbaseRecord? _current;
             private State _state;
 
             public DbaseRecordEnumerator(DbaseFileHeader header, BinaryReader reader)
@@ -337,7 +337,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         throw new InvalidOperationException("Enumeration has already ended. Reset is not supported.");
                     }
 
-                    return _current;
+                    return _current!;
                 }
             }
 

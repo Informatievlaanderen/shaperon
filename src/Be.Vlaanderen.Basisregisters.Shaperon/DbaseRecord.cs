@@ -9,7 +9,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         public bool IsDeleted { get; set; }
 
-        public DbaseFieldValue[] Values { get; protected set; }
+        public DbaseFieldValue[] Values { get; protected set; } = [];
 
         public bool TryRead(BinaryReader reader)
         {

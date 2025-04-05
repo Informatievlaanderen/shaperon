@@ -23,13 +23,13 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
         public ShapeType ShapeType { get; }
         public BoundingBox3D BoundingBox { get; }
 
-        public bool Equals(ShapeFileHeader other) =>
+        public bool Equals(ShapeFileHeader? other) =>
             other != null
             && FileLength.Equals(other.FileLength)
             && ShapeType.Equals(other.ShapeType)
             && BoundingBox.Equals(other.BoundingBox);
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => obj is ShapeFileHeader other && Equals(other);
 
         public override int GetHashCode()
@@ -109,7 +109,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             private readonly ShapeFileHeader _header;
             private readonly BinaryReader _reader;
 
-            private ShapeRecord _current;
+            private ShapeRecord? _current;
             private State _state;
             private WordLength _length;
 
@@ -180,7 +180,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
                         throw new InvalidOperationException("Enumeration has already ended. Reset is not supported.");
                     }
 
-                    return _current;
+                    return _current!;
                 }
             }
 

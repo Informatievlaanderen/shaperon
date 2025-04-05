@@ -303,9 +303,9 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
 
         // shared by dbase string, character, datetime, nullable datetime, datetime offset, nullable datetime offset
 
-        public static string ReadAsNullableString(this BinaryReader reader, DbaseField field)
+        public static string? ReadAsNullableString(this BinaryReader reader, DbaseField field)
         {
-            string result = default;
+            string? result = default;
             if (reader.PeekChar() == '\0')
             {
                 var read = reader.ReadBytes(field.Length.ToInt32());
@@ -324,7 +324,7 @@ namespace Be.Vlaanderen.Basisregisters.Shaperon
             return result;
         }
 
-        public static void WriteAsNullableString(this BinaryWriter writer, DbaseField field, string value)
+        public static void WriteAsNullableString(this BinaryWriter writer, DbaseField field, string? value)
         {
             if (value == null)
             {
