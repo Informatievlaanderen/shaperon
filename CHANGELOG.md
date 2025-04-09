@@ -1,3 +1,15 @@
+# [11.0.0](https://github.com/informatievlaanderen/shaperon/compare/v10.0.2...v11.0.0) (2025-04-09)
+
+
+### Code Refactoring
+
+* use renovate and nuget + update pipeline ([fe3f6f8](https://github.com/informatievlaanderen/shaperon/commit/fe3f6f82af790e0813f67e8f392c5468879e4fe4))
+
+
+### BREAKING CHANGES
+
+* update to dotnet 9
+
 ## [10.0.2](https://github.com/informatievlaanderen/shaperon/compare/v10.0.1...v10.0.2) (2024-03-08)
 
 
