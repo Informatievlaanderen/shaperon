@@ -15,7 +15,7 @@
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageVersion Include="xunit" Version="2.9.3" />
-        <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
+        <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.0" />
         <PackageVersion Include="SourceLink.Embed.AllSourceFiles" Version="2.8.3" />
         <PackageVersion Include="SourceLink.Copy.PdbFiles" Version="2.8.3" />
     </ItemGroup>
