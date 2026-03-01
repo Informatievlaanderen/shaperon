@@ -141,14 +141,14 @@ jobs:
         pip install requests markdown argparse
 
     - name: Download NuGet Shaperon
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       continue-on-error: false
       with:
         name: nuget-Be.Vlaanderen.Basisregisters.Shaperon-${{ needs.set-release-version.outputs.version }}
         path: dist/nuget/
 
     - name: Download NuGet Shaperon Geometries
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       continue-on-error: false
       with:
         name: nuget-Be.Vlaanderen.Basisregisters.Shaperon.Geometries-${{ needs.set-release-version.outputs.version }}
@@ -197,13 +197,13 @@ jobs:
       run: dotnet --info
 
     - name: Download NuGet package
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: nuget-Be.Vlaanderen.Basisregisters.Shaperon-${{ needs.release.outputs.version }}
         path: ~/
 
     - name: Download NuGet package
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: nuget-Be.Vlaanderen.Basisregisters.Shaperon.Geometries-${{ needs.release.outputs.version }}
         path: ~/
