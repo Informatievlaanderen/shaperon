@@ -63,9 +63,9 @@
       },
       "System.Text.Encoding.CodePages": {
         "type": "Direct",
-        "requested": "[9.0.3, )",
-        "resolved": "9.0.3",
-        "contentHash": "80ABiml18jG+6PB6GmrOyMlWla66f4Tp6RgUCJXZLki1Zu+yqbflXvweT86j2xImKHXoVgivto25Z8P5+FO85w=="
+        "requested": "[9.0.16, )",
+        "resolved": "9.0.16",
+        "contentHash": "k5xkPO/esF2b9Q8APmxW3urFdQesN/A0YFXW2XH2QUXrN4MMLsAwsOUhDF3nxym1x7YIwb01cdtSVfsDP2kumg=="
       },
       "xunit": {
         "type": "Direct",
@@ -1107,9 +1107,9 @@
     "net9.0/linux-x64": {
       "System.Text.Encoding.CodePages": {
         "type": "Direct",
-        "requested": "[9.0.3, )",
-        "resolved": "9.0.3",
-        "contentHash": "80ABiml18jG+6PB6GmrOyMlWla66f4Tp6RgUCJXZLki1Zu+yqbflXvweT86j2xImKHXoVgivto25Z8P5+FO85w=="
+        "requested": "[9.0.16, )",
+        "resolved": "9.0.16",
+        "contentHash": "k5xkPO/esF2b9Q8APmxW3urFdQesN/A0YFXW2XH2QUXrN4MMLsAwsOUhDF3nxym1x7YIwb01cdtSVfsDP2kumg=="
       },
       "Microsoft.Win32.Primitives": {
         "type": "Transitive",
@@ -1974,9 +1974,9 @@
     "net9.0/win-x64": {
       "System.Text.Encoding.CodePages": {
         "type": "Direct",
-        "requested": "[9.0.3, )",
-        "resolved": "9.0.3",
-        "contentHash": "80ABiml18jG+6PB6GmrOyMlWla66f4Tp6RgUCJXZLki1Zu+yqbflXvweT86j2xImKHXoVgivto25Z8P5+FO85w=="
+        "requested": "[9.0.16, )",
+        "resolved": "9.0.16",
+        "contentHash": "k5xkPO/esF2b9Q8APmxW3urFdQesN/A0YFXW2XH2QUXrN4MMLsAwsOUhDF3nxym1x7YIwb01cdtSVfsDP2kumg=="
       },
       "Microsoft.Win32.Primitives": {
         "type": "Transitive",
