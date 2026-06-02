@@ -1,3 +1,10 @@
+# [11.1.0](https://github.com/informatievlaanderen/shaperon/compare/v11.0.0...v11.1.0) (2026-06-02)
+
+
+### Features
+
+* update packages ([280b6b0](https://github.com/informatievlaanderen/shaperon/commit/280b6b0a1c905b38717d14ffda185abd14109dbf))
+
 # [11.0.0](https://github.com/informatievlaanderen/shaperon/compare/v10.0.2...v11.0.0) (2025-04-09)
 
 
