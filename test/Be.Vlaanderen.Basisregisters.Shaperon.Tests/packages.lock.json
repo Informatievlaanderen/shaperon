@@ -61,9 +61,9 @@
       },
       "System.Text.Encoding.CodePages": {
         "type": "Direct",
-        "requested": "[10.0.8, )",
-        "resolved": "10.0.8",
-        "contentHash": "WU6i/0KsH43ZeNCXVpm8JGwaj5Chs4Sup2Mwj9JSq62jzSyJQFqoarTpUhXQ+tXCXsUoVTHhxw+1ZhFm20rrmg=="
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "EfNqEhatGaUYNRiJBVXQNFJflOxOKrTnAtQ7unUPmCFxJFH0bMCA1KsHT62wWUp0ZUmGLSRlB52ZU5O6t7u5Iw=="
       },
       "xunit": {
         "type": "Direct",
@@ -186,17 +186,17 @@
     "net10.0/linux-x64": {
       "System.Text.Encoding.CodePages": {
         "type": "Direct",
-        "requested": "[10.0.8, )",
-        "resolved": "10.0.8",
-        "contentHash": "WU6i/0KsH43ZeNCXVpm8JGwaj5Chs4Sup2Mwj9JSq62jzSyJQFqoarTpUhXQ+tXCXsUoVTHhxw+1ZhFm20rrmg=="
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "EfNqEhatGaUYNRiJBVXQNFJflOxOKrTnAtQ7unUPmCFxJFH0bMCA1KsHT62wWUp0ZUmGLSRlB52ZU5O6t7u5Iw=="
       }
     },
     "net10.0/win-x64": {
       "System.Text.Encoding.CodePages": {
         "type": "Direct",
-        "requested": "[10.0.8, )",
-        "resolved": "10.0.8",
-        "contentHash": "WU6i/0KsH43ZeNCXVpm8JGwaj5Chs4Sup2Mwj9JSq62jzSyJQFqoarTpUhXQ+tXCXsUoVTHhxw+1ZhFm20rrmg=="
+        "requested": "[10.0.14, )",
+        "resolved": "10.0.14",
+        "contentHash": "EfNqEhatGaUYNRiJBVXQNFJflOxOKrTnAtQ7unUPmCFxJFH0bMCA1KsHT62wWUp0ZUmGLSRlB52ZU5O6t7u5Iw=="
       }
     }
   }
